@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>netstandard2.0</TargetFramework>
+		<Version>2.2.2</Version>
+		<PreserveCompilationContext>true</PreserveCompilationContext>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<Authors>Lith</Authors>
+		<Description>
+			动态编译进行EntityFramework的扩展
+			add below config to csproj:
+			<PropertyGroup>
+				<PreserveCompilationContext>true</PreserveCompilationContext>
+				<!--if used-->
+				<MvcRazorExcludeRefAssembliesFromPublish>false</MvcRazorExcludeRefAssembliesFromPublish>
+			</PropertyGroup>
+		</Description>
+		<PackageProjectUrl>https://github.com/serset/Vit.Library</PackageProjectUrl>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<DocumentationFile>bin\Debug\netstandard2.0\Vit.Orm.EntityFramework.Dynamic.xml</DocumentationFile>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Vit.Core" Version="2.1.5" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\Vit.DynamicCompile\Vit.DynamicCompile\Vit.DynamicCompile.csproj" />
+		<ProjectReference Include="..\..\Vit.Orm.Dapper\Vit.Orm.Dapper\Vit.Orm.Dapper.csproj" />
+		<ProjectReference Include="..\Vit.Orm.EntityFramework\Vit.Orm.EntityFramework.csproj" />
+	</ItemGroup>
+
+
+</Project>

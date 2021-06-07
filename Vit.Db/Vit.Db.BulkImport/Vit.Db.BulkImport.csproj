@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>netstandard2.0</TargetFramework>
+		<Version>2.2.2</Version>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<Authors>Lith</Authors>
+		<Description>Mysql、SqlServer、Sqlite 批量入库工具</Description>
+		<PackageProjectUrl>https://github.com/serset/Vit.Library</PackageProjectUrl>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<DocumentationFile>bin\Debug\netstandard2.0\Vit.Db.BulkImport.xml</DocumentationFile>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.SqlServer.Types" Version="13.0.4001" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Vit.Db\Vit.Db.csproj" />
+	</ItemGroup>
+
+</Project>

@@ -1,0 +1,39 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>netstandard2.0</TargetFramework>
+		<Version>2.2.2</Version>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<Authors>Lith</Authors>
+		<Description>数据库工具库，提供csv、excel、内存缓存、Redis、Sqlite、Mysql、SqlServer 等相关工具</Description>
+		<PackageProjectUrl>https://github.com/serset/Vit.Library</PackageProjectUrl>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<DocumentationFile>bin\Debug\netstandard2.0\Vit.Db.xml</DocumentationFile>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<Compile Remove="Util\Sqlite\Extensions\SQLiteConnection_Extensions.cs" />
+	</ItemGroup>
+
+
+	<ItemGroup>
+
+		<!--mysql-->
+		<PackageReference Include="MySql.Data" Version="8.0.24" />
+		<!--mssql-->
+		<PackageReference Include="System.Data.SqlClient" Version="4.8.2" />
+		<!--sqlite-->
+		<PackageReference Include="Microsoft.Data.Sqlite" Version="5.0.5" />
+		<!--<PackageReference Include="System.Data.SQLite" Version="1.0.113.7" />-->
+
+		<PackageReference Include="Vit.Core" Version="2.1.5" />
+		<PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="2.1.0" />
+		<PackageReference Include="EPPlus.Core" Version="1.5.4" />
+		<PackageReference Include="StackExchange.Redis" Version="2.2.4" />
+	</ItemGroup>
+
+</Project>
