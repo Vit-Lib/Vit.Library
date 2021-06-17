@@ -1,6 +1,7 @@
 @echo off
 
 ::(x.1)获取basePath
+set curPath=%cd%
 cd /D %~dp0
 cd /d .. 
 set basePath=%cd%
@@ -15,7 +16,7 @@ for /f "delims=" %%f in ('findstr /M /s /i "<pack/>" *.csproj') do (
 	@if errorlevel 1 (echo . & echo .  & echo 出错，请排查！& pause) 
 )
 
-cd /d %basePath%\Publish
+cd /d %curPath%
 
 echo 'pack nuget succeed！'
 echo 'pack nuget succeed！'
