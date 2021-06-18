@@ -5,13 +5,11 @@ set -e
 #(x.1)参数
 args_="
 
-export codePath=/root/docker/jenkins/workspace/sqler/svn 
+export codePath=/root/temp/svn
 
+export version=`grep '<Version>' ${codePath} -r --include Sers.Core.csproj | grep -oP '>(.*)<' | tr -d '<>'`
 
-
-export version=`grep '<Version>' ${codePath} -r --include *.csproj | grep -oP '>(.*)<' | tr -d '<>'`
-
-export name=sqler
+export name=Sers
 
 # "
 
@@ -21,12 +19,11 @@ export name=sqler
 
 #---------------------------------------------------------------------
 #(x.2)初始化github release环境变量
-# releaseFile=$codePath/Publish/git/${name}-${version}.zip
+releaseFile=$codePath/Publish/release/${name}-${version}.zip
 
-filePath="$codePath/Publish/git/${name}-${version}.zip"
+filePath=${releaseFile}
 #name=Vit.Library
 #version=2.5
-
 
 
 fileType="${filePath##*.}"
@@ -44,5 +41,18 @@ echo "release_contentType=application/${fileType}" >> $GITHUB_ENV
 
 
 
+# draft or preivew
+if [[ $version =~ "preview" ]]
+then
+  echo preivew
+  echo "release_prerelease=true" >> $GITHUB_ENV
+else
+  if  [[ "" = $(echo $version | tr -d "0-9\.") ]]
+  then
+    echo release
+  else
+    echo draft
+    echo "release_draft=true" >> $GITHUB_ENV
+  fi
+fi
 
- 

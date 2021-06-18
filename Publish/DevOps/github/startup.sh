@@ -12,7 +12,7 @@ cd $curWorkDir
 
 
 # export codePath=/root/temp/svn/dotnet
-export name=Sers
+export name=Vit.Library
 
 #export DOCKER_USERNAME=serset
 #export DOCKER_PASSWORD=xxx
@@ -29,7 +29,7 @@ export name=Sers
 
 #----------------------------------------------
 echo "(x.2)get version" 
-export version=`grep '<Version>' ${codePath} -r --include Sers.Core.csproj | grep -oP '>(.*)<' | tr -d '<>'`
+export version=`grep '<Version>' ${codePath} -r --include Vit.Db.csproj | grep -oP '>(.*)<' | tr -d '<>'`
 # echo $version
 
 
