@@ -22,10 +22,6 @@ export export GIT_SSH_SECRET=xxxxxx
 #----------------------------------------------
 echo "(x.2)发布文件-压缩"
 
-
-\cp -rf $codePath/Publish/ReleaseFile/docker-deploy $codePath/Publish/release/release/docker-deploy
-
-
 docker run --rm -i \
 -v $codePath:/root/code \
 serset/filezip filezip zip -p -i /root/code/Publish/release/release -o /root/code/Publish/release/${name}-${version}.zip 
