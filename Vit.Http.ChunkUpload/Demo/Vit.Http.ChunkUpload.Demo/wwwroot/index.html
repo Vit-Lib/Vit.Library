@@ -1,0 +1,90 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+
+    <title>vit.ChunkUpload</title>
+</head>
+<body>
+
+    <script src="jquery-3.4.1.min.js"></script>
+
+    <script src="vit.ChunkUpload.js"></script>
+
+
+    <script type="text/javascript">
+
+        var chunkUpload = new vit.ChunkUpload();
+
+        //文件块大小,默认 102400
+        //chunkUpload.chunkSize = 1 * 1024 * 1024;
+
+        //上传文件的地址
+        chunkUpload.url = '/upload/uploadByMemory';
+
+        chunkUpload.deferred
+            .reset()
+            .beforeUploadChunk(function (ajaxConfig) {
+                var formData = ajaxConfig.data;
+                if (formData.arg) return;
+                formData.arg = true;
+                formData.append("type", 'test');
+            })
+            .onStart(function (file, fileGuid) {
+                console.log('开始上传，文件名：' + file.name + '  文件大小：' + (file.size / 1024.0 / 1024.0).toFixed(3) + ' MB');
+            })
+            .progress(function (uploadedSize, fileSize) {
+                console.log('已经上传：' + (uploadedSize / 1024.0 / 1024.0).toFixed(3) + ' MB  百分比：' + (uploadedSize / fileSize * 100).toFixed(2) + '%');
+            })
+            .done(function (apiRet) {
+                console.log("上传成功！");
+                console.log(apiRet);
+            })
+            .fail(function (apiRet) {
+                console.log("上传出错！");
+                console.log(apiRet);
+            });
+
+
+    </script>
+
+    <script type="text/javascript">
+
+        var chunkUploadByTempDir = new vit.ChunkUpload();
+
+        //文件块大小,默认 102400
+        //chunkUploadByTempDir.chunkSize = 1 * 1024 * 1024;
+
+        //上传文件的地址
+        chunkUploadByTempDir.url = '/upload/uploadByTempDir';
+
+        chunkUploadByTempDir.deferred
+            .reset()
+            .beforeUploadChunk(function (ajaxConfig) {
+                var formData = ajaxConfig.data;
+                if (formData.arg) return;
+                formData.arg = true;
+                formData.append("type", 'test');
+            })
+            .onStart(function (file, fileGuid) {
+                console.log('开始上传，文件名：' + file.name + '  文件大小：' + (file.size / 1024.0 / 1024.0).toFixed(3) + ' MB');
+            })
+            .progress(function (uploadedSize, fileSize) {
+                console.log('已经上传：' + (uploadedSize / 1024.0 / 1024.0).toFixed(3) + ' MB  百分比：' + (uploadedSize / fileSize * 100).toFixed(2) + '%');
+            })
+            .done(function (apiRet) {
+                console.log("上传成功！");
+                console.log(apiRet);
+            })
+            .fail(function (apiRet) {
+                console.log("上传出错！");
+                console.log(apiRet);
+            });
+
+    </script>
+
+    <input type="button" value="上传到内存" onclick="chunkUpload.selectFile(function(){ chunkUpload.startUpload(); });">
+    <input type="button" value="上传到临时目录" onclick="chunkUploadByTempDir.selectFile(function(){ chunkUploadByTempDir.startUpload(); });">
+
+</body>
+</html>

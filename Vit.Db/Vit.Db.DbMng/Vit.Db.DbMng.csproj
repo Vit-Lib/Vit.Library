@@ -1,0 +1,34 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<pack/>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<TargetFramework>netstandard2.0</TargetFramework>
+		<Version>2.2.2</Version>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<Authors>Lith</Authors>
+		<Description>对Mysql和SqlServer数据库的管理工具，如 备份还原、导入导出、状态查询、删除数据库、创建数据库等</Description>
+		<PackageProjectUrl>https://github.com/serset/Vit.Library</PackageProjectUrl>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<DocumentationFile>bin\Debug\netstandard2.0\Vit.Db.DbMng.xml</DocumentationFile>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Vit.Core" Version="2.1.5" />
+		<PackageReference Include="sharpcompress" Version="0.28.2" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<!--<PackageReference Include="Vit.Db.BulkImport" Version="2.1.1.602" />
+		<PackageReference Include="Vit.Orm.Dapper" Version="2.1.1.602" />-->
+		<ProjectReference Include="..\..\Vit.Orm.Dapper\Vit.Orm.Dapper\Vit.Orm.Dapper.csproj" />
+		<ProjectReference Include="..\Vit.Db.BulkImport\Vit.Db.BulkImport.csproj" />
+	</ItemGroup>
+
+</Project>
