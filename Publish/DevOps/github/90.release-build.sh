@@ -7,12 +7,11 @@ args_="
 
 export codePath=/root/temp/svn
 
-export version=`grep '<Version>' "${codePath}" -r --include Vit.Core.csproj | grep -oP '>(.*)<' | tr -d '<>'`
+export version=`grep '<Version>' $(grep '<pack/>\|<publish>' ${codePath} -r --include *.csproj -l | head -n 1) | grep -oP '>(.*)<' | tr -d '<>'`
+
+export name=ServiceAdaptor
 
 export export GIT_SSH_SECRET=xxxxxx
-
-export name=Vit.Library
-
 
 # "
 
@@ -21,20 +20,17 @@ export name=Vit.Library
 
 
 #----------------------------------------------
-echo "(x.2.1)发布文件-创建文件夹及内容"
-
-mkdir -p $codePath/Publish/release/${name}-${version}
-
- 
-
-echo 1.复制 nuget
-\cp -rf $codePath/Publish/Publish/nuget/. $codePath/Publish/release/${name}-${version}/nuget
+echo "(x.2)发布文件-压缩"
 
 
-echo "(x.2.3)发布文件-压缩" 
+\cp -rf $codePath/Publish/ReleaseFile/docker-deploy $codePath/Publish/release/release/docker-deploy
+
+
 docker run --rm -i \
 -v $codePath:/root/code \
-serset/filezip dotnet FileZip.dll zip -p -i /root/code/Publish/release/${name}-${version} -o /root/code/Publish/release/${name}-${version}.zip
+serset/filezip filezip zip -p -i /root/code/Publish/release/release -o /root/code/Publish/release/${name}-${version}.zip 
+
+
 
 
 
@@ -65,9 +61,6 @@ cp /root/release/${name}-${version}.zip /root/code/file/${name}
 git add file/${name}/${name}-${version}.zip
 git commit -m 'auto commit ${version}'
 git push -u origin master \" "
-
-
-
 
 
  

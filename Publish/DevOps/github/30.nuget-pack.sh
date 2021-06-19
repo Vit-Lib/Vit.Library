@@ -11,8 +11,8 @@ export codePath=/root/temp/svn
 
 # "
 
-
-nugetPath=Publish/Publish/nuget
+mkdir -p $codePath/Publish/release/release/nuget
+nugetPath=Publish/release/release/nuget
 
 
 
