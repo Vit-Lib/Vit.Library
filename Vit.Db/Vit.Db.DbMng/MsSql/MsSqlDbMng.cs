@@ -353,7 +353,8 @@ namespace Vit.Db.DbMng.MsSql
             //使用设定的路径创建数据库
             if (!string.IsNullOrEmpty(MdfFileDirectory))
             {
-                string strDBPath = Path.Combine(MdfFileDirectory.Replace("'", "''") , strDBName);
+                //string strDBPath = Path.Combine(MdfFileDirectory.Replace("'", "''"), strDBName);
+                string strDBPath = MdfFileDirectory.Replace("'", "''") + "/" + strDBName;
                 builder.Append(" ON PRIMARY ( NAME = N'").Append(strDBName).Append("_Data',FILENAME = N'").Append(strDBPath).Append("_Data.MDF' ,FILEGROWTH = 10%) LOG ON ( NAME =N'").Append(strDBName).Append("_Log',FILENAME = N'").Append(strDBPath).Append("_Log.LDF' ,FILEGROWTH = 10%) ");
             }
             builder.Append("; if Exists(select 1 from sysdatabases where  name ='").Append(strDBName).Append("' and (status & 0x200) != 0) ALTER DATABASE [").Append(dbName).Append("] SET ONLINE; ");

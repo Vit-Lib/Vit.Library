@@ -21,7 +21,7 @@ echo "(x.2)nuget-pack"
 docker run -i --rm \
 --env LANG=C.UTF-8 \
 -v $codePath:/root/code \
-serset/dotnet:6.0-sdk \
+serset/dotnet:sdk-6.0 \
 bash -c "
 cd /root/code
 for file in \$(grep -a '<pack/>' . -rl --include *.csproj)
