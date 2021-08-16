@@ -1,12 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<pack/>
+		<pack />
 	</PropertyGroup>
 
 	<PropertyGroup>
 		<TargetFramework>netstandard2.0</TargetFramework>
-		<Version>2.2.3</Version>
+		<Version>2.2.4-preview</Version>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -20,7 +20,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Vit.Core" Version="2.1.5" />
+		<PackageReference Include="Vit.Core" Version="2.1.7" />
 		<PackageReference Include="sharpcompress" Version="0.28.2" />
 	</ItemGroup>
 

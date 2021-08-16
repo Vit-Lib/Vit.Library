@@ -7,11 +7,11 @@ set -e
 #(x.1)参数
 args_="
 
-export codePath=/root/temp/svn
+export basePath=/root/temp/svn
 
 # "
 
-mkdir -p $codePath/Publish/release/release/nuget
+mkdir -p $basePath/Publish/release/release/nuget
 nugetPath=Publish/release/release/nuget
 
 
@@ -20,8 +20,9 @@ nugetPath=Publish/release/release/nuget
 echo "(x.2)nuget-pack"
 docker run -i --rm \
 --env LANG=C.UTF-8 \
--v $codePath:/root/code \
-serset/dotnet:sdk-6.0 \
+-v $basePath/Publish/release/.nuget:/root/.nuget \
+-v $basePath:/root/code \
+serset/dotnet:sdk-5.0 \
 bash -c "
 cd /root/code
 for file in \$(grep -a '<pack/>' . -rl --include *.csproj)
