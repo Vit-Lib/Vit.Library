@@ -39,7 +39,6 @@ namespace Vit.Extensions
         /// <param name="clrType"></param>
         /// <param name="tableName"></param>
         /// <returns></returns>
-
         public static bool ChangeEntityMappedTable(this DbContext data, Type clrType, string tableName)
         {
             //if (data.Model.FindEntityType(clrType).Relational() is RelationalEntityTypeAnnotations relational)
@@ -85,15 +84,19 @@ namespace Vit.Extensions
 
         #region ChangeDataBase
 
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
         public static void ChangeDataBase(this DbContext Context, string connString)
         {
             Context.Database.GetDbConnection().ConnectionString = connString;
         }
+
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
         public static string GetConnectionString(this DbContext Context)
         {
             return Context.Database.GetDbConnection().ConnectionString;
         }
 
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
         public static System.Data.Common.DbConnection GetDbConnection(this DbContext Context)
         {
             return Context.Database.GetDbConnection();
@@ -101,10 +104,7 @@ namespace Vit.Extensions
 
         #endregion
 
-
-
-
-
+ 
 
         #region GetDbSet
         /// <summary>
@@ -113,10 +113,11 @@ namespace Vit.Extensions
         /// <typeparam name="T"></typeparam>
         /// <param name="data"></param>
         /// <returns></returns>
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
         public static DbSet<T> GetDbSet<T>(this DbContext data)
             where T : class
         {
-            return data.GetType().GetTypeInfo().GetMethod("Set").MakeGenericMethod(typeof(T)).Invoke(data, null) as DbSet<T>;
+            return data.GetDbSet(typeof(T)) as DbSet<T>;
         }
         #endregion
 
@@ -127,9 +128,11 @@ namespace Vit.Extensions
         /// <param name="data"></param>
         /// <param name="entityType"></param>
         /// <returns></returns>
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
         public static object GetDbSet(this DbContext data, Type entityType)
         {
-            return data.GetType().GetTypeInfo().GetMethod("Set").MakeGenericMethod(entityType).Invoke(data, null);
+            return data.GetType().GetTypeInfo().GetMethod("Set", new Type[0])
+                .MakeGenericMethod(entityType).Invoke(data, null);
         }
         #endregion
 
@@ -141,11 +144,12 @@ namespace Vit.Extensions
         /// 通过反射获取IQueryable
         /// </summary>
         /// <param name="data"></param>
-        /// <param name="type"></param>
+        /// <param name="entityType"></param>
         /// <returns></returns>
-        public static IQueryable GetQueryable(this DbContext data, Type type)
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+        public static IQueryable GetQueryable(this DbContext data, Type entityType)
         {
-            return data.GetType().GetTypeInfo().GetMethod("Set").MakeGenericMethod(type).Invoke(data, null) as IQueryable;
+            return data.GetDbSet(entityType) as IQueryable;
         }
         #endregion
 
@@ -158,6 +162,7 @@ namespace Vit.Extensions
         /// <param name="data"></param>
         /// <param name="tableName"></param>
         /// <returns></returns>
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
         public static IQueryable GetQueryableByTableName(this DbContext data, string tableName)
         {
             var model = (IMutableModel)data.Model;

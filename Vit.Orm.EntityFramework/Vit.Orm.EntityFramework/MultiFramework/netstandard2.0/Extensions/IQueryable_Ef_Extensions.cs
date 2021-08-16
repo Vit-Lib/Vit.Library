@@ -48,7 +48,7 @@ namespace Vit.Orm.EntityFramework.Extensions
         {
             return source.Ef_ToListAsync<object>().Result;
         }
-      
+
         public static List<T> Ef_ToList<T>(this IQueryable source)
         {
             return source.Ef_ToListAsync<T>().Result;
@@ -63,10 +63,22 @@ namespace Vit.Orm.EntityFramework.Extensions
             return await source.Ef_ToListAsync<object>();
         }
 
+
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+        static async Task<List<T>> ToListAsync<T>(this IAsyncEnumerator<T> asyncEnumerator)
+        {
+            List<T> list = new List<T>();
+            while (await asyncEnumerator.MoveNext())
+            {
+                list.Add(asyncEnumerator.Current);
+            }
+            return list;
+        }
+
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
         public static async Task<List<T>> Ef_ToListAsync<T>(this IQueryable source)
-        {           
-           
+        {
+
             if (source.Provider is IAsyncQueryProvider provider)
             {
                 var DeclaredMethods = source.GetType().GetTypeInfo().DeclaredMethods;
@@ -94,21 +106,14 @@ namespace Vit.Orm.EntityFramework.Extensions
                     {
                         var e = method.Invoke(source, null) as IAsyncEnumerator<T>;
 
-                        //CancellationToken cancellationToken = default(CancellationToken);
-
                         using (var asyncEnumerator = e)
                         {
-                            List<T> list = new List<T>();
-                            while (await asyncEnumerator.MoveNext(/*cancellationToken*/))
-                            {
-                                list.Add(asyncEnumerator.Current);
-                            }
-                            return list;
+                            return await asyncEnumerator.ToListAsync();
                         }
                     }
                 }
                 #endregion
-              
+
             }
 
             throw new InvalidOperationException("IQueryableProvider is not async");
@@ -124,7 +129,7 @@ namespace Vit.Orm.EntityFramework.Extensions
 
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
         public static T Ef_FirstOrDefault<T>(this IQueryable source)
-            where T:class
+            where T : class
         {
             return source.Ef_FirstOrDefault() as T;
         }
@@ -135,7 +140,7 @@ namespace Vit.Orm.EntityFramework.Extensions
 
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
         public static Task<object> Ef_FirstOrDefaultAsync(this IQueryable source)
-        { 
+        {
             if (source.Provider is IAsyncQueryProvider provider)
             {
                 return provider.ExecuteAsync<object>(

@@ -111,7 +111,7 @@ namespace Vit.Extensions
         public static DbSet<T> GetDbSet<T>(this DbContext data)
             where T : class
         {
-            return data.GetType().GetTypeInfo().GetMethod("Set").MakeGenericMethod(typeof(T)).Invoke(data, null) as DbSet<T>;
+            return data.GetDbSet(typeof(T)) as DbSet<T>;
         }
         #endregion
 
@@ -125,7 +125,7 @@ namespace Vit.Extensions
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
         public static object GetDbSet(this DbContext data, Type entityType)
         {
-            return data.GetType().GetTypeInfo().GetMethod("Set").MakeGenericMethod(entityType).Invoke(data, null);
+            return data.GetType().GetTypeInfo().GetMethod("Set", new Type[0]).MakeGenericMethod(entityType).Invoke(data, null);
         }
         #endregion
 
@@ -137,12 +137,12 @@ namespace Vit.Extensions
         /// 通过反射获取IQueryable
         /// </summary>
         /// <param name="data"></param>
-        /// <param name="type"></param>
+        /// <param name="entityType"></param>
         /// <returns></returns>
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-        public static IQueryable GetQueryable(this DbContext data, Type type)
+        public static IQueryable GetQueryable(this DbContext data, Type entityType)
         {
-            return data.GetType().GetTypeInfo().GetMethod("Set").MakeGenericMethod(type).Invoke(data, null) as IQueryable;
+            return data.GetDbSet(entityType) as IQueryable;
         }
         #endregion
 
