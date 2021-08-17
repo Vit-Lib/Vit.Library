@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using Vit.Db.Module.Schema;
+using Vit.Extensions;
 using Vit.Orm.EntityFramework.Dynamic.Extensions;
 
 namespace Vit.Orm.EntityFramework.Dynamic
@@ -46,18 +47,39 @@ namespace Vit.Orm.EntityFramework.Dynamic
 
             foreach (var item in optionsBuilder.Options.Extensions)
             {
-                if (item is Microsoft.EntityFrameworkCore.Sqlite.Infrastructure.Internal.SqliteOptionsExtension sqlite)
+                if (item is Microsoft.EntityFrameworkCore.Infrastructure.RelationalOptionsExtension relation)
                 {
-                    connInfo = new Vit.Db.Util.Data.ConnectionInfo { type = "sqlite", ConnectionString = sqlite.ConnectionString };
+                    connInfo = new Vit.Db.Util.Data.ConnectionInfo
+                    {
+                        type = IDbConnection_GetDbType_Extensions.GetDbTypeFromTypeName(relation)?.ToString(),
+                        ConnectionString = relation.ConnectionString
+                    };
+                    return;
                 }
-                else if (item is Microsoft.EntityFrameworkCore.SqlServer.Infrastructure.Internal.SqlServerOptionsExtension mssql)
-                {
-                    connInfo = new Vit.Db.Util.Data.ConnectionInfo { type = "mssql", ConnectionString = mssql.ConnectionString };
-                }
-                //else if (item is Microsoft.EntityFrameworkCore.MySQLDbContextOptionsExtensions mssql)
-                //{
-                //    connInfo = new ConnectionInfo { type = "mssql", ConnectionString = mssql.ConnectionString };
-                //}
+
+
+//                if (item is Microsoft.EntityFrameworkCore.Sqlite.Infrastructure.Internal.SqliteOptionsExtension sqlite)
+//                {
+//                    connInfo = new Vit.Db.Util.Data.ConnectionInfo { type = "sqlite", ConnectionString = sqlite.ConnectionString };
+//                }
+//                else if (item is Microsoft.EntityFrameworkCore.SqlServer.Infrastructure.Internal.SqlServerOptionsExtension mssql)
+//                {
+//                    connInfo = new Vit.Db.Util.Data.ConnectionInfo { type = "mssql", ConnectionString = mssql.ConnectionString };
+//                }
+//#if NETSTANDARD2_0
+//                else if (item is MySql.Data.EntityFrameworkCore.Infraestructure.MySQLOptionsExtension mysql)
+//                {
+//                    connInfo = new Vit.Db.Util.Data.ConnectionInfo { type = "mysql", ConnectionString = mysql.ConnectionString };
+//                }
+//#endif
+
+//#if NETSTANDARD2_1
+//                else if (item is Pomelo.EntityFrameworkCore.MySql.Infrastructure.Internal.MySqlOptionsExtension pomelo)
+//                {
+//                    connInfo = new Vit.Db.Util.Data.ConnectionInfo { type = "mysql", ConnectionString = pomelo.ConnectionString };
+//                }
+//#endif
+
             }
 
 

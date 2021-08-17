@@ -14,6 +14,12 @@ namespace Vit.Orm.EntityFramework.Dynamic.Extensions
 
 
         #region GenerateEntityCode        
+
+        static string Quote(string name) 
+        {
+            return name.Replace(".", "_");
+        }
+
         public static string GenerateEntityCode(this TableSchema tableSchema,string strNamespace)
         {
             var fields = tableSchema.columns.Select(column =>
@@ -35,7 +41,7 @@ namespace Vit.Orm.EntityFramework.Dynamic.Extensions
                     typeCode = type.FullName;
                 }
 
-                code += "        public " + typeCode + " " + column.column_name + " { get; set; }" + Environment.NewLine;
+                code += "        public " + typeCode + " " + Quote(column.column_name) + " { get; set; }" + Environment.NewLine;
                 return code;
             });
             var code_fields = String.Join(Environment.NewLine, fields.ToArray());
@@ -46,8 +52,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace " + strNamespace + @"
 {
-    [Table(""" + tableSchema .table_name+ @""")]
-    public class " + tableSchema.table_name + @"
+    [Table(""" + tableSchema.table_name + @""")]
+    public class " + Quote(tableSchema.table_name) + @"
     {
 " + code_fields + @"
     }

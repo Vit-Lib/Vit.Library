@@ -64,7 +64,7 @@ namespace Vit.Db.Util.Data
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static System.Data.IDbConnection GetConnection(ConnectionInfo info)
         {    
-            switch (info.type) 
+            switch (info?.type) 
             {
                 case "mssql":
                     //使用SqlServer数据库
