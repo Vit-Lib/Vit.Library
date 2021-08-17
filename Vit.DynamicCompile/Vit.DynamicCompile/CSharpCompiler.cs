@@ -8,6 +8,10 @@ using System.Linq;
 
 namespace Vit.DynamicCompile
 {
+    // 参考 https://www.zhihu.com/question/268784285
+
+
+
     /// <summary> 
     /// 请在配置文件中 加
     /// &lt;PropertyGroup&gt;
@@ -26,15 +30,7 @@ namespace Vit.DynamicCompile
         /// <param name="sources">源代码</param>
         public static void Compile(Stream OutputAssemblyStream, string[] referencedAssemblies, params string[] sources)
         {
-                MetadataReference[] _ref =
-                DependencyContext.Default.CompileLibraries
-              .First(cl => cl.Name == "Microsoft.NETCore.App")
-              .ResolveReferencePaths()
-              .Select(asm => MetadataReference.CreateFromFile(asm))
-              .ToArray();
-        
-                      
-
+            //(x.1)
             var compilation = CSharpCompilation.Create(Guid.NewGuid().ToString() + ".dll")
                 .WithOptions(new CSharpCompilationOptions(
                     Microsoft.CodeAnalysis.OutputKind.DynamicallyLinkedLibrary,
@@ -45,31 +41,53 @@ namespace Vit.DynamicCompile
                     platform: Platform.AnyCpu,
                     warningLevel: 4,
                     xmlReferenceResolver: null // don't support XML file references in interactive (permissions & doc comment includes)
-                    ))
-                .AddReferences(_ref);
+                    ));
 
-            if (referencedAssemblies != null && referencedAssemblies.Length > 0)
+            //(x.2)
             {
-                var refers = referencedAssemblies.Select(refer => Microsoft.CodeAnalysis.MetadataReference.CreateFromFile(refer)).ToArray();
-                compilation = compilation.AddReferences(refers);
-            }            
+                //(x.x.1) default references
+                var referencePaths = DependencyContext.Default.CompileLibraries.SelectMany(lib => lib.ResolveReferencePaths());
 
+                //(x.x.2)user references
+                if (referencedAssemblies != null) referencePaths = referencePaths.Union(referencedAssemblies);
+
+                //(x.x.3)
+                MetadataReference[] _ref =
+                 referencePaths.Distinct()
+               .Select(asm => MetadataReference.CreateFromFile(asm))
+               .ToArray();
+                compilation = compilation.AddReferences(_ref);
+
+
+                //MetadataReference[] ref_ =
+                //DependencyContext.Default.CompileLibraries
+                //.First(cl => cl.Name == "Microsoft.NETCore.App")
+                //.ResolveReferencePaths()
+                //.Select(asm => MetadataReference.CreateFromFile(asm))
+                //.ToArray();
+
+            }
+
+
+
+            //(x.3) parse source
             foreach (var source in sources)
             {
-                compilation=compilation.AddSyntaxTrees(CSharpSyntaxTree.ParseText(source));
+                compilation = compilation.AddSyntaxTrees(CSharpSyntaxTree.ParseText(source));
             }
-          
+
+            //(x.4)Emit
             var eResult = compilation.Emit(OutputAssemblyStream);
             if (!eResult.Success)
             {
                 string errorMessage = "";
                 foreach (var item in eResult.Diagnostics)
                 {
-                    errorMessage+=item.GetMessage()+Environment.NewLine;
+                    errorMessage += item.GetMessage() + Environment.NewLine;
                 }
                 var ex = new Exception(errorMessage);
                 ex.Data["CompilerError"] = eResult.Diagnostics;
-                throw ex; 
+                throw ex;
             }
         }
         #endregion
