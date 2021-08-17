@@ -5,6 +5,7 @@ using System.IO;
 using System.Reflection;
 using Microsoft.CodeAnalysis.CSharp;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace Vit.DynamicCompile
 {
@@ -20,7 +21,131 @@ namespace Vit.DynamicCompile
     /// </summary>
     public class CSharpCompiler
     {
+
+
+        #region AddDefaultRef
+
+        private static MetadataReference[] defaultReferences;
+        private static CSharpCompilation AddDefaultRef(CSharpCompilation compilation)
+        {
+            //MetadataReference[] ref_ =
+            //DependencyContext.Default.CompileLibraries
+            //.First(cl => cl.Name == "Microsoft.NETCore.App")
+            //.ResolveReferencePaths()
+            //.Select(asm => MetadataReference.CreateFromFile(asm))
+            //.ToArray();
+
+
+            if (defaultReferences == null)
+            {
+                List<string> list;
+
+                //(x.x.1) CompileLibraries
+                var referencePaths = DependencyContext.Default.CompileLibraries.SelectMany(lib=>
+                {
+                    try
+                    {
+                        if (lib.Serviceable)
+                        {
+                            return lib.ResolveReferencePaths();
+                        }
+                    }
+                    catch (Exception)
+                    {
+                    }
+                    return new string[0];
+                });
+
+
+                //(x.x.2) RuntimeLibraries
+                list =  DependencyContext.Default.RuntimeLibraries.SelectMany(lib=>
+                {
+                    try
+                    {
+                        Assembly assembly2 = Assembly.Load(new AssemblyName(lib.Name));
+                        return assembly2.GetReferencedAssemblies().Select(delegate (AssemblyName m)
+                        {
+                            try
+                            {
+                                return Assembly.Load(m).Location;
+                            }
+                            catch (Exception)
+                            {
+                            }
+                            return null;
+                        }).Union(new string[1]
+                        {
+                            assembly2.Location
+                        });
+                    }
+                    catch (Exception)
+                    {
+                    }
+                    return new string[0];
+                }).Where(m=>m!=null).Distinct().ToList();
+
+                referencePaths = referencePaths.Union(list);
+
+
+                //(x.3) GetEntryAssembly
+                list = Assembly.GetEntryAssembly().GetReferencedAssemblies().SelectMany(lib=>
+                {
+                    try
+                    {
+                        Assembly assembly = Assembly.Load(lib);
+                        return assembly.GetReferencedAssemblies().Select(delegate (AssemblyName m)
+                        {
+                            try
+                            {
+                                return Assembly.Load(m).Location;
+                            }
+                            catch (Exception)
+                            {
+                            }
+                            return null;
+                        }).Union(new string[1]
+                        {
+                            assembly.Location
+                        });
+                    }
+                    catch (Exception)
+                    {
+                    }
+                    return new string[0];
+                }).Where(m => m != null).Distinct().ToList();
+
+                referencePaths = referencePaths.Union(list);
+
+
+                //(x.4)
+                list = (from m in referencePaths
+                        where m != null && File.Exists(m)
+                         group m by Path.GetFileName(m).ToLower() into g
+                         select g.Last()).ToList();
+
+                //(x.5)
+                defaultReferences = list.Select(asm=>
+                {
+                    try
+                    {
+                        return MetadataReference.CreateFromFile(asm);
+                    }
+                    catch (Exception)
+                    {
+                    }
+                    return null;
+                }).Where(m => m != null).ToArray();
+            }
+
+
+            return compilation.AddReferences(defaultReferences);
+        }
+        #endregion
+
         #region Compile
+
+
+
 
         /// <summary>
         /// 编译代码。若编译不通过则抛异常
@@ -43,32 +168,28 @@ namespace Vit.DynamicCompile
                     xmlReferenceResolver: null // don't support XML file references in interactive (permissions & doc comment includes)
                     ));
 
-            //(x.2)
+
+            //(x.1) Default Reference
+            compilation = AddDefaultRef(compilation);
+
+
+            //(x.2) user Reference
+            if (referencedAssemblies != null)
             {
-                //(x.x.1) default references
-                var referencePaths = DependencyContext.Default.CompileLibraries.SelectMany(lib => lib.ResolveReferencePaths());
+                MetadataReference[] _ref = referencedAssemblies.Where(m => m != null).Distinct().Select(asm =>
+                   {
+                       try
+                       {
+                           return MetadataReference.CreateFromFile(asm);
+                       }
+                       catch (Exception)
+                       {
+                       }
+                       return null;
+                   }).Where(m => m != null).ToArray();
 
-                //(x.x.2)user references
-                if (referencedAssemblies != null) referencePaths = referencePaths.Union(referencedAssemblies);
-
-                //(x.x.3)
-                MetadataReference[] _ref =
-                 referencePaths.Distinct()
-               .Select(asm => MetadataReference.CreateFromFile(asm))
-               .ToArray();
                 compilation = compilation.AddReferences(_ref);
-
-
-                //MetadataReference[] ref_ =
-                //DependencyContext.Default.CompileLibraries
-                //.First(cl => cl.Name == "Microsoft.NETCore.App")
-                //.ResolveReferencePaths()
-                //.Select(asm => MetadataReference.CreateFromFile(asm))
-                //.ToArray();
-
             }
-
-
 
             //(x.3) parse source
             foreach (var source in sources)
@@ -101,7 +222,6 @@ namespace Vit.DynamicCompile
         /// <returns></returns>
         public static byte[] Compile(string[] referencedAssemblies, params string[] sources)
         {
-
             using (MemoryStream stream = new MemoryStream())
             {
                 Compile(stream, referencedAssemblies, sources);
