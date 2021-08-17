@@ -27,7 +27,7 @@ namespace Vit.Orm.EntityFramework.Extensions
                 queryPaged = queryPaged.IQueryable_Page(page);
 
             var rows = await queryPaged.Ef_ToListAsync<T>();
-             
+
             return new PageData<T>(page) { totalCount = totalCount, rows = rows };
         }
 

@@ -13,15 +13,6 @@ namespace Vit.Orm.EntityFramework.Extensions
 
     public static partial class IQueryable_Ef_Extensions
     {
-        #region Count
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-        public static int Ef_Count(this IQueryable source)
-        {
-            return source.Ef_CountAsync().Result;
-        }
-        #endregion
-
-
         #region CountAsync
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
         public static Task<int> Ef_CountAsync(this IQueryable source)
@@ -39,31 +30,10 @@ namespace Vit.Orm.EntityFramework.Extensions
 
             throw new InvalidOperationException("IQueryableProvider is not async");
         }
-        #endregion
-
-
-        #region ToList
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-        public static List<object> Ef_ToList(this IQueryable source)
-        {
-            return source.Ef_ToListAsync<object>().Result;
-        }
-      
-        public static List<T> Ef_ToList<T>(this IQueryable source)
-        {
-            return source.Ef_ToListAsync<T>().Result;
-        }
-        #endregion
+        #endregion  
 
 
         #region ToListAsync
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-        public static async Task<List<object>> Ef_ToListAsync(this IQueryable source)
-        {
-            return await source.Ef_ToListAsync<object>();
-        }
-
- 
 
         static async Task<List<T>> ToListAsync<T>(this IAsyncEnumerable<T> asyncEnumerable) 
         {
@@ -154,41 +124,7 @@ namespace Vit.Orm.EntityFramework.Extensions
         }
         #endregion
 
-        #region FirstOrDefault
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-        public static object Ef_FirstOrDefault(this IQueryable source)
-        {
-            return source.Ef_FirstOrDefaultAsync().Result;
-        }
-
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-        public static T Ef_FirstOrDefault<T>(this IQueryable source)
-            where T:class
-        {
-            return source.Ef_FirstOrDefault() as T;
-        }
-        #endregion
-
-
-        #region FirstOrDefaultAsync 
-
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-        public static Task<object> Ef_FirstOrDefaultAsync(this IQueryable source)
-        { 
-            if (source.Provider is IAsyncQueryProvider provider)
-            {
-                Task.Run(() =>
-                {
-                    return provider.ExecuteAsync<object>(
-                        Expression.Call(
-                       typeof(Queryable), "FirstOrDefault",
-                       new Type[] { source.ElementType }, source.Expression),
-                   default(CancellationToken));
-                });
-            }
-            throw new InvalidOperationException("IQueryableProvider is not async");
-        }
-        #endregion
+       
 
 
     }
