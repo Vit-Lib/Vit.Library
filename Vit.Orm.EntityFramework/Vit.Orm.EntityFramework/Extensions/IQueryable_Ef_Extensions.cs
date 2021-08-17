@@ -1,10 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore.Query;
+using Microsoft.EntityFrameworkCore.Query.Internal;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Reflection;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace Vit.Orm.EntityFramework.Extensions
@@ -74,7 +73,5 @@ namespace Vit.Orm.EntityFramework.Extensions
             throw new InvalidOperationException("IQueryableProvider is not async");
         }
         #endregion
-
-
     }
 }

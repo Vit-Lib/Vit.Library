@@ -124,8 +124,6 @@ namespace Vit.Orm.EntityFramework.Extensions
         }
         #endregion
 
-       
-
 
     }
 }

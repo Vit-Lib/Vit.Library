@@ -36,16 +36,10 @@ namespace Vit.Orm.EntityFramework.Extensions
         }
         #endregion
 
- 
 
 
-        #region ToListAsync
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-        public static async Task<List<object>> Ef_ToListAsync(this IQueryable source)
-        {
-            return await source.Ef_ToListAsync<object>();
-        }
 
+        #region ToListAsync    
 
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
         static async Task<List<T>> ToListAsync<T>(this IAsyncEnumerator<T> asyncEnumerator)
@@ -103,8 +97,10 @@ namespace Vit.Orm.EntityFramework.Extensions
         }
         #endregion
 
- 
-  
+
+
+
+
 
 
         #region FirstOrDefaultAsync 
