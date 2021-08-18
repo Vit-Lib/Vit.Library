@@ -29,11 +29,6 @@ echo [%version%]-^>[%newVersion%]
  
 ::(x.5)调用工具 替换csproj文件中的版本号
 VsTool.exe replace -r --path "..\..\.." --file "*.csproj" --old "<Version>%version%</Version>" --new "<Version>%newVersion%</Version>"
-VsTool.exe replace -r --path "..\..\.." --file "packages.config" --old "%version%" --new "%newVersion%"
-
-
-::(x.6)调用工具 替换docker镜像命令中的版本号
-VsTool.exe replace -r --path "..\..\..\Publish\ReleaseFile\docker-image" --file "*.md" --old "%version%" --new "%newVersion%"
 
 
 echo.
