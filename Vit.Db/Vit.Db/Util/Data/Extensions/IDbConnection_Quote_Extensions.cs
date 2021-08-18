@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data;
 using System.Runtime.CompilerServices;
+using Vit.Db.Util.Data;
 
 namespace Vit.Extensions
 {
@@ -13,18 +14,16 @@ namespace Vit.Extensions
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string Quote(this IDbConnection conn, string name)
         {
-            switch (conn)
+            switch (conn.GetDbType())
             {
-                case System.Data.SqlClient.SqlConnection msSqlConn:
-                    return msSqlConn.Quote(name);  
+                case EDbType.sqlite:
+                    return conn.Sqlite_Quote(name);
 
-                case MySql.Data.MySqlClient.MySqlConnection mySqlConn:
-                    return mySqlConn.Quote(name);
+                case EDbType.mysql:
+                    return conn.MySql_Quote(name);
 
-                //case System.Data.SQLite.SQLiteConnection sqliteConn:
-                //    return sqliteConn.Quote(name);
-                case Microsoft.Data.Sqlite.SqliteConnection sqliteConn:
-                    return sqliteConn.Quote(name);
+                case EDbType.mssql:
+                    return conn.MsSql_Quote(name);
             }
 
             throw new NotImplementedException($"NotImplementedException from {nameof(Quote)} in {nameof(IDbConnection_Quote_Extensions)}.cs");

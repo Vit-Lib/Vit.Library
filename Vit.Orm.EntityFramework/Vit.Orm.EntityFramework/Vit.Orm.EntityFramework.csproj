@@ -1,11 +1,14 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
+		<pack>nuget</pack>
+	</PropertyGroup>
+
+	<PropertyGroup>
 		<!--<TargetFramework>netstandard2.0</TargetFramework>-->
 		<!--<TargetFramework>netstandard2.1</TargetFramework>-->
 		<TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
-		<Version>2.2.2</Version>
-		<pack/>
+		<Version>2.2.4</Version>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -20,7 +23,7 @@
 
 
 	<ItemGroup>
-		<PackageReference Include="Vit.Core" Version="2.1.5" />
+		<PackageReference Include="Vit.Core" Version="2.1.8" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -42,6 +45,7 @@
 	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
 		<PackageReference Include="Configuration.EntityFramework" Version="1.0.1.123" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="2.1.14" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.1.14" />
 		<PackageReference Include="MySql.Data.EntityFrameworkCore" Version="8.0.17" />
 	</ItemGroup>
 
@@ -54,8 +58,9 @@
 	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.1'">
 		<PackageReference Include="Configuration.EntityFramework" Version="1.0.1.123" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.6" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="5.0.6" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="5.0.6" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="5.0.6" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.6" />
 		<PackageReference Include="MySql.EntityFrameworkCore" Version="5.0.3" />
 		<PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="5.0.0" />
 	</ItemGroup>

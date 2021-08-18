@@ -44,8 +44,24 @@ namespace Vit.Extensions
             #endregion
 
 
-            #region (x.4)根据类名和命名空间名称判断
-            var typeFullName = conn.GetType().FullName.ToLower();
+            //(x.4)根据类名和命名空间名称判断
+            return GetDbTypeFromTypeName(conn);
+        }
+        #endregion
+
+
+        #region GetDbTypeFromTypeName
+        /// <summary>
+        /// 获取数据库类型 如 mysql/mssql/sqlite
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static EDbType? GetDbTypeFromTypeName(object obj) 
+        {
+            var typeFullName = obj?.GetType().FullName.ToLower();
+
+            if (string.IsNullOrEmpty(typeFullName)) return null;
 
             if (typeFullName.Contains("sqlite"))
             {
@@ -56,10 +72,15 @@ namespace Vit.Extensions
             {
                 return EDbType.mysql;
             }
-            #endregion
 
-            return null;          
+            if (typeFullName.Contains("mssql")|| typeFullName.Contains("sqlserver") || typeFullName.Contains(".sqlconnection"))
+            {
+                return EDbType.mssql;
+            }
+
+            return null;
         }
         #endregion
+
     }
 }

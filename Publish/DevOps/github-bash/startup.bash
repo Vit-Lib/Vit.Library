@@ -1,17 +1,19 @@
 set -e
 
-# cd /root/temp/svn/Publish/DevOps/github;bash startup.bash;
+# cd /root/temp/svn/Publish/DevOps/github-bash;bash startup.bash;
+
+
 
 #----------------------------------------------
-#(x.1)当前路径 
-curWorkDir=$PWD
+#(x.1)当前路径
+curPath=$PWD
 
-cd $curWorkDir/../../..
-export codePath=$PWD
-cd $curWorkDir
+cd $curPath/../../..
+export basePath=$PWD
+cd $curPath
 
 
-# export codePath=/root/temp/svn
+# export basePath=/root/temp/svn
 
 export name=Vit.Library
 
@@ -24,25 +26,20 @@ export name=Vit.Library
 #export export GIT_SSH_SECRET=xxxxxx
 
 
-
-
-
-
 #----------------------------------------------
 echo "(x.2)get version" 
-export version=`grep '<Version>' $(grep '<pack/>\|<publish>' ${codePath} -r --include *.csproj -l | head -n 1) | grep -oP '>(.*)<' | tr -d '<>'`
+export version=`grep '<Version>' $(grep '<pack>\|<publish>' ${basePath} -r --include *.csproj -l | head -n 1) | grep -oP '>(.*)<' | tr -d '<>'`
 echo $version
 
- 
 
 
 #----------------------------------------------
-echo "(x.3)自动发布 $name-$version"
+#(x.3)bash
 
 for file in *.sh
 do
     echo %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    echo bash $file
+    echo "[$(date "+%H:%M:%S")]" bash $file
     bash $file
 done
 
@@ -51,7 +48,4 @@ done
 
 
 
- 
-#----------------------------------------------
-#(x.9)
-#cd $curWorkDir
+
