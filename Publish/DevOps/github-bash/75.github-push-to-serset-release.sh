@@ -9,7 +9,7 @@ export basePath=/root/temp/svn
 
 export version=`grep '<Version>' $(grep '<pack>\|<publish>' ${basePath} -r --include *.csproj -l | head -n 1) | grep -oP '>(.*)<' | tr -d '<>'`
 
-export name=ServiceAdaptor
+export name=Vit.Library
 
 export export GIT_SSH_SECRET=xxxxxx
 
