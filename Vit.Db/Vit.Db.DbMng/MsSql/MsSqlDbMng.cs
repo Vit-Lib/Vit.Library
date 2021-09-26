@@ -790,13 +790,25 @@ and T.name=@tableName
 
             #region (x.1)拼接远程数据库服务器本地文件路径
             var remote_mdfDirectory = Path.GetDirectoryName(GetMdfPath());
-            var remote_bakFilePath = Path.Combine(remote_mdfDirectory,"sqler_temp_"+dbName+".bak");
+            var remote_bakFilePath = Path.Combine(remote_mdfDirectory, "sqler_temp_" + dbName + "_" + DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss") + ".bak");
 
             // 转换 路径中的 \为 / (为了支持linux)
             remote_bakFilePath = remote_bakFilePath.Replace('\\', DirectorySeparatorChar);
 
             #endregion
 
+
+
+            #region (x.2)远程删除文件
+            try
+            {
+                conn.MsSql_DeleteFileFromDisk(remote_bakFilePath);
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex);
+            }
+            #endregion
 
             #region (x.2)远程数据库服务器 备份数据库
             BackupToLocalBak(remote_bakFilePath);
@@ -813,9 +825,9 @@ and T.name=@tableName
             }
             finally
             {
+                //远程删除文件
                 try
-                {
-                    //远程删除文件
+                {                  
                     conn.MsSql_DeleteFileFromDisk(remote_bakFilePath);
                 }
                 catch (Exception ex)
