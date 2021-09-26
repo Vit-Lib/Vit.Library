@@ -10,6 +10,8 @@ namespace Vit.Http.ChunkUpload
     public class UploadChunk_TempFile: UploadChunk
     {
 
+        public Func<string, ChunkData, string> BuildTempFilePath = (string tempDirPath, ChunkData chunkData) => Path.Combine(tempDirPath, chunkData.fileGuid + ".tmp");
+
         public string tempDirPath;
 
         public class UploadedFile
@@ -40,13 +42,15 @@ namespace Vit.Http.ChunkUpload
             }
         }
 
+
+     
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
         public override async Task<object> OnUploadChunkAsync(HttpContext httpContext, ChunkData chunkData)
         {
-            var tempFilePath = Path.Combine(tempDirPath, chunkData.fileGuid+".tmp");
+            var tempFilePath = BuildTempFilePath(tempDirPath, chunkData);
             var file = new FileInfo(tempFilePath);
 
-            var fileLength = file.Exists?file.Length : 0;
+            var fileLength = file.Exists ? file.Length : 0;
 
             if (chunkData.startIndex != fileLength)
             {
