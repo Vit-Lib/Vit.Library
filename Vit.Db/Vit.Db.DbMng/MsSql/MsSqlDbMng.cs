@@ -793,7 +793,7 @@ and T.name=@tableName
             var remote_bakFilePath = Path.Combine(remote_mdfDirectory, "sqler_temp_" + dbName + "_" + DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss") + ".bak");
 
             // 转换 路径中的 \为 / (为了支持linux)
-            remote_bakFilePath = remote_bakFilePath.Replace('\\', DirectorySeparatorChar);
+            //remote_bakFilePath = remote_bakFilePath.Replace('\\', DirectorySeparatorChar);
 
             #endregion
 
@@ -802,7 +802,7 @@ and T.name=@tableName
             #region (x.2)远程删除文件
             try
             {
-                conn.MsSql_DeleteFileFromDisk(remote_bakFilePath);
+                conn.MsSql_DeleteFile(remote_bakFilePath, Logger.Info);
             }
             catch (Exception ex)
             {
@@ -810,11 +810,11 @@ and T.name=@tableName
             }
             #endregion
 
-            #region (x.2)远程数据库服务器 备份数据库
+            #region (x.3)远程数据库服务器 备份数据库
             BackupToLocalBak(remote_bakFilePath);
             #endregion
 
-            #region (x.3)从远程数据库服务器 获取备份文件二进制内容，存储备份文件到本地，并删除临时备份文件
+            #region (x.4)从远程数据库服务器 获取备份文件二进制内容，存储备份文件到本地，并删除临时备份文件
 
             if (string.IsNullOrEmpty(bakFilePath)) 
                 bakFilePath = BackupFile_GetPathByName(GenerateBackupFileName(dbName));
@@ -828,7 +828,7 @@ and T.name=@tableName
                 //远程删除文件
                 try
                 {                  
-                    conn.MsSql_DeleteFileFromDisk(remote_bakFilePath);
+                    conn.MsSql_DeleteFile(remote_bakFilePath, Logger.Info);
                 }
                 catch (Exception ex)
                 {
@@ -1001,7 +1001,7 @@ RESTORE DATABASE [Lit_Base1] FROM  DISK =@BakPath  WITH  FILE = 1,  RECOVERY ,  
                 try
                 {
                     //远程删除文件
-                    conn.MsSql_DeleteFileFromDisk(remote_bakFilePath);
+                    conn.MsSql_DeleteFile(remote_bakFilePath, Logger.Info);
                 }
                 catch (Exception ex)
                 {
