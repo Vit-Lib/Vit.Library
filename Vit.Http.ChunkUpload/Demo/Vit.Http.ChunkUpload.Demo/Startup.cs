@@ -3,10 +3,14 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+
 using System.IO;
+
 using Vit.Core.Util.ComponentModel.Data;
 using Vit.Extensions;
 using Vit.Http.ChunkUpload;
+
+using static Vit.Http.ChunkUpload.UploadChunk;
 
 namespace Vit.OnlineUpgrade.Netcore.Demo
 {
@@ -37,24 +41,26 @@ namespace Vit.OnlineUpgrade.Netcore.Demo
             app.UseStaticFiles();
 
 
-            app.UseChunkUpload("/upload/uploadByMemory", (fileContent, fileName, content) => {
+            app.UseChunkUpload("/upload/uploadToMemory", (fileContent, fileName, content) =>
+            {
                 string filePath = @"\file" + fileName;
                 ApiReturn apiRet = (ApiReturn<string>)("/file/" + fileName);
                 return apiRet;
             });
 
-            var tempDirPath = Vit.Core.Util.Common.CommonHelp.GetAbsPath("./temp/");
+            var tempDirPath = Vit.Core.Util.Common.CommonHelp.GetAbsPath("temp");
             Directory.CreateDirectory(tempDirPath);
             app.UseChunkUpload(new UploadChunk_TempFile
             {
-                apiRoute = "/upload/uploadByTempDir",
+                apiRoute = "/upload/uploadToTempDir",
                 tempDirPath = tempDirPath,
+                BuildTempFilePath = (string tempDirPath_, ChunkData chunkData) => Path.Combine(tempDirPath_, chunkData.FileName),
                 OnUploadedFile = async (tempFilePath, fileName, httpContext) =>
-               {
-                   File.Delete(tempFilePath);
-                   ApiReturn apiRet = (ApiReturn<string>)(tempFilePath);
-                   return apiRet;
-               }
+                   {
+                       //File.Delete(tempFilePath);
+                       ApiReturn apiRet = (ApiReturn<string>)(tempFilePath);
+                       return apiRet;
+                   }
 
             });
 

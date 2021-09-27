@@ -7,6 +7,7 @@ using SqlConnection = System.Data.SqlClient.SqlConnection;
 using System.IO;
 using System.Collections.Generic;
 using Vit.Core.Util.MethodExt;
+using System.Linq;
 
 namespace Vit.Extensions.DbMng
 {
@@ -126,16 +127,18 @@ if Exists(select top 1 * from sysObjects where Id=OBJECT_ID(N'sqler_temp_filebuf
         #endregion
 
 
-        #region MsSql_DeleteFileFromDisk    
+        #region MsSql_DeleteFile    
         /// <summary>
-        /// 从磁盘删除文件
+        /// 删除服务器文件
         /// </summary>
         /// <param name="conn"></param>
         /// <param name="filePath"></param>
         /// <returns></returns>
-        public static void MsSql_DeleteFileFromDisk(this IDbConnection conn, string filePath)
+        public static void MsSql_DeleteFile(this IDbConnection conn, string filePath, Action<string> OnLog = null)
         {
-            conn.MsSql_Cmdshell("del \"" + filePath + "\"");
+            OnLog?.Invoke("[DbMng]MsSql,删除服务器文件：" + filePath);
+            var msg = conn.MsSql_Cmdshell("del \"" + filePath + "\"");
+            OnLog?.Invoke(msg);
         }
         #endregion
 
@@ -362,11 +365,11 @@ if Exists(select top 1 * from sysObjects where Id=OBJECT_ID(N'sqler_temp_filebuf
 
 
         #region MsSql_Cmdshell
-        public static DataTable MsSql_Cmdshell(this IDbConnection conn, string cmd)
+        public static string MsSql_Cmdshell(this IDbConnection conn, string cmd)
         {
             DataTable dt = null;
             conn.MsSql_Cmdshell(runCmd => dt = runCmd(cmd));
-            return dt;
+            return dt.ToString(string.Empty);
         }
 
         /// <summary>

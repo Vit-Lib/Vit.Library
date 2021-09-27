@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
+using Vit.Extensions;
 
 namespace Vit.OnlineUpgrade.Netcore.Demo
 {
@@ -11,7 +12,8 @@ namespace Vit.OnlineUpgrade.Netcore.Demo
         }
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
-            WebHost.CreateDefaultBuilder(args)
-                .UseStartup<Startup>();
+            Microsoft.AspNetCore.WebHost.CreateDefaultBuilder(args)
+            .UseUrlsFromConfig()
+            .UseStartup<Startup>();
     }
 }

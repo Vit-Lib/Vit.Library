@@ -2,14 +2,26 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
+    <Version>1.0</Version>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="startApp.bat" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="startApp.bat">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
 
   <ItemGroup>
     <Folder Include="wwwroot\" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.App" /> 
+    <PackageReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Vit.WebHost" Version="2.1.12" /> 
   </ItemGroup>
 
   <ItemGroup>
