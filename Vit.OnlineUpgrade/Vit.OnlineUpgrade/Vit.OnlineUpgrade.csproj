@@ -23,9 +23,9 @@
 
 
 	<ItemGroup>
-		<PackageReference Include="Vit.Core" Version="2.1.11" />
+		<PackageReference Include="Vit.Core" Version="2.1.12" />
 		<PackageReference Include="System.Text.Encoding.CodePages" Version="5.0.0" />
-		<PackageReference Include="Vit.Net.Http.FormFile" Version="2.1.11" />
+		<PackageReference Include="Vit.Net.Http.FormFile" Version="2.1.12" />
 	</ItemGroup>
 
 </Project>

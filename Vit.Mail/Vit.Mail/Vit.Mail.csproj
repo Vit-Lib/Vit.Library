@@ -21,7 +21,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="MailKit" Version="2.11.1" />
-		<PackageReference Include="Vit.Core" Version="2.1.11" />
+		<PackageReference Include="Vit.Core" Version="2.1.12" />
 	</ItemGroup>
 
 </Project>

@@ -20,7 +20,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Vit.Core" Version="2.1.11" />
+		<PackageReference Include="Vit.Core" Version="2.1.12" />
 		<PackageReference Include="sharpcompress" Version="0.28.2" />
 	</ItemGroup>
 

@@ -1,8 +1,8 @@
-#region << 版本注释-v4 >>
+#region << 版本注释-v5 >>
 /*
  * ========================================================================
- * 版本：v4
- * 时间：2021-01-21
+ * 版本：v5
+ * 时间：2021-09-27
  * 作者：lith
  * 邮箱：serset@yeah.net
  * 说明： 
@@ -968,7 +968,7 @@ RESTORE DATABASE [Lit_Base1] FROM  DISK =@BakPath  WITH  FILE = 1,  RECOVERY ,  
 
             //(x.2)拼接在mdf同文件夹下的备份文件的路径
             var remote_mdfDirectory = Path.GetDirectoryName(GetMdfPath());
-            var remote_bakFilePath = Path.Combine(remote_mdfDirectory, "sqler_temp_" + dbName + ".bak");         
+            var remote_bakFilePath = Path.Combine(remote_mdfDirectory, "sqler_temp_" + dbName + "_" + DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss") + ".bak");
 
             #region    
             try
