@@ -21,7 +21,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App" />
-    <PackageReference Include="Vit.WebHost" Version="2.1.12" /> 
+    <PackageReference Include="Vit.WebHost" Version="2.1.14" /> 
   </ItemGroup>
 
   <ItemGroup>
