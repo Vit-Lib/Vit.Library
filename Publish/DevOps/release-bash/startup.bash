@@ -6,12 +6,13 @@ set -e
 #(x.1)参数
 args_="
 
+export APPNAME=xxxxxx
 
-export name=Sers
+export DOCKER_USERNAME=serset
+export DOCKER_PASSWORD=xxx
 
 export NUGET_SERVER=https://api.nuget.org/v3/index.json
 export NUGET_KEY=xxxxxxxxxx
-
 # "
 
 
