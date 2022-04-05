@@ -6,7 +6,7 @@
 
 	<PropertyGroup>
 		<TargetFramework>netstandard2.0</TargetFramework>
-		<Version>2.2.10-preview5</Version>
+		<Version>2.2.10-preview6</Version>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -21,7 +21,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="MailKit" Version="3.1.1" />
-		<PackageReference Include="Vit.Core" Version="2.1.16-preview5" />
+		<PackageReference Include="Vit.Core" Version="2.1.16-preview6" />
 	</ItemGroup>
 
 </Project>
