@@ -9,7 +9,7 @@ namespace Vit.Db.BulkImport
         /// <summary>
         /// 批量导入时每批次的数据行数(默认50万，初始值从appsettings.json::Vit.Db.BulkImport.batchRowCount获取)
         /// </summary>
-        public static readonly int batchRowCount = Vit.Core.Util.ConfigurationManager.ConfigurationManager.Instance.GetByPath<int?>("Vit.Db.BulkImport.batchRowCount") ?? 500000;
+        public static readonly int batchRowCount = Vit.Core.Util.ConfigurationManager.Appsettings.json.GetByPath<int?>("Vit.Db.BulkImport.batchRowCount") ?? 500000;
 
 
         #region Import DataTable

@@ -13,7 +13,7 @@ namespace Vit.Mail.MsTest
         {
             try
             {
-                if (null == ConfigurationManager.Instance.GetStringByPath("MailAccount.password")) return;
+                if (null == Appsettings.json.GetStringByPath("MailAccount.password")) return;
                 MailHelp.Send("serset@yeah.net", "Vit.Mail测试", "Vit.Mail测试,<p>html测试</p>" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), true);
             }
             catch (Exception ex)

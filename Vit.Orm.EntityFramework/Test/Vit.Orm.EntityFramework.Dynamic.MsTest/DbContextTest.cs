@@ -39,7 +39,7 @@ namespace Vit.Orm.EntityFramework.Dynamic.MsTest
             {
                 //(x.x.1)´´½¨DbContext
                 var db = EfHelp.CreateDbContext();
-                db.AutoGenerateEntity(Vit.Core.Util.ConfigurationManager.ConfigurationManager.Instance.GetByPath<Vit.Db.Util.Data.ConnectionInfo>("App.Db"));
+                db.AutoGenerateEntity(Vit.Core.Util.ConfigurationManager.Appsettings.json.GetByPath<Vit.Db.Util.Data.ConnectionInfo>("App.Db"));
                 var queryable = db.GetQueryableByTableName("tb_account");
 
 

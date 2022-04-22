@@ -21,7 +21,7 @@ namespace Vit.Extensions
         /// <param name="configPath">在appsettings.json中的路径，默认："App.Db"</param>
         public static bool UseEntityFramework<TContext>(this IServiceCollection data,string configPath = "App.Db") where TContext : DbContext
         {
-            return UseEntityFramework<TContext>(data, ConfigurationManager.Instance.GetByPath<ConnectionInfo>(configPath ?? "App.Db"));
+            return UseEntityFramework<TContext>(data, Appsettings.json.GetByPath<ConnectionInfo>(configPath ?? "App.Db"));
         }
 
 

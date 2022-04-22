@@ -22,12 +22,12 @@ namespace Vit.Linq.Query
         /// <summary>
         /// filter最大个数，超过这个个数则抛异常
         /// </summary>
-        public static int MaxFilterCount = ConfigurationManager.Instance.GetByPath<int?>("Vit.Linq.MaxFilterCount") ?? 50;
+        public static int MaxFilterCount = Appsettings.json.GetByPath<int?>("Vit.Linq.MaxFilterCount") ?? 50;
 
         /// <summary>
         /// sort最大个数，超过这个个数则抛异常
         /// </summary>
-        public static int MaxSortCount = ConfigurationManager.Instance.GetByPath<int?>("Vit.Linq.MaxSortCount") ?? 50;
+        public static int MaxSortCount = Appsettings.json.GetByPath<int?>("Vit.Linq.MaxSortCount") ?? 50;
         #endregion
 
         #region BuildField      

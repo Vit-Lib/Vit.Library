@@ -21,7 +21,7 @@ namespace Vit.Db.Redis.MsTest
         [TestMethod]
         public void Test()
         {
-            string connection = ConfigurationManager.Instance.GetStringByPath("ConnectionStrings.Redis");
+            string connection = Appsettings.json.GetStringByPath("ConnectionStrings.Redis");
             if (string.IsNullOrEmpty(connection)) return;
 
             using (var redis = StackExchange.Redis.ConnectionMultiplexer.Connect(connection))

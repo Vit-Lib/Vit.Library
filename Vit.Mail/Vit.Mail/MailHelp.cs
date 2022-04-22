@@ -26,7 +26,7 @@ namespace Vit.Mail
         // https://www.cnblogs.com/sunnytrudeau/p/10822470.html
 
         #region 默认邮箱账号
-        private static readonly MailAccount _MailSenderAccount = ConfigurationManager.Instance.GetByPath<MailAccount>("MailAccount");
+        private static readonly MailAccount _MailSenderAccount = Appsettings.json.GetByPath<MailAccount>("MailAccount");
         #endregion
 
 

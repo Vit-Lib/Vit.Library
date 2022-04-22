@@ -20,7 +20,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Vit.Core" Version="2.1.16-preview7" />
+		<PackageReference Include="Vit.Core" Version="2.1.16-preview8.1" />
 	</ItemGroup>
 
 </Project>

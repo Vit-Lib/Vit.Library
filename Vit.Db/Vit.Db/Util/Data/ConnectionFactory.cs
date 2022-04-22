@@ -14,7 +14,7 @@ namespace Vit.Db.Util.Data
         /// <summary>
         /// 初始值从appsettings.json::Vit.Db.CommandTimeout获取
         /// </summary>
-        public static int? CommandTimeout = Vit.Core.Util.ConfigurationManager.ConfigurationManager.Instance.GetByPath<int?>("Vit.Db.CommandTimeout");
+        public static int? CommandTimeout = Vit.Core.Util.ConfigurationManager.Appsettings.json.GetByPath<int?>("Vit.Db.CommandTimeout");
 
         #endregion
 
@@ -33,7 +33,7 @@ namespace Vit.Db.Util.Data
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Func<System.Data.IDbConnection> GetConnectionCreator(string configPath= "App.Db")
         {
-            return GetConnectionCreator(ConfigurationManager.Instance.GetByPath<ConnectionInfo>(configPath ?? "App.Db"));
+            return GetConnectionCreator(Appsettings.json.GetByPath<ConnectionInfo>(configPath ?? "App.Db"));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -88,7 +88,7 @@ namespace Vit.Db.Util.Data
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static System.Data.IDbConnection GetConnection(string configPath = "App.Db")
         {
-            return GetConnection(ConfigurationManager.Instance.GetByPath<ConnectionInfo>(configPath?? "App.Db"));
+            return GetConnection(Appsettings.json.GetByPath<ConnectionInfo>(configPath?? "App.Db"));
         }
         #endregion
 
