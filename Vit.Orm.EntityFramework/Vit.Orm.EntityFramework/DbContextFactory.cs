@@ -34,7 +34,7 @@ namespace Vit.Orm.EntityFramework
         /// <param name="configPath">在appsettings.json中的路径，默认："App.Db"</param>
         public DbContextFactory<TContext> Init(string configPath = null)
         {
-            return Init(ConfigurationManager.Instance.GetByPath<ConnectionInfo>(configPath ?? "App.Db"));
+            return Init(Appsettings.json.GetByPath<ConnectionInfo>(configPath ?? "App.Db"));
         }
 
 

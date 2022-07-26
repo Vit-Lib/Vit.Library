@@ -9,7 +9,7 @@ namespace Vit.Extensions.Redis
     /// 
     ///         //demo:
     ///         
-    ///         string connection = ConfigurationManager.Instance.GetStringByPath("ConnectionStrings.Redis");
+    ///         string connection = Appsettings.json.GetStringByPath("ConnectionStrings.Redis");
     ///         using (var redis = StackExchange.Redis.ConnectionMultiplexer.Connect(connection))
     ///         {
     ///             var db = redis.GetDatabase(1);

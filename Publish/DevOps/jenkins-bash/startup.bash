@@ -1,12 +1,15 @@
 set -e
 
-# cd /root/temp/svn/Publish/DevOps/github-bash;bash startup.bash;
+
+# cd /root/docker-data/dev/jenkins/jenkins_home/workspace/Repo/Sers/code/Publish/DevOps/jenkins-bash; bash startup.bash;
 
 #---------------------------------------------------------------------
-#(x.1)鍙傛暟
+#(x.1)参数
 args_="
-
 export APPNAME=xxxxxx
+
+export SVN_USERNAME=jenkins
+export SVN_PASSWORD=xxxxxx
 
 export DOCKER_USERNAME=serset
 export DOCKER_PASSWORD=xxxxxx
@@ -14,12 +17,12 @@ export DOCKER_PASSWORD=xxxxxx
 export NUGET_SERVER=https://api.nuget.org/v3/index.json
 export NUGET_KEY=xxxxxx
 
-export GIT_SSH_SECRET=xxxxxx
+export NUGET_PATH=/root/docker-data/dev/jenkins/jenkins_home/workspace/.nuget
 
 # "
 
 #----------------------------------------------
-#(x.2)褰撳墠璺緞
+#(x.2)当前路径 
 curPath=$PWD
 
 cd $curPath/../../..
@@ -30,10 +33,16 @@ cd $curPath
 
 
 
+#----------------------------------------------
+echo '(x.3)svn-update'
+bash 01.svn-update.sh;
+
+
+ 
+
 #---------------------------------------------- 
 echo '(x.4)build'
 cd $basePath/Publish/DevOps/build-bash; bash startup.bash;
-
 
 
 #---------------------------------------------- 
@@ -42,26 +51,7 @@ cd $basePath/Publish/DevOps/release-bash; bash startup.bash;
  
 
 
-#----------------------------------------------
-echo "(x.3)get version" 
-export version=`grep '<Version>' $(grep '<pack>\|<publish>' ${basePath} -r --include *.csproj -l | head -n 1) | grep -oP '>(.*)<' | tr -d '<>'`
-echo $version
-
-
 
 #----------------------------------------------
-#(x.4)bash
-cd $curPath
-for file in *.sh
-do
-    echo %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    echo "[$(date "+%H:%M:%S")]" bash $file
-    bash $file
-done
-
-
-
-
-
-
-
+#(x.9)
+#cd $curPath

@@ -20,9 +20,9 @@ namespace Vit.Extensions
         {         
 
             // 数据库类型，可为  mysql mssql sqlite
-            string type = ConfigurationManager.Instance.GetStringByPath(configPath + ".type");
+            string type = Appsettings.json.GetStringByPath(configPath + ".type");
             // 数据库类型，可为  mysql mssql sqlite
-            string ConnectionString = ConfigurationManager.Instance.GetStringByPath(configPath + ".ConnectionString");
+            string ConnectionString = Appsettings.json.GetStringByPath(configPath + ".ConnectionString");
 
             if (type == "mssql")
             {

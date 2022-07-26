@@ -9,7 +9,7 @@ namespace Vit.Db.Redis.QpsTest
     public class RedisQpsTest
     {
         long requestCount = 0;
-        public int threadCount = Vit.Core.Util.ConfigurationManager.ConfigurationManager.Instance.GetByPath<int>("threadCount");
+        public int threadCount = Vit.Core.Util.ConfigurationManager.Appsettings.json.GetByPath<int>("threadCount");
 
         public RedisQpsTest()
         {
@@ -26,7 +26,7 @@ namespace Vit.Db.Redis.QpsTest
         {
 
             #region (x.1) set value to redis
-            string connection = ConfigurationManager.Instance.GetStringByPath("ConnectionStrings.Redis");
+            string connection = Appsettings.json.GetStringByPath("ConnectionStrings.Redis");
             using (var redis = StackExchange.Redis.ConnectionMultiplexer.Connect(connection))
             {
                 var db = redis.GetDatabase(1);
@@ -46,7 +46,7 @@ namespace Vit.Db.Redis.QpsTest
 
         void ThreadReadRedis()
         {
-            string connection = ConfigurationManager.Instance.GetStringByPath("ConnectionStrings.Redis");
+            string connection = Appsettings.json.GetStringByPath("ConnectionStrings.Redis");
             using (var redis = StackExchange.Redis.ConnectionMultiplexer.Connect(connection))
             {
                 var db = redis.GetDatabase(1);

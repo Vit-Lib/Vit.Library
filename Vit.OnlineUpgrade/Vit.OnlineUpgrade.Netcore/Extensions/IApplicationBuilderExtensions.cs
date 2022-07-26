@@ -99,10 +99,10 @@ namespace Vit.Extensions
         /// </summary>
         public static void Use_OnlineUpgrade(this IApplicationBuilder data)
         {
-            var apiPrefix = ConfigurationManager.Instance.GetStringByPath("OnlineUpgrade.apiPrefix");
+            var apiPrefix = Appsettings.json.GetStringByPath("OnlineUpgrade.apiPrefix");
             if (string.IsNullOrEmpty(apiPrefix)) return;
 
-            Use_OnlineUpgrade(data, apiPrefix, ConfigurationManager.Instance.GetStringByPath("OnlineUpgrade.password"), ConfigurationManager.Instance.GetStringByPath("OnlineUpgrade.appVersion"));
+            Use_OnlineUpgrade(data, apiPrefix, Appsettings.json.GetStringByPath("OnlineUpgrade.password"), Appsettings.json.GetStringByPath("OnlineUpgrade.appVersion"));
 
         }
         #endregion
