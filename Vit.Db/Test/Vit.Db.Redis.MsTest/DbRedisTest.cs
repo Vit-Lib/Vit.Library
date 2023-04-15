@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Vit.Core.Util.ConfigurationManager;
-using Vit.Extensions.Redis;
+using Vit.Extensions.Redis_Extensions;
 
 namespace Vit.Db.Redis.MsTest
 {

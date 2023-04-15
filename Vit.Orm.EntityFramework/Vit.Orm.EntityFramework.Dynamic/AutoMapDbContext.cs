@@ -2,8 +2,7 @@
 using System;
 using System.Collections.Generic;
 using Vit.Db.Module.Schema;
-using Vit.Extensions;
-using Vit.Orm.EntityFramework.Dynamic.Extensions;
+using Vit.Extensions.Linq_Extensions;
 
 namespace Vit.Orm.EntityFramework.Dynamic
 {

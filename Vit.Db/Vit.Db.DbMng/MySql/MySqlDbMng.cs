@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text;
 using Vit.Core.Util.Common;
 using Vit.Extensions;
+using Vit.Extensions.Linq_Extensions;
+
 using SqlConnection = MySql.Data.MySqlClient.MySqlConnection;
 
 namespace Vit.Db.DbMng

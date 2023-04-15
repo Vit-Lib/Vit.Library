@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Vit.Core.Util.ConfigurationManager;
 using Vit.Db.Util.Data;
 
-namespace Vit.Extensions
+namespace Vit.Extensions.Linq_Extensions
 {
     /// <summary>
     ///  

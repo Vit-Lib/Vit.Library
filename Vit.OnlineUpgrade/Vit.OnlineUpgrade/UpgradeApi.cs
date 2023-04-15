@@ -5,6 +5,7 @@ using Vit.Extensions;
 using Vit.Core.Module.Log;
 using Vit.Core.Util.ComponentModel.Data;
 using Vit.Core.Util.ComponentModel.SsError;
+using Vit.Extensions.Json_Extensions;
 
 namespace Vit.OnlineUpgrade
 {

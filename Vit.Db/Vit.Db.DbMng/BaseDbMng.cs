@@ -11,6 +11,8 @@ using Vit.Db.DbMng.SqlerFile;
 using Vit.Db.Util.Data;
 using Vit.Db.Util.Sqlite;
 using Vit.Extensions;
+using Vit.Extensions.Linq_Extensions;
+using Vit.Extensions.Json_Extensions;
 
 namespace Vit.Db.DbMng
 {

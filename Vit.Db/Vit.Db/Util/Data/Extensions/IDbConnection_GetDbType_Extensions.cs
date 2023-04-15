@@ -2,7 +2,7 @@
 using System.Runtime.CompilerServices;
 using Vit.Db.Util.Data;
 
-namespace Vit.Extensions
+namespace Vit.Extensions.Linq_Extensions
 {
 
     public static partial class IDbConnection_GetDbType_Extensions

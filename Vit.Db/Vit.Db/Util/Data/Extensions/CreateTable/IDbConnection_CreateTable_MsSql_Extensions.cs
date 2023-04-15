@@ -2,9 +2,9 @@
 using System.Text;
 using System;
 using Vit.Db.Util.Data;
-using Vit.Extensions.Execute;
+using Vit.Extensions.Linq_Extensions.Execute;
 
-namespace Vit.Extensions
+namespace Vit.Extensions.Linq_Extensions
 {
     public static partial class IDbConnection_CreateTable_MsSql_Extensions
     {

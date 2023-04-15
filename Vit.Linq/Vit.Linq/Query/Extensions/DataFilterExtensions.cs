@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
+
+using Vit.Extensions.Json_Extensions;
 using Vit.Linq.Query;
 
-namespace Vit.Extensions
+namespace Vit.Extensions.Linq_Extensions
 {
 
     /// <summary>

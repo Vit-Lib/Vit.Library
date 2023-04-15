@@ -4,10 +4,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Vit.Core.Util.ComponentModel.Data;
 using Vit.Core.Util.ComponentModel.Query;
-using Vit.Extensions;
 using Vit.Linq.Query;
+using Vit.Extensions.Linq_Extensions;
 
-namespace Vit.Orm.EntityFramework.Extensions
+namespace Vit.Extensions.Linq_Extensions
 {
 
     public static partial class IQueryable_Ef_ToPageDataExtensions

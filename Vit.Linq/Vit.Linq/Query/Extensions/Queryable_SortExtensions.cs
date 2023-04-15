@@ -7,7 +7,7 @@ using System.Runtime.CompilerServices;
 using Vit.Core.Util.ComponentModel.Query;
 using Vit.Linq.Query;
 
-namespace Vit.Extensions
+namespace Vit.Extensions.Linq_Extensions
 {
     /// <summary>
     /// 参考 https://www.cnblogs.com/Extnet/p/9848272.html

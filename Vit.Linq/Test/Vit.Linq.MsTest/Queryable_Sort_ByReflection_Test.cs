@@ -1,4 +1,4 @@
-﻿using Vit.Extensions;
+﻿using Vit.Extensions.Linq_Extensions;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Vit.Core.Util.ComponentModel.Data;
@@ -10,7 +10,7 @@ namespace Vit.Linq.MsTest
     public class Queryable_Sort_ByReflection_Test
     {
 
-        #region (x.3)TestSortAndPage        
+        #region TestSortAndPage
         [TestMethod]
         public void TestSortAndPage()
         {

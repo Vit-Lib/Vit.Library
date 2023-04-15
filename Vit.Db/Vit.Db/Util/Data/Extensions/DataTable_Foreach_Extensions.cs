@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Runtime.CompilerServices;
 
-namespace Vit.Extensions
+namespace Vit.Extensions.Linq_Extensions
 {
     public static partial class DataTable_Foreach_Extensions
     {

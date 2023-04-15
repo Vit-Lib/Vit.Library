@@ -1,7 +1,7 @@
 using Dapper.Contrib.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Vit.Extensions;
+using Vit.Extensions.Linq_Extensions;
 using Vit.Orm.Dapper.MsTest.Model;
 
 namespace Vit.Orm.Dapper.MsTest

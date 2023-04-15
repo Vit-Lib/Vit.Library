@@ -6,8 +6,9 @@ using SqlCommand = Microsoft.Data.Sqlite.SqliteCommand;
 using SqlDataReader = Microsoft.Data.Sqlite.SqliteDataReader;
 using System.Runtime.CompilerServices;
 using System;
+using Vit.Extensions.Json_Extensions;
 
-namespace Vit.Extensions.Execute
+namespace Vit.Extensions.Linq_Extensions.Execute
 {
     public static partial class Sqlite_Execute_Extensions
     {

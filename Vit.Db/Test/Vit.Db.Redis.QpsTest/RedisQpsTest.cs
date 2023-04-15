@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Vit.Core.Util.ConfigurationManager;
-using Vit.Extensions.Redis;
+using Vit.Extensions.Redis_Extensions;
 
 namespace Vit.Db.Redis.QpsTest
 {

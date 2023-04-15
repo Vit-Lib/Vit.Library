@@ -3,7 +3,7 @@ using System.Data;
 using System.Runtime.CompilerServices;
 using System.Text;
 
-namespace Vit.Extensions
+namespace Vit.Extensions.Linq_Extensions
 {
     public static partial class DataTable_ToString_Extensions
     {
