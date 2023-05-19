@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Data;
 
-namespace Vit.Extensions
+namespace Vit.Extensions.Linq_Extensions
 {
 
     public static partial class IDbConnection_BulkImportExtensions

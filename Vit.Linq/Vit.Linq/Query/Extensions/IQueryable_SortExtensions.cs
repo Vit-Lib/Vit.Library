@@ -6,7 +6,7 @@ using System.Runtime.CompilerServices;
 using Vit.Core.Util.ComponentModel.Query;
 using Vit.Linq.Query;
 
-namespace Vit.Extensions
+namespace Vit.Extensions.Linq_Extensions
 {
 
     public static partial class IQueryable_SortExtensions

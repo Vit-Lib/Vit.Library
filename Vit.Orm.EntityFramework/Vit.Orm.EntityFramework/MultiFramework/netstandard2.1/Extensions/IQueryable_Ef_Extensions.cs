@@ -7,7 +7,7 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Vit.Orm.EntityFramework.Extensions
+namespace Vit.Extensions.Linq_Extensions
 {
 
 

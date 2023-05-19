@@ -1,4 +1,4 @@
-﻿using Vit.Extensions;
+﻿using Vit.Extensions.Linq_Extensions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Vit.Core.Util.ComponentModel.Data;
 using Vit.Linq.Query;

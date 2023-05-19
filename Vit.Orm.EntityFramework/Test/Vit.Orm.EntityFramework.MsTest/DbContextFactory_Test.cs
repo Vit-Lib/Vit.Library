@@ -3,7 +3,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Vit.Extensions;
+using Vit.Extensions.Linq_Extensions;
 using Vit.Orm.EntityFramework.MsTest.Model;
 
 namespace Vit.Orm.EntityFramework.MsTest

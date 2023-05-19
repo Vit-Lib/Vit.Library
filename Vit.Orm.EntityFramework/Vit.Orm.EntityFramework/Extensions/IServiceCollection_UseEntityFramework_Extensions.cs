@@ -1,8 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Concurrent;
+
 using Vit.Core.Util.ConfigurationManager;
 using Vit.Orm.EntityFramework;
 

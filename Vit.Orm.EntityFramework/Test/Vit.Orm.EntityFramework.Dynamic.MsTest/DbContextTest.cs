@@ -1,10 +1,8 @@
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Vit.Extensions;
 using Vit.Linq.Query;
-using Vit.Orm.EntityFramework.Extensions;
-using Vit.Extensions.ObjectExt;
-using Vit.Orm.EntityFramework.Dynamic.Extensions;
+using Vit.Extensions.Object_Extensions;
+using Vit.Extensions.Linq_Extensions;
 
 namespace Vit.Orm.EntityFramework.Dynamic.MsTest
 {

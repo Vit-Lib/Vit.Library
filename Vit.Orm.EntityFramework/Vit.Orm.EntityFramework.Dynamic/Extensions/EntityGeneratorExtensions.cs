@@ -7,7 +7,7 @@ using Vit.Core.Util.Common;
 using System.Collections.Generic;
 using Vit.Db.Module.Schema;
 
-namespace Vit.Orm.EntityFramework.Dynamic.Extensions
+namespace Vit.Extensions.Linq_Extensions
 {
     public static class EntityGeneratorExtensions
     {

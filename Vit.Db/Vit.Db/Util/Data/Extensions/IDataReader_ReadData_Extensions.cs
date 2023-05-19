@@ -2,7 +2,7 @@
 using System.Data;
 using System.Runtime.CompilerServices;
 
-namespace Vit.Extensions
+namespace Vit.Extensions.Linq_Extensions
 {
     public static class IDataReader_ReadData_Extensions
     {

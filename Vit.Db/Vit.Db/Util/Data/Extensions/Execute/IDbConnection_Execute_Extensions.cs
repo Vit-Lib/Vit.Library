@@ -2,7 +2,9 @@
 using System.Data;
 using System.Runtime.CompilerServices;
 
-namespace Vit.Extensions.Execute
+using Vit.Extensions.Json_Extensions;
+
+namespace Vit.Extensions.Linq_Extensions.Execute
 {
     public static partial class IDbConnection_Execute_Extensions
     {    

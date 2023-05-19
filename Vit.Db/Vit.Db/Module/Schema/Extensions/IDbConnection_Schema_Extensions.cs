@@ -2,16 +2,16 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+
 using Vit.Db.Module.Schema;
 using Vit.Db.Util.Data;
-using Vit.Extensions.Execute;
 
-namespace Vit.Extensions
+namespace Vit.Extensions.Linq_Extensions
 {
 
     public static partial class IDbConnection_Schema_Extensions
     {
- 
+
         #region GetAllTableName
         /// <summary>
         /// 获取所有表的名称
@@ -26,9 +26,9 @@ namespace Vit.Extensions
                 case EDbType.mysql: return conn.MySql_GetAllTableName();
                 case EDbType.sqlite: return conn.Sqlite_GetAllTableName();
             }
-            
+
             throw new NotImplementedException($"NotImplementedException from IDbConnection.{nameof(GetAllTableName)} in {nameof(IDbConnection_Schema_Extensions)}.cs");
- 
+
         }
         #endregion
 

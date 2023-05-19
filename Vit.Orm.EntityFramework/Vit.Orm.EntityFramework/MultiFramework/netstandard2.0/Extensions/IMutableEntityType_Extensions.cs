@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
-namespace Vit.Extensions
+namespace Vit.Extensions.Linq_Extensions
 {
 
 

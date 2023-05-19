@@ -6,8 +6,9 @@ using SqlDataAdapter = System.Data.SqlClient.SqlDataAdapter;
 using SqlDataReader = System.Data.SqlClient.SqlDataReader;
 using System.Runtime.CompilerServices;
 using System;
+using Vit.Extensions.Json_Extensions;
 
-namespace Vit.Extensions.Execute
+namespace Vit.Extensions.Linq_Extensions.Execute
 {
     public static partial class MsSql_Execute_Extensions
     {

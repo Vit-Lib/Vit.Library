@@ -14,9 +14,9 @@ using System.IO;
 using Vit.Db.Util.Csv;
 using Vit.Db.BulkImport;
 using Vit.Core.Util.MethodExt;
-using Vit.Extensions.Execute;
+using Vit.Extensions.Linq_Extensions.Execute;
 
-namespace Vit.Extensions
+namespace Vit.Extensions.Linq_Extensions
 {
     public static partial class MySql_BulkImportExtensions
     {

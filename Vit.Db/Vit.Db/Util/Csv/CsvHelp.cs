@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using Vit.Extensions;
+using Vit.Extensions.Linq_Extensions;
 
 namespace Vit.Db.Util.Csv
 {

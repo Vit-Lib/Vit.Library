@@ -4,9 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Vit.Db.Module.Schema;
-using Vit.Extensions;
 
-namespace Vit.Orm.EntityFramework.Dynamic.Extensions
+namespace Vit.Extensions.Linq_Extensions
 {
 
 

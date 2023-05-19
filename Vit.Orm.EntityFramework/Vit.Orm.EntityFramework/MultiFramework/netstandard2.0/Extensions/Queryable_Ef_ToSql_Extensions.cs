@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Storage;
 using System.Linq;
 using System.Reflection;
 
-namespace Vit.Orm.EntityFramework.Extensions
+namespace Vit.Extensions.Linq_Extensions
 {
 
     /// <summary>

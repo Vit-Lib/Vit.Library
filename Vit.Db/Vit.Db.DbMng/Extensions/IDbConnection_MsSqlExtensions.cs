@@ -8,8 +8,9 @@ using System.IO;
 using System.Collections.Generic;
 using Vit.Core.Util.MethodExt;
 using System.Linq;
+using Vit.Extensions.Json_Extensions;
 
-namespace Vit.Extensions.DbMng
+namespace Vit.Extensions.Linq_Extensions
 {
     public static partial class IDbConnection_MsSqlExtensions
     {

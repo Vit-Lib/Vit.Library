@@ -3,7 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
-namespace Vit.Extensions.Redis
+using Vit.Extensions.Json_Extensions;
+
+namespace Vit.Extensions.Redis_Extensions
 {
     /// <summary>
     /// 

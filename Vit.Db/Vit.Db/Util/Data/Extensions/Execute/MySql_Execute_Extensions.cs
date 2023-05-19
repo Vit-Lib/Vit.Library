@@ -6,8 +6,9 @@ using SqlDataAdapter = MySql.Data.MySqlClient.MySqlDataAdapter;
 using SqlDataReader= MySql.Data.MySqlClient.MySqlDataReader;
 using System.Runtime.CompilerServices;
 using System;
+using Vit.Extensions.Json_Extensions;
 
-namespace Vit.Extensions.Execute
+namespace Vit.Extensions.Linq_Extensions.Execute
 {
     public static partial class MySql_Execute_Extensions
     {

@@ -1,70 +1,70 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-	<PropertyGroup>
-		<pack>nuget</pack>
-	</PropertyGroup>
+    <PropertyGroup>
+        <pack>nuget</pack>
+    </PropertyGroup>
 
-	<PropertyGroup>
-		<!--<TargetFramework>netstandard2.0</TargetFramework>-->
-		<!--<TargetFramework>netstandard2.1</TargetFramework>-->
-		<TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
-		<Version>2.2.10</Version>
-	</PropertyGroup>
+    <PropertyGroup>
+        <!--<TargetFramework>netstandard2.0</TargetFramework>-->
+        <!--<TargetFramework>netstandard2.1</TargetFramework>-->
+        <TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
+        <Version>2.2.11</Version>
+    </PropertyGroup>
 
-	<PropertyGroup>
-		<Authors>Lith</Authors>
-		<Description>EntityFramework的扩展</Description>
-		<PackageProjectUrl>https://github.com/serset/Vit.Library</PackageProjectUrl>
-	</PropertyGroup>
+    <PropertyGroup>
+        <Authors>Lith</Authors>
+        <Description>EntityFramework的扩展</Description>
+        <PackageProjectUrl>https://github.com/serset/Vit.Library</PackageProjectUrl>
+    </PropertyGroup>
 
-	<PropertyGroup>
-		<DocumentationFile>bin\Debug\netstandard2.0\Vit.Orm.EntityFramework.xml</DocumentationFile>
-	</PropertyGroup>
-
-
-	<ItemGroup>
-		<PackageReference Include="Vit.Core" Version="2.1.16" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<ProjectReference Include="..\..\Vit.Linq\Vit.Linq\Vit.Linq.csproj" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<Compile Remove="MultiFramework\**" />
-		<EmbeddedResource Remove="MultiFramework\**" />
-		<None Remove="MultiFramework\**" />
-	</ItemGroup>
+    <PropertyGroup>
+        <DocumentationFile>bin\Debug\netstandard2.0\Vit.Orm.EntityFramework.xml</DocumentationFile>
+    </PropertyGroup>
 
 
-	<!--netstandard2.0-->
-	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
-		<Compile Include="MultiFramework\netstandard2.0\**" />
-	</ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Vit.Core" Version="2.1.17" />
+    </ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
-		<PackageReference Include="Configuration.EntityFramework" Version="1.0.1.123" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="2.1.14" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.1.14" />
-		<PackageReference Include="MySql.Data.EntityFrameworkCore" Version="8.0.17" />
-	</ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\..\Vit.Linq\Vit.Linq\Vit.Linq.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Compile Remove="MultiFramework\**" />
+        <EmbeddedResource Remove="MultiFramework\**" />
+        <None Remove="MultiFramework\**" />
+    </ItemGroup>
 
 
-	<!--netstandard2.1-->
-	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.1'">
-		<Compile Include="MultiFramework\netstandard2.1\**" />
-	</ItemGroup>
+    <!--netstandard2.0-->
+    <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+        <Compile Include="MultiFramework\netstandard2.0\**" />
+    </ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.1'">
-		<PackageReference Include="Configuration.EntityFramework" Version="1.0.1.123" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.6" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="5.0.6" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="5.0.6" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.6" />
-		<PackageReference Include="MySql.EntityFrameworkCore" Version="5.0.3" />
-		<PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="5.0.0" />
-	</ItemGroup>
- 
+    <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+        <PackageReference Include="Configuration.EntityFramework" Version="1.0.1.123" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="2.1.14" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.1.14" />
+        <PackageReference Include="MySql.Data.EntityFrameworkCore" Version="8.0.17" />
+    </ItemGroup>
+
+
+    <!--netstandard2.1-->
+    <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.1'">
+        <Compile Include="MultiFramework\netstandard2.1\**" />
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.1'">
+        <PackageReference Include="Configuration.EntityFramework" Version="1.0.1.123" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.6" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="5.0.6" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="5.0.6" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.6" />
+        <PackageReference Include="MySql.EntityFrameworkCore" Version="5.0.3" />
+        <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="5.0.0" />
+    </ItemGroup>
+
 
 
 </Project>

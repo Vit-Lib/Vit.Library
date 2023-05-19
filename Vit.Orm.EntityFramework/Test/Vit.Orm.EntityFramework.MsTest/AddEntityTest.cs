@@ -2,7 +2,7 @@ using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Vit.Core.Util.Common;
-using Vit.Extensions;
+using Vit.Extensions.Linq_Extensions;
 using Vit.Orm.EntityFramework.MsTest.Model;
 
 namespace Vit.Orm.EntityFramework.MsTest

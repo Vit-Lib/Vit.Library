@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Data;
 using System.Runtime.CompilerServices;
-using Vit.Extensions.Execute;
 
-namespace Vit.Extensions
+using Vit.Extensions.Linq_Extensions.Execute;
+
+namespace Vit.Extensions.Linq_Extensions
 {
     public static partial class IDbConnection_ExecuteData_Extensions
     {

@@ -2,7 +2,7 @@
 using System.Runtime.CompilerServices;
 using Vit.Core.Util.ComponentModel.Data;
 
-namespace Vit.Extensions
+namespace Vit.Extensions.Linq_Extensions
 {
 
     public static partial class Queryable_PageExtensions

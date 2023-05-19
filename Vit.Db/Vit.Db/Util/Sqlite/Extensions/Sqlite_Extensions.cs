@@ -1,7 +1,8 @@
 ﻿
 
 using System.Runtime.CompilerServices;
-using Vit.Extensions.Execute;
+
+using Vit.Extensions.Linq_Extensions.Execute;
 
 namespace Vit.Extensions
 {

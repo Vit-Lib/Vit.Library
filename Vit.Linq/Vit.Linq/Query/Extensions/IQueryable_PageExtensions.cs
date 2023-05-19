@@ -1,8 +1,9 @@
 ﻿using System.Linq;
 using System.Runtime.CompilerServices;
+
 using Vit.Core.Util.ComponentModel.Data;
 
-namespace Vit.Extensions
+namespace Vit.Extensions.Linq_Extensions
 {
 
     public static partial class IQueryable_PageExtensions
@@ -10,11 +11,11 @@ namespace Vit.Extensions
 
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static IQueryable IQueryable_Page(this IQueryable query, PageInfo page)            
+        public static IQueryable IQueryable_Page(this IQueryable query, PageInfo page)
         {
             if (query == null || page == null) return query;
 
-            return query.IQueryable_Page(page.pageIndex, page.pageSize); 
+            return query.IQueryable_Page(page.pageIndex, page.pageSize);
         }
 
 
@@ -26,8 +27,8 @@ namespace Vit.Extensions
         /// <param name="pageSize">每页数据个数</param>
         /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static IQueryable IQueryable_Page(this IQueryable query,int pageIndex, int pageSize)      
-        {  
+        public static IQueryable IQueryable_Page(this IQueryable query, int pageIndex, int pageSize)
+        {
             return query.IQueryable_Skip((pageIndex - 1) * pageSize).IQueryable_Take(pageSize);
         }
     }

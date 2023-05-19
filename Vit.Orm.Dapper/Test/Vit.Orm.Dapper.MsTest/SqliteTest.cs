@@ -1,7 +1,7 @@
 using Dapper;
 using Dapper.Contrib.Extensions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Vit.Extensions;
+using Vit.Extensions.Linq_Extensions;
 using System.Linq;
 using Vit.Orm.Dapper.MsTest.Model;
 using Vit.Db.Util.Data;

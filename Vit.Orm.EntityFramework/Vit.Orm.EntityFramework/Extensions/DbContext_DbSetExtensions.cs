@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace Vit.Extensions
+namespace Vit.Extensions.Linq_Extensions
 {
 
 

@@ -4,6 +4,7 @@ using OfficeOpenXml;
 using System.Linq;
 using System.Collections.Generic;
 using Vit.Extensions;
+using Vit.Extensions.Linq_Extensions;
 
 namespace Vit.Db.Util.Excel
 {
