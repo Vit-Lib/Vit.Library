@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Data;
 using System.Data.SqlClient;
-using Vit.Extensions.Linq_Extensions;
+
+using Vit.Extensions;
 
 namespace Vit.Db.BulkImport
 {
