@@ -13,27 +13,33 @@ using Vit.Core.Module.Serialization;
 
 namespace Vit.Excel
 {
-    public class Excel_MiniExcel : IDisposable
+    public class Excel_MiniExcel : IExcel
     {
         public bool useHeaderRow { get; set; } = true;
-
 
 
         Stream stream = null;
         bool streamNeedDispose = false;
 
 
-        public Excel_MiniExcel(Stream stream, bool autoDispose = false)
+        public Excel_MiniExcel(Stream stream, bool needDisposeStream = false)
         {
             this.stream = stream;
-            this.streamNeedDispose = autoDispose;
+            this.streamNeedDispose = needDisposeStream;
         }
 
 
-        public Excel_MiniExcel(string filePath)
+        public Excel_MiniExcel(string filePath):this(new FileStream(filePath, FileMode.OpenOrCreate),true)
         {
-            this.stream = new FileStream(filePath, FileMode.OpenOrCreate);
-            streamNeedDispose = true;
+        }
+
+        public void Dispose()
+        {
+            if (streamNeedDispose && stream != null)
+            {
+                stream.Dispose();
+                stream = null;
+            }
         }
 
         #region SaveSheet
@@ -53,10 +59,10 @@ namespace Vit.Excel
               *     row mustbe IDictionary/IDictionary<string,object>/DTO
               * */
         }
-        public void AddSheetByCells(string sheetName, IEnumerable<object[]> sheet, string[] columnNames)
-        {
-            sheets[sheetName] = new DataReader_Cells(sheet, columnNames);
-        }
+        //public void AddSheetByCells(string sheetName, IEnumerable<object[]> sheet, string[] columnNames)
+        //{
+        //    sheets[sheetName] = new DataReader_Cells(sheet, columnNames);
+        //}
 
         public void AddSheetByEnumerable(string sheetName, IEnumerable<IEnumerable<object>> sheet, string[] columnNames)
         {
@@ -341,34 +347,7 @@ namespace Vit.Excel
 
         #endregion
 
-        #region single sheet
-
-        public void SaveSheetByCells(string sheetName, IEnumerable<object[]> sheet, string[] columnNames)
-        {
-            AddSheetByCells(sheetName, sheet, columnNames);
-            Save();
-        }
-        public void SaveSheetByDictionary(string sheetName, IEnumerable<IDictionary> sheet, string[] columnNames = null)
-        {
-            AddSheetByDictionary(sheetName, sheet, columnNames);
-            Save();
-        }
-        public void SaveSheetByDictionary(string sheetName, IEnumerable<IDictionary<string, object>> sheet, string[] columnNames = null)
-        {
-            AddSheetByDictionary(sheetName, sheet, columnNames);
-            Save();
-        }
-        public void SaveSheetByModel<Model>(string sheetName, IEnumerable<Model> sheet, string[] columnNames = null) where Model : class
-        {
-            AddSheetByModel(sheetName, sheet, columnNames);
-            Save();
-        }
-        public void SaveSheetByDataTable(DataTable sheet, string sheetName = null)
-        {
-            AddSheetByDataTable(sheet, sheetName);
-            Save();
-        }
-        #endregion
+      
 
 
 
@@ -389,7 +368,7 @@ namespace Vit.Excel
 
 
         #region #2 Cell Array
-        public (List<string> columnNames, IEnumerable<object[]> rows) ReadSheetByCells(string sheetName)
+        public (List<string> columnNames, IEnumerable<object[]> rows) ReadSheetByEnumerable(string sheetName)
         {
             (var columnNames, var rows) = ReadSheetByDictionary(sheetName);
             if (columnNames == null) return default;
@@ -502,13 +481,6 @@ namespace Vit.Excel
         }
         #endregion
 
-        public void Dispose()
-        {
-            if (streamNeedDispose && stream != null)
-            {
-                stream.Dispose();
-                stream = null;
-            }
-        }
+
     }
 }

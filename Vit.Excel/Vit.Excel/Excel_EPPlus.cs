@@ -1,18 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 
 using OfficeOpenXml;
 
+using Vit.Extensions;
+
 namespace Vit.Excel
 {
-    public class Excel_EPPlus : IDisposable
+    public class Excel_EPPlus : IExcel
     {
-        public bool firstRowIsColumnName { get; set; } = true;
-        public int rowOffset { get; set; } = 0;
-        public int maxRowCount { get; set; } = int.MaxValue;
+        public bool useHeaderRow { get; set; } = true;
 
         #region readOriginalValue
         Func<ExcelRange, object> GetCellValue = GetCellValue_Value;
@@ -48,11 +49,11 @@ namespace Vit.Excel
         {
             if (package != null)
             {
-                package.Dispose(); 
+                package.Dispose();
                 package = null;
             }
 
-            if (stream != null && needDisposeStream)
+            if (needDisposeStream && stream != null)
             {
                 stream.Dispose();
                 stream = null;
@@ -60,9 +61,7 @@ namespace Vit.Excel
         }
 
 
-        public Excel_EPPlus(string filePath) : this(new FileStream(filePath, FileMode.OpenOrCreate), true)
-        {
-        }
+      
 
         public Excel_EPPlus(Stream stream, bool needDisposeStream = false) 
         {
@@ -71,53 +70,34 @@ namespace Vit.Excel
 
             package = new ExcelPackage(stream);
         }
-
-
-        #region Get sheets info
-
-        public int GetSheetsCount()
+        public Excel_EPPlus(string filePath) : this(new FileStream(filePath, FileMode.OpenOrCreate), true)
         {
-            return package.Workbook.Worksheets.Count;
-        }
-       
-        public List<string> GetSheetsName()
-        {
-            return package.Workbook.Worksheets.AsQueryable().Select(m => m.Name).ToList();
-        }
-
-        public string GetSheetName(int sheetIndex)
-        {
-            var sheet = package.Workbook.Worksheets[sheetIndex + 1];
-            return sheet?.Name;
-        }
-        public int GetSheetRowCount(int sheetIndex)
-        {
-            var sheet = package.Workbook.Worksheets[sheetIndex + 1];
-            return sheet.Dimension.Rows - (firstRowIsColumnName ? 1 : 0);
         }
 
 
-        #endregion
 
- 
+        #region SaveSheet
 
-        #region Write
-
-
-        #region #1 Cell Array
-        public void SaveSheet(string sheetName, IEnumerable<IEnumerable<object>> rows, List<string> columns = null)
+        public void Save()
         {
-            ExcelWorksheet worksheet = package.Workbook.Worksheets.FirstOrDefault(sheet => sheet.Name == sheetName)
+            package.Save();
+        }
+
+
+        #region #1 Enumerable
+        public void AddSheetByEnumerable(string sheetName, IEnumerable<IEnumerable<object>> sheet, string[] columnNames = null)
+        {
+            ExcelWorksheet worksheet = package.Workbook.Worksheets.FirstOrDefault(worksheet => worksheet.Name == sheetName)
                     ?? package.Workbook.Worksheets.Add(sheetName);
 
             int rowIndex = 0;
 
             #region #1 columns
-            if (columns != null)
+            if (columnNames != null)
             {
                 rowIndex++;
                 int colIndex = 0;
-                foreach (var column in columns)
+                foreach (var column in columnNames)
                 {
                     colIndex++;
 
@@ -129,7 +109,7 @@ namespace Vit.Excel
             #endregion
 
             #region #2 rows
-            foreach (var row in rows)
+            foreach (var row in sheet)
             {
                 rowIndex++;
                 int colIndex = 0;
@@ -140,24 +120,22 @@ namespace Vit.Excel
                 }
             }
             #endregion
-
-            package.Save();
         }
         #endregion
 
         #region #2 Dictionary
-        public void SaveSheet(string sheetName, IEnumerable<IDictionary<string, object>> rows, List<string> columns = null)
+        public void AddSheetByDictionary(string sheetName, IEnumerable<IDictionary<string, object>> sheet, string[] columnNames = null)
         {
-            IEnumerable<IEnumerable<object>> cellRows = rows.Select(row => { if (columns == null) columns = row.Keys.ToList(); return columns.Select(name => row[name]); });
-            SaveSheet(sheetName, cellRows, columns);
+            IEnumerable<IEnumerable<object>> sheetEnumerable = sheet.Select(row => { if (columnNames == null) columnNames = row.Keys.ToArray(); return columnNames.Select(name => row[name]); });
+            AddSheetByEnumerable(sheetName, sheetEnumerable, columnNames);
         }
 
         #endregion
 
-        #region #2 Model
-        public void SaveSheet(string sheetName, IQueryable rows, List<string> columns = null)
+        #region #3 Model
+        public void AddSheetByQueryable(string sheetName, IQueryable sheet, string[] columnNames = null)
         {
-            var type = rows.ElementType;
+            var type = sheet.ElementType;
 
             var fields = type.GetFields(BindingFlags.Public | BindingFlags.Instance);
             var properties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
@@ -166,15 +144,15 @@ namespace Vit.Excel
                 fields.Select(m => (m.Name, (Func<object, object>)(row => m.GetValue(row))))
                 .Union(properties.Select(m => (m.Name, (Func<object, object>)(row => m.GetValue(row)))));
 
-            if (columns == null) columns = valueGetterList.Select(m => m.Name).Distinct().ToList();
+            if (columnNames == null) columnNames = valueGetterList.Select(m => m.Name).Distinct().ToArray();
 
-            var cellGetters = columns.Select(name => valueGetterList.FirstOrDefault(getter => getter.Name == name).Item2).ToList();
+            var cellGetters = columnNames.Select(name => valueGetterList.FirstOrDefault(getter => getter.Name == name).Item2).ToList();
 
             Func<object, IEnumerable<object>> GetRow = row => cellGetters.Select(getter => getter?.Invoke(row));
 
 
-            IEnumerable<IEnumerable<object>> cellRows = GetRowEnumerable(rows, GetRow);
-            SaveSheet(sheetName, cellRows, columns);
+            IEnumerable<IEnumerable<object>> cellRows = GetRowEnumerable(sheet, GetRow);
+            AddSheetByEnumerable(sheetName, cellRows, columnNames);
 
             #region Method GetRowEnumerable
             IEnumerable<IEnumerable<object>> GetRowEnumerable(IQueryable rows, Func<object, IEnumerable<object>> GetRow)
@@ -187,37 +165,71 @@ namespace Vit.Excel
             #endregion
         }
 
-        public void SaveSheet<Model>(string sheetName, IEnumerable<Model> rows, List<string> columns = null)
+        public void AddSheetByModel<Model>(string sheetName, IEnumerable<Model> sheet, string[] columnNames = null)
             where Model : class
         {
-            IQueryable queryable = rows.AsQueryable();
-            SaveSheet(sheetName, queryable, columns);
+            IQueryable queryable = sheet.AsQueryable();
+            AddSheetByQueryable(sheetName, queryable, columnNames);
+        }
+        #endregion
+
+        #region #4 DataTable
+
+        public void AddSheetByDataTable(DataTable sheet, string sheetName = null)
+        {
+            if (sheetName == null) sheetName = sheet.TableName;
+                   
+            var columnNames = new List<string>();
+            foreach (DataColumn col in sheet.Columns) { columnNames.Add(col.ColumnName); }
+
+            var row = GetRowEnumerable(sheet);
+
+            AddSheetByEnumerable(sheetName, row, columnNames.ToArray());
+        }
+
+
+        static IEnumerable<IEnumerable<object>> GetRowEnumerable(DataTable dt)
+        {
+            foreach (DataRow row in dt.Rows)
+            {
+                yield return row.ItemArray;
+            }
         }
         #endregion
 
         #endregion
 
 
+
+
+
+
+
+
+
+
+
+
         #region Read
 
 
-        #region #1 Cell Array
+        #region #1 Enumerable
 
-        public (List<string> columnNames, IEnumerable<object[]> rows) ReadSheetByCell(int sheetIndex)
+        public (List<string> columnNames, IEnumerable<object[]> rows) ReadSheetByEnumerable(string sheetName)
         {
             // worksheets start with 1
-            var worksheet = package.Workbook.Worksheets[sheetIndex];
+            var worksheet = package.Workbook.Worksheets.FirstOrDefault(sheet => sheet.Name == sheetName);
             if (worksheet == null) return default;
 
             int sourceRowCount = worksheet.Dimension.Rows;
             int sourceColCount = worksheet.Dimension.Columns;
             var cells = worksheet.Cells;
 
-            int rowIndex = rowOffset;
+            int rowIndex = 0;
 
             List<string> columnNames = new List<string>();
             #region get column
-            if (firstRowIsColumnName)
+            if (useHeaderRow)
             {
                 for (int i = 0; i < sourceColCount; i++)
                 {
@@ -255,7 +267,7 @@ namespace Vit.Excel
             #region Method GetRows
             IEnumerable<object[]> GetRows()
             {
-                for (; rowIndex <= sourceRowCount && maxRowCount > 0; rowIndex++, maxRowCount--)
+                for (; rowIndex <= sourceRowCount; rowIndex++)
                 {
                     var rowValue = new object[sourceColCount];
                     for (int colIndex = 1; colIndex <= sourceColCount; colIndex++)
@@ -274,23 +286,23 @@ namespace Vit.Excel
 
 
         #region #2 Dictionary
-        public (List<string> columnNames, IEnumerable<Dictionary<string,object>> rows) ReadSheetByDictionary(int sheetIndex) 
+        public (List<string> columnNames, IEnumerable<IDictionary<string,object>> rows) ReadSheetByDictionary(string sheetName) 
         {
-            (List<string> columnNames, IEnumerable<object[]> rows) = ReadSheetByCell(sheetIndex);
+            (List<string> columnNames, IEnumerable<object[]> rows) = ReadSheetByEnumerable(sheetName);
             if (columnNames == null) return default;
 
             List<(string name,int index)> nameIndexMap=columnNames.Select((name,index)=>(name,index)).ToList();
-            IEnumerable<Dictionary<string, object>> rows_ = rows.Select(row => nameIndexMap.ToDictionary(item => item.name, item => row[item.index]));
+            IEnumerable<IDictionary<string, object>> rows_ = rows.Select(row => nameIndexMap.ToDictionary(item => item.name, item => row[item.index]));
             return (columnNames, rows_);
         }
         #endregion
 
 
         #region #3 Model
-        public (List<string> columnNames, IEnumerable<Model> rows) ReadSheet<Model>(int sheetIndex)
-            where Model:class,new()
+        public IEnumerable<Model> ReadSheetByModel<Model>(string sheetName)
+            where Model : class, new()
         {
-            (List<string> columnNames, IEnumerable<object[]> rows) = ReadSheetByCell(sheetIndex);
+            (List<string> columnNames, IEnumerable<object[]> rows) = ReadSheetByEnumerable(sheetName);
             if (columnNames == null) return default;
 
             var type = typeof(Model);
@@ -305,21 +317,44 @@ namespace Vit.Excel
 
             List<(string name, int index)> nameIndexMap = columnNames.Select((name, index) => (name, index)).ToList();
             IEnumerable<Model> rows_ = rows.Select(CellToModel);
-            return (columnNames, rows_);
+            return rows_;
 
             #region Method CellToModel
-            Model CellToModel(object[] cells) 
+            Model CellToModel(object[] cells)
             {
-                var row=new Model();
-                for (var i = 0; i < cells.Length; i++) 
+                var row = new Model();
+                for (var i = 0; i < cells.Length; i++)
                     cellSetters[i]?.Invoke(row, cells[i]);
                 return row;
             }
             #endregion
-
         }
         #endregion
 
+
+        #endregion
+
+
+        #region Read SheetInfo
+
+
+        public List<string> GetSheetNames()
+        {
+            return package.Workbook.Worksheets.AsQueryable().Select(m => m.Name).ToList();
+        }
+
+        public int GetSheetRowCount(int sheetIndex)
+        {
+            var sheet = package.Workbook.Worksheets[sheetIndex + 1];
+            return sheet.Dimension.Rows - (useHeaderRow ? 1 : 0);
+        }
+
+        public int GetSheetRowCount(string sheetName)
+        {
+            var worksheet = package.Workbook.Worksheets.FirstOrDefault(sheet => sheet.Name == sheetName);
+            if (worksheet == null) return default;
+            return worksheet.Dimension.Rows - (useHeaderRow ? 1 : 0);
+        }
 
         #endregion
 

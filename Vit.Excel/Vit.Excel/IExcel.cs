@@ -1,24 +1,32 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
-using System.Text;
 
-using OfficeOpenXml;
-using Vit.Excel.Model;
 
 namespace Vit.Excel
 {
-    public interface IExcel
+    public interface IExcel:IDisposable
     {
-        void SaveSheets(Stream stream, IEnumerable<(string sheetName, List<string> columns, IEnumerable<IEnumerable<object>> rows)> sheets);
+        void Save();
+        void AddSheetByEnumerable(string sheetName, IEnumerable<IEnumerable<object>> sheet, string[] columnNames);
+
+        void AddSheetByDictionary(string sheetName, IEnumerable<IDictionary<string, object>> sheet, string[] columnNames = null);
+
+        void AddSheetByModel<Model>(string sheetName, IEnumerable<Model> sheet, string[] columnNames = null) where Model : class;
+        void AddSheetByDataTable(DataTable sheet, string sheetName = null);
 
 
-        List<string> ReadSheetsName(Stream stream);
-        List<int> ReadSheetsRowCount(Stream stream);
-        int ReadSheetsCount(Stream stream);
+        (List<string> columnNames, IEnumerable<object[]> rows) ReadSheetByEnumerable(string sheetName);
+        (List<string> columnNames, IEnumerable<IDictionary<string, object>> rows) ReadSheetByDictionary(string sheetName);
+
+        IEnumerable<Model> ReadSheetByModel<Model>(string sheetName) where Model : class, new();
 
 
-        bool ReadSheet(Stream stream,ReadArgs args);
+
+
+        List<string> GetSheetNames();
+
 
     }
 }

@@ -12,7 +12,7 @@
 
     <PropertyGroup>
         <Authors>Lith</Authors>
-        <Description>tool for excel and csv</Description>
+        <Description>tool for excel</Description>
         <PackageProjectUrl>https://github.com/serset/Vit.Library</PackageProjectUrl>
     </PropertyGroup>
 
@@ -21,9 +21,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Compile Remove="ExcelHelp.DataTable.cs" />
-      <Compile Remove="ExcelHelp.ExcelSheet.cs" />
-      <Compile Remove="ExcelHelp.File.cs" />
+      <Compile Remove="Excel_EPPlus.DataTable.cs" />
     </ItemGroup>
 
     <ItemGroup>
