@@ -29,7 +29,7 @@ namespace Vit.Excel
         }
 
 
-        public Excel_MiniExcel(string filePath):this(new FileStream(filePath, FileMode.OpenOrCreate),true)
+        public Excel_MiniExcel(string filePath) : this(new FileStream(filePath, FileMode.OpenOrCreate), true)
         {
         }
 
@@ -347,7 +347,7 @@ namespace Vit.Excel
 
         #endregion
 
-      
+
 
 
 
@@ -367,7 +367,7 @@ namespace Vit.Excel
         #endregion
 
 
-        #region #2 Cell Array
+        #region #2 Enumerable
         public (List<string> columnNames, IEnumerable<object[]> rows) ReadSheetByEnumerable(string sheetName)
         {
             (var columnNames, var rows) = ReadSheetByDictionary(sheetName);
@@ -395,25 +395,11 @@ namespace Vit.Excel
                             .Union(properties.Select(m => (m.Name, (Action<object, object>)m.SetValue, m.PropertyType)))
                             .ToList();
 
-            List<(string Name, Action<object, object> Setvalue)> valueSetterlist = columnList.Select(column =>
-            {
-                Action<object, object> SetValue = (row, cellValue) =>
-                    {
-                        try
-                        {
-                            if (cellValue == null) return;
-                            if (cellValue.GetType() != column.FieldType)
-                            {
-                                cellValue = Json.Deserialize(Json.Serialize(cellValue), column.FieldType);
-                            }
-                            column.SetValue(row, cellValue);
-                        }
-                        catch (Exception ex) { }
-                    };
-                return (column.Name, SetValue);
-            }).ToList();
+            List<(string Name, Action<object, object> Setter)> valueSetterList = columnList
+                .Select(column => (column.Name, Model_BuildSetter(column.SetValue, column.FieldType)))
+                .ToList();
 
-            var cellSetters = valueSetterlist.GroupBy(item => item.Name).ToDictionary(item => item.Key, item => item.First().Setvalue);
+            var cellSetters = valueSetterList.GroupBy(item => item.Name).ToDictionary(item => item.Key, item => item.First().Setter);
 
             IEnumerable<Model> rows_ = rows.Select(CellToModel);
             return rows_;
@@ -424,13 +410,32 @@ namespace Vit.Excel
                 var model = new Model();
                 foreach (var kv in row)
                 {
-                    if (cellSetters.TryGetValue(kv.Key, out var SetValue))
-                        SetValue?.Invoke(model, kv.Value);
+                    if (cellSetters.TryGetValue(kv.Key, out var Setter))
+                        Setter?.Invoke(model, kv.Value);
                 }
                 return model;
             }
             #endregion
         }
+
+        internal static Action<object, object> Model_BuildSetter(Action<object, object> SetValue, Type FieldType)
+        {
+            Action<object, object> Setter = (row, cellValue) =>
+            {
+                try
+                {
+                    if (cellValue == null) return;
+                    if (cellValue.GetType() != FieldType)
+                    {
+                        cellValue = Json.Deserialize(Json.Serialize(cellValue), FieldType);
+                    }
+                    SetValue(row, cellValue);
+                }
+                catch (Exception ex) { }
+            };
+            return Setter;
+        }
+
 
         #endregion
 

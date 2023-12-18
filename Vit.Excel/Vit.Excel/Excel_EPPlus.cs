@@ -8,6 +8,7 @@ using System.Reflection;
 using OfficeOpenXml;
 
 using Vit.Extensions;
+using Vit.Extensions.Json_Extensions;
 
 namespace Vit.Excel
 {
@@ -16,26 +17,43 @@ namespace Vit.Excel
         public bool useHeaderRow { get; set; } = true;
 
         #region readOriginalValue
-        Func<ExcelRange, object> GetCellValue = GetCellValue_Value;
-        public bool _readOriginalValue = true;
+        Func<ExcelRange, object> GetCellValue = GetCellValue_Auto;
+        public bool? _readOriginalValue = true;
 
 
         /// <summary>
         /// <para> readOriginalValue, 默认false,获取cell的Text                                                     </para>
+        /// <para>     null: try to read date and time    </para>
         /// <para>     true: 获取xls内cell中的原始值。如xls中的日期格式，原始值可能为 43046,而Text为"2017/11/7"    </para>
         /// <para>    false: 获取xls内cell中的Text值。如xls中的日期格式，原始值可能为 43046,而Text为"2017/11/7"    </para>
         /// </summary>
-        public bool readOriginalValue
+        public bool? readOriginalValue
         {
             get => _readOriginalValue;
             set
             {
                 _readOriginalValue = value;
-                GetCellValue = _readOriginalValue ? GetCellValue_Value : GetCellValue_Text;
+                if (_readOriginalValue == null) { GetCellValue = GetCellValue_Auto; }
+                else if (_readOriginalValue.Value) { GetCellValue = GetCellValue_Value; }
+                else { GetCellValue = GetCellValue_Text; }
             }
         }
         static object GetCellValue_Value(ExcelRange cell) => cell.Value;
         static object GetCellValue_Text(ExcelRange cell) => cell.Text;
+        static object GetCellValue_Auto(ExcelRange cell)
+        {
+            var Format = cell.Style?.Numberformat?.Format;
+            if (string.IsNullOrEmpty(Format) || Format == "General" || Format == "general") return cell.Value;
+            var value = cell.Text;
+            try
+            {
+                if (DateTime.TryParse(value, out var time)) return time;
+            }
+            catch
+            {
+            }
+            return value;
+        }
         #endregion
 
 
@@ -61,9 +79,9 @@ namespace Vit.Excel
         }
 
 
-      
 
-        public Excel_EPPlus(Stream stream, bool needDisposeStream = false) 
+
+        public Excel_EPPlus(Stream stream, bool needDisposeStream = false)
         {
             this.stream = stream;
             this.needDisposeStream = needDisposeStream;
@@ -85,6 +103,11 @@ namespace Vit.Excel
 
 
         #region #1 Enumerable
+        static bool IsDateTime(object value)
+        {
+            return value != null && Type.GetTypeCode(value.GetType().GetUnderlyingTypeIfNullable()) == TypeCode.DateTime;
+        }
+
         public void AddSheetByEnumerable(string sheetName, IEnumerable<IEnumerable<object>> sheet, string[] columnNames = null)
         {
             ExcelWorksheet worksheet = package.Workbook.Worksheets.FirstOrDefault(worksheet => worksheet.Name == sheetName)
@@ -104,29 +127,48 @@ namespace Vit.Excel
                     worksheet.Cells[rowIndex, colIndex].Value = column;
                     worksheet.Cells[rowIndex, colIndex].Style.Font.Bold = true;
                 }
-
             }
             #endregion
 
-            #region #2 rows
+            #region #2 column format
+            var firstRow = sheet.FirstOrDefault();
+            if (firstRow != null)
+            {
+                int colIndex = 0;
+                foreach (var cell in firstRow)
+                {
+                    colIndex++;
+                    if (IsDateTime(cell))
+                    {
+                        worksheet.Column(colIndex).Style.Numberformat.Format = "yyyy-MM-dd HH:mm:ss";
+                    }
+                }
+            }
+            #endregion
+
+
+            #region #3 rows
             foreach (var row in sheet)
             {
                 rowIndex++;
                 int colIndex = 0;
                 foreach (var cell in row)
                 {
-                    worksheet.Cells[rowIndex, colIndex].Value = cell;
                     colIndex++;
+                    worksheet.Cells[rowIndex, colIndex].Value = cell;
                 }
             }
             #endregion
+
+            worksheet.Cells.AutoFitColumns();
         }
         #endregion
 
         #region #2 Dictionary
         public void AddSheetByDictionary(string sheetName, IEnumerable<IDictionary<string, object>> sheet, string[] columnNames = null)
         {
-            IEnumerable<IEnumerable<object>> sheetEnumerable = sheet.Select(row => { if (columnNames == null) columnNames = row.Keys.ToArray(); return columnNames.Select(name => row[name]); });
+            if (columnNames == null) columnNames = sheet.FirstOrDefault()?.Keys.ToArray() ?? new string[] { };
+            IEnumerable<IEnumerable<object>> sheetEnumerable = sheet.Select(row => columnNames.Select(name => row[name]));
             AddSheetByEnumerable(sheetName, sheetEnumerable, columnNames);
         }
 
@@ -178,7 +220,7 @@ namespace Vit.Excel
         public void AddSheetByDataTable(DataTable sheet, string sheetName = null)
         {
             if (sheetName == null) sheetName = sheet.TableName;
-                   
+
             var columnNames = new List<string>();
             foreach (DataColumn col in sheet.Columns) { columnNames.Add(col.ColumnName); }
 
@@ -198,11 +240,6 @@ namespace Vit.Excel
         #endregion
 
         #endregion
-
-
-
-
-
 
 
 
@@ -234,7 +271,8 @@ namespace Vit.Excel
                 for (int i = 0; i < sourceColCount; i++)
                 {
                     var cell = cells[1, i + 1];
-                    var colName = GetCellValue(cell)?.ToString();
+                    //var colName = GetCellValue(cell)?.ToString();
+                    var colName = cell.Text;
                     //var colName = cells[1, i + 1].Text?.ToString();
                     //var colName = cells[1, i + 1].Value?.ToString();
                     //var type = typeof(string);
@@ -286,12 +324,12 @@ namespace Vit.Excel
 
 
         #region #2 Dictionary
-        public (List<string> columnNames, IEnumerable<IDictionary<string,object>> rows) ReadSheetByDictionary(string sheetName) 
+        public (List<string> columnNames, IEnumerable<IDictionary<string, object>> rows) ReadSheetByDictionary(string sheetName)
         {
             (List<string> columnNames, IEnumerable<object[]> rows) = ReadSheetByEnumerable(sheetName);
             if (columnNames == null) return default;
 
-            List<(string name,int index)> nameIndexMap=columnNames.Select((name,index)=>(name,index)).ToList();
+            List<(string name, int index)> nameIndexMap = columnNames.Select((name, index) => (name, index)).ToList();
             IEnumerable<IDictionary<string, object>> rows_ = rows.Select(row => nameIndexMap.ToDictionary(item => item.name, item => row[item.index]));
             return (columnNames, rows_);
         }
@@ -309,13 +347,17 @@ namespace Vit.Excel
             var fields = type.GetFields(BindingFlags.Public | BindingFlags.Instance);
             var properties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
 
-            var valueSetterList =
-                fields.Select(m => (m.Name, (Action<object, object>)m.SetValue))
-                 .Union(properties.Select(m => (m.Name, (Action<object, object>)m.SetValue)));
+            List<(string Name, Action<object, object> SetValue, Type FieldType)> columnList =
+                    fields.Select(m => (m.Name, (Action<object, object>)m.SetValue, m.FieldType))
+                    .Union(properties.Select(m => (m.Name, (Action<object, object>)m.SetValue, m.PropertyType)))
+                    .ToList();
 
-            var cellSetters = columnNames.Select(name => valueSetterList.FirstOrDefault(item => item.Name == name).Item2).ToArray();
+            List<(string Name, Action<object, object> Setter)> valueSetterList = columnList
+                .Select(column => (column.Name, Excel_MiniExcel.Model_BuildSetter(column.SetValue, column.FieldType)))
+                .ToList();
 
-            List<(string name, int index)> nameIndexMap = columnNames.Select((name, index) => (name, index)).ToList();
+            var cellSetters = columnNames.Select(name => valueSetterList.FirstOrDefault(item => item.Name == name).Setter).ToArray();
+
             IEnumerable<Model> rows_ = rows.Select(CellToModel);
             return rows_;
 
@@ -329,6 +371,9 @@ namespace Vit.Excel
             }
             #endregion
         }
+
+
+
         #endregion
 
 

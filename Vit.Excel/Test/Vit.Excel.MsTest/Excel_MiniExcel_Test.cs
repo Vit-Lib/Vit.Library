@@ -5,26 +5,37 @@ using System.Linq;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-using Vit.Core.Module.Serialization;
-using Vit.Core.Util.Common;
 using Vit.Extensions;
 
 namespace Vit.Excel.MsTest
 {
     [TestClass]
-    public class Excel_MiniExcel_Test: BaseExcel_Test
+    public class Excel_MiniExcel_Test : BaseExcel_Test
     {
 
-        public override IExcel GetExcel(string filePath)=>new Excel_MiniExcel(filePath);
+        public override IExcel GetExcel(string filePath) => new Excel_MiniExcel(filePath);
 
 
-        public override void DataFromExcelAreSame(List<UserInfo> modelList, string filePath, string sheetName = "userList") 
+        [TestMethod]
+        public override void Test_ReadWrite()
         {
-            base.DataFromExcelAreSame(modelList,filePath,sheetName);
+            base.Test_ReadWrite();
+        }
+
+        [TestMethod]
+        public override void Test_MultiSheets()
+        {
+            base.Test_MultiSheets();
+        }
+
+
+        public override void DataFromExcelAreSame(List<UserInfo> modelList, string filePath, string sheetName = "userList")
+        {
+            base.DataFromExcelAreSame(modelList, filePath, sheetName);
 
             #region #4 native Dictionary
             {
-                var dictionaries = modelList.Select(m => Json.Deserialize<IDictionary<string, object>>(Json.Serialize(m)));
+                var dictionaries = modelList.Select(m => m.ToDictionary());
                 var userList = dictionaries.ToList();
 
                 // read
@@ -69,24 +80,11 @@ namespace Vit.Excel.MsTest
         }
 
 
-        [TestMethod]
-        public override void Test_ReadWrite() 
-        {
-            base.Test_ReadWrite();
-        }
 
         [TestMethod]
-        public override void Test_MultiSheets() 
-        {
-            base.Test_MultiSheets();
-        }
-
-
-
-        //[TestMethod]
         public void Test_HugeData()
         {
-            var filePath = CommonHelp.GetAbsPath(CommonHelp.NewGuid() + "_test.xlsx");
+            var filePath = GetTempFilePath();
             try
             {
                 int rowCount = 100000;

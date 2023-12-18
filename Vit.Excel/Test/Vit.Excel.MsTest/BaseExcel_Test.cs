@@ -1,15 +1,11 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-using Vit.Core.Module.Serialization;
 using Vit.Core.Util.Common;
-using Vit.Core.Util.ConfigurationManager;
-using Vit.Excel;
 using Vit.Extensions;
 
 namespace Vit.Excel.MsTest
@@ -19,13 +15,14 @@ namespace Vit.Excel.MsTest
     {
 
         public abstract IExcel GetExcel(string filePath);
+        public string GetTempFilePath() => CommonHelp.GetAbsPath(DateTime.Now.ToString("HHmmss_") + CommonHelp.NewGuid() + "_test.xlsx");
 
 
         public virtual void DataFromExcelAreSame(List<UserInfo> modelList, string filePath, string sheetName = "userList")
         {
             #region #1 Dictionary
             {
-                var dictionaries = modelList.Select(m => Json.Deserialize<IDictionary<string, object>>(Json.Serialize(m)));
+                var dictionaries = modelList.Select(m => m.ToDictionary());
                 var userList = dictionaries.ToList();
 
                 // read
@@ -47,7 +44,7 @@ namespace Vit.Excel.MsTest
 
             #region #2 Cell Array
             {
-                var dictionaries = modelList.Select(m => Json.Deserialize<IDictionary<string, object>>(Json.Serialize(m)));
+                var dictionaries = modelList.Select(m => m.ToDictionary());
                 var userList = dictionaries.Select(m => m.Values.ToArray()).ToList();
 
                 // read
@@ -85,14 +82,14 @@ namespace Vit.Excel.MsTest
                     Assert.AreEqual(user, user2);
                 }
             }
-            #endregion       
+            #endregion
 
         }
 
-
+        [TestMethod]
         public virtual void Test_ReadWrite()
         {
-            var filePath = CommonHelp.GetAbsPath(CommonHelp.NewGuid() + "_test.xlsx");
+            var filePath = GetTempFilePath();
             try
             {
                 var modelList = UserInfo.GenerateList(1000);
@@ -101,7 +98,7 @@ namespace Vit.Excel.MsTest
                 {
                     // write
                     {
-                        var dictionaries = modelList.Select(m => Json.Deserialize<IDictionary<string, object>>(Json.Serialize(m)));
+                        var dictionaries = modelList.Select(m => m.ToDictionary());
                         var userList = dictionaries;
 
                         File.Delete(filePath);
@@ -119,7 +116,7 @@ namespace Vit.Excel.MsTest
                 {
                     // write
                     {
-                        var dictionaries = modelList.Select(m => Json.Deserialize<IDictionary<string, object>>(Json.Serialize(m)));
+                        var dictionaries = modelList.Select(m => m.ToDictionary());
                         var columns = dictionaries.First().Keys.ToArray();
                         var userList = dictionaries.Select(m => m.Values.ToArray()).ToList();
 
@@ -157,10 +154,10 @@ namespace Vit.Excel.MsTest
             }
         }
 
-
+        [TestMethod]
         public virtual void Test_MultiSheets()
         {
-            var filePath = CommonHelp.GetAbsPath(CommonHelp.NewGuid() + "_test.xlsx");
+            var filePath = GetTempFilePath();
             try
             {
                 var modelList = UserInfo.GenerateList(1000);
@@ -203,6 +200,6 @@ namespace Vit.Excel.MsTest
 
 
 
-     
+
     }
 }
