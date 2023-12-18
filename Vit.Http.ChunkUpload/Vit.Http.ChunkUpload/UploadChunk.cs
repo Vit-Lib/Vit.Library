@@ -1,15 +1,16 @@
 ﻿using Microsoft.AspNetCore.Http;
+
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+
+using Vit.Core.Module.Serialization;
 using Vit.Core.Util.ComponentModel.Data;
 using Vit.Core.Util.ComponentModel.SsError;
 using Vit.Extensions;
-using Vit.Extensions.Json_Extensions;
 
 namespace Vit.Http.ChunkUpload
 {
@@ -100,7 +101,7 @@ namespace Vit.Http.ChunkUpload
             }
             if (apiRet != null)
             {
-                string result = apiRet.Serialize();
+                string result = Json.Serialize(apiRet);
                 context.Response.ContentType = "text/json; charset=utf-8";
                 await context.Response.WriteAsync(result, Encoding.UTF8);
             }

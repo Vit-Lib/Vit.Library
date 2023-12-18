@@ -29,7 +29,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Vit.Core" Version="2.1.18" />
+		<PackageReference Include="Vit.Core" Version="2.1.19-preview3" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -8,6 +8,7 @@ using Vit.Db.Util.Data;
 using Vit.Extensions;
 using Vit.Extensions.Linq_Extensions;
 using Vit.Extensions.Json_Extensions;
+using Vit.Extensions.Object_Serialize_Extensions;
 
 namespace Vit.Db.DbMng.SqlerFile
 {

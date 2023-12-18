@@ -8,13 +8,13 @@ using SqlConnection = MySql.Data.MySqlClient.MySqlConnection;
 using SqlCommand = MySql.Data.MySqlClient.MySqlCommand;
 //using SqlDataAdapter = MySql.Data.MySqlClient.MySqlDataAdapter;
 //using SqlDataReader= MySql.Data.MySqlClient.MySqlDataReader;
- 
+
 using System.Linq;
 using System.IO;
-using Vit.Db.Util.Csv;
 using Vit.Db.BulkImport;
 using Vit.Core.Util.MethodExt;
 using Vit.Extensions.Linq_Extensions.Execute;
+using Vit.Extensions.Data;
 
 namespace Vit.Extensions.Linq_Extensions
 {
@@ -43,7 +43,7 @@ namespace Vit.Extensions.Linq_Extensions
 
 
 
-        
+
 
 
         #region Import Csv
@@ -63,7 +63,7 @@ namespace Vit.Extensions.Linq_Extensions
             , bool useTransaction = true, int? commandTimeout = null)
         {
 
-            Func<int> actionImportData = null;          
+            Func<int> actionImportData = null;
 
 
             #region (x.2)导入数据的逻辑           
@@ -136,7 +136,7 @@ namespace Vit.Extensions.Linq_Extensions
                 //var str_local_infile = conn.ExecuteDataTable("SHOW VARIABLES LIKE '%local%';")?.Rows?[0][1] as string;
                 //local_infile = str_local_infile?.ToUpper() == "ON";
 
-                local_infile = 1 ==   conn.ExecuteScalar<int>("SELECT @@local_infile;");
+                local_infile = 1 == conn.ExecuteScalar<int>("SELECT @@local_infile;");
 
                 //(x.x.2)
                 if (!local_infile)
@@ -162,7 +162,7 @@ namespace Vit.Extensions.Linq_Extensions
             #region (x.6)确保关闭外键检查       
             {
                 //(x.x.1)获取 状态
-                bool FOREIGN_KEY_CHECKS = 1 ==  conn.ExecuteScalar<int>("SELECT @@FOREIGN_KEY_CHECKS;");
+                bool FOREIGN_KEY_CHECKS = 1 == conn.ExecuteScalar<int>("SELECT @@FOREIGN_KEY_CHECKS;");
 
                 //(x.x.2)
                 if (FOREIGN_KEY_CHECKS)
@@ -208,7 +208,7 @@ namespace Vit.Extensions.Linq_Extensions
         /// <param name="commandTimeout">sets the wait time before terminating the attempt to execute a command and generating an error.</param> 
         public static int Import(this SqlConnection conn
             , DataTable dt, string tempFilePath = null
-            , int maxRowCount = int.MaxValue, int? batchRowCount = null, Action<int,int> onProcess = null
+            , int maxRowCount = int.MaxValue, int? batchRowCount = null, Action<int, int> onProcess = null
             , bool useTransaction = true, int? commandTimeout = null
             )
         {
@@ -219,7 +219,7 @@ namespace Vit.Extensions.Linq_Extensions
 
             try
             {
-         
+
                 var columns = dt.Columns.Cast<DataColumn>().Select(colum => colum.ColumnName).ToList();
 
 
@@ -227,7 +227,7 @@ namespace Vit.Extensions.Linq_Extensions
                 if (batchRowCount_ <= 0)
                 {
                     batchRowCount_ = maxRowCount;
-                }            
+                }
 
                 int importedRowCount = 0;
 
@@ -235,8 +235,8 @@ namespace Vit.Extensions.Linq_Extensions
                 {
 
                     //(x.x.1)保存数据到csv文件
-                    int readedRowCount = CsvHelp.SaveToCsv(tempFilePath, dt, 
-                        firstRowIsColumnName: true,
+                    int readedRowCount = CsvHelp.SaveToCsv(dt, tempFilePath,
+                        addColumnName: true,
                         firstRowIndex: importedRowCount,
                         maxRowCount: Math.Min(batchRowCount_, maxRowCount - importedRowCount)
                         );
@@ -261,7 +261,7 @@ namespace Vit.Extensions.Linq_Extensions
         }
 
         #endregion
-                            
+
 
 
         #region Import DataReader
@@ -279,7 +279,7 @@ namespace Vit.Extensions.Linq_Extensions
         /// <param name="commandTimeout">sets the wait time before terminating the attempt to execute a command and generating an error.</param>
         public static int Import(this SqlConnection conn
             , IDataReader dr, string tableName, string tempFilePath = null
-            , int maxRowCount = int.MaxValue, int? batchRowCount = null, Action<int,int> onProcess = null
+            , int maxRowCount = int.MaxValue, int? batchRowCount = null, Action<int, int> onProcess = null
             , bool useTransaction = true, int? commandTimeout = null
             )
         {
@@ -313,7 +313,7 @@ namespace Vit.Extensions.Linq_Extensions
                 {
 
                     //(x.x.1)保存数据到csv文件
-                    int rowCount = CsvHelp.SaveToCsv(tempFilePath, dr, firstRowIsColumnName: true, maxRowCount: Math.Min(batchRowCount_, maxRowCount - importedRowCount));
+                    int rowCount = CsvHelp.SaveToCsv(dr, tempFilePath, addColumnName: true, maxRowCount: Math.Min(batchRowCount_, maxRowCount - importedRowCount));
 
                     if (rowCount == 0) break;
 
@@ -323,7 +323,7 @@ namespace Vit.Extensions.Linq_Extensions
 
                     //(x.x.3)事件
                     importedRowCount += rowCount;
-                    onProcess?.Invoke(rowCount,importedRowCount);
+                    onProcess?.Invoke(rowCount, importedRowCount);
 
                     if (rowCount < batchRowCount_) break;
                 }
