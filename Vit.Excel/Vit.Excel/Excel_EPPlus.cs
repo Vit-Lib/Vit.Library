@@ -324,14 +324,14 @@ namespace Vit.Excel
 
 
         #region #2 Dictionary
-        public (List<string> columnNames, IEnumerable<IDictionary<string, object>> rows) ReadSheetByDictionary(string sheetName)
+        public IEnumerable<IDictionary<string, object>> ReadSheetByDictionary(string sheetName, out List<string> columnNames)
         {
-            (List<string> columnNames, IEnumerable<object[]> rows) = ReadSheetByEnumerable(sheetName);
+            (columnNames, IEnumerable<object[]> rows) = ReadSheetByEnumerable(sheetName);
             if (columnNames == null) return default;
 
             List<(string name, int index)> nameIndexMap = columnNames.Select((name, index) => (name, index)).ToList();
             IEnumerable<IDictionary<string, object>> rows_ = rows.Select(row => nameIndexMap.ToDictionary(item => item.name, item => row[item.index]));
-            return (columnNames, rows_);
+            return rows_;
         }
         #endregion
 

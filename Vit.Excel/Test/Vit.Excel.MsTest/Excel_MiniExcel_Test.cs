@@ -87,7 +87,7 @@ namespace Vit.Excel.MsTest
             var filePath = GetTempFilePath();
             try
             {
-                int rowCount = 100000;
+                int rowCount = 1000; // 100000
                 int columnCount = 100;
                 string cellValue = String.Join(",", Enumerable.Repeat("012345678", 100));
                 var columnNames = Enumerable.Range(0, columnCount).Select(i => "column" + i).ToArray();

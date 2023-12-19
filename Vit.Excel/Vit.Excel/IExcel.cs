@@ -18,7 +18,7 @@ namespace Vit.Excel
 
 
         (List<string> columnNames, IEnumerable<object[]> rows) ReadSheetByEnumerable(string sheetName);
-        (List<string> columnNames, IEnumerable<IDictionary<string, object>> rows) ReadSheetByDictionary(string sheetName);
+        IEnumerable<IDictionary<string, object>> ReadSheetByDictionary(string sheetName, out List<string> columnNames);
 
         IEnumerable<Model> ReadSheetByModel<Model>(string sheetName) where Model : class, new();
 

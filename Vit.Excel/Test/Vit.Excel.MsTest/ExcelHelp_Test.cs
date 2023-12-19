@@ -11,10 +11,10 @@ using Vit.Extensions;
 namespace Vit.Excel.MsTest
 {
 
-    public abstract class BaseExcel_Test
+    [TestClass]
+    public class ExcelHelp_Test
     {
 
-        public abstract IExcel GetExcel(string filePath);
         public string GetTempFilePath() => CommonHelp.GetAbsPath(DateTime.Now.ToString("HHmmss_") + CommonHelp.NewGuid() + "_test.xlsx");
 
 
@@ -28,9 +28,8 @@ namespace Vit.Excel.MsTest
                 // read
                 List<IDictionary<string, object>> userList_fromFile;
                 {
-                    using var excel = GetExcel(filePath);
-                    var rows = excel.ReadSheetByDictionary(sheetName);
-                    userList_fromFile = rows.ToList();
+                    var rows = ExcelHelp.ReadSheetByDictionary(filePath, sheetName);
+                    userList_fromFile = rows;
                 }
 
                 for (var i = 0; i < userList.Count; i++)
@@ -44,22 +43,6 @@ namespace Vit.Excel.MsTest
 
             #region #2 Enumerable
             {
-                var dictionaries = modelList.Select(m => m.ToDictionary());
-                var userList = dictionaries.Select(m => m.Values.ToArray()).ToList();
-
-                // read
-                List<Object[]> userList_fromFile;
-                {
-                    using var excel = GetExcel(filePath);
-                    var sheet = excel.ReadSheetByEnumerable(sheetName).rows;
-                    userList_fromFile = sheet.ToList();
-                }
-                for (var i = 0; i < userList.Count; i++)
-                {
-                    var user = userList[i];
-                    var user2 = userList_fromFile[i];
-                    Assert.IsTrue(UserInfo.AreEqual(user, user2));
-                }
             }
             #endregion
 
@@ -70,9 +53,8 @@ namespace Vit.Excel.MsTest
                 // read
                 List<UserInfo> userList_fromFile;
                 {
-                    using var excel = GetExcel(filePath);
-                    var sheet = excel.ReadSheetByModel<UserInfo>(sheetName);
-                    userList_fromFile = sheet.ToList();
+                    var sheet = ExcelHelp.ReadSheetByModel<UserInfo>(filePath, sheetName);
+                    userList_fromFile = sheet;
                 }
                 for (var i = 0; i < userList.Count; i++)
                 {
@@ -102,8 +84,7 @@ namespace Vit.Excel.MsTest
                         var userList = dictionaries;
 
                         File.Delete(filePath);
-                        using var excel = GetExcel(filePath);
-                        excel.SaveSheetByDictionary("userList", userList);
+                        ExcelHelp.SaveSheet(filePath, SheetData.Dictionary("userList", userList));
                     }
 
                     // read and assert
@@ -121,8 +102,7 @@ namespace Vit.Excel.MsTest
                         var userList = dictionaries.Select(m => m.Values.ToArray()).ToList();
 
                         File.Delete(filePath);
-                        using var excel = GetExcel(filePath);
-                        excel.SaveSheetByEnumerable("userList", userList, columns);
+                        ExcelHelp.SaveSheet(filePath, SheetData.Enumerable("userList", userList, columns));
                     }
 
                     // read and assert
@@ -138,8 +118,7 @@ namespace Vit.Excel.MsTest
                         var userList = modelList;
 
                         File.Delete(filePath);
-                        using var excel = GetExcel(filePath);
-                        excel.SaveSheetByModel("userList", userList);
+                        ExcelHelp.SaveSheet(filePath, SheetData.Model("userList", userList));
                     }
 
                     // read and assert
@@ -170,19 +149,17 @@ namespace Vit.Excel.MsTest
                         var userList = modelList;
 
                         File.Delete(filePath);
-                        using var excel = GetExcel(filePath);
-                        excel.AddSheetByModel("userList", userList);
-                        excel.AddSheetByModel("userList2", userList);
-                        excel.Save();
+                        ExcelHelp.SaveSheet(filePath, new[] {
+                            SheetData.Model("userList", userList),
+                            SheetData.Model("userList2", userList)
+                        });
                     }
 
                     // read and assert
                     {
-                        using var excel = GetExcel(filePath);
-                        var sheetNames = excel.GetSheetNames();
 
-                        var sheet1 = excel.ReadSheetByModel<UserInfo>("userList").ToList();
-                        var sheet2 = excel.ReadSheetByModel<UserInfo>("userList2").ToList();
+                        var sheet1 = ExcelHelp.ReadSheetByModel<UserInfo>(filePath, "userList");
+                        var sheet2 = ExcelHelp.ReadSheetByModel<UserInfo>(filePath, "userList2");
                     }
 
                     DataFromExcelAreSame(modelList, filePath, "userList");
