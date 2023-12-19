@@ -355,14 +355,18 @@ namespace Vit.Excel
         #region Read
 
         #region #1 Dictionary
-        public (List<string> columnNames, IEnumerable<IDictionary<string, object>> rows) ReadSheetByDictionary(string sheetName)
+        public IEnumerable<IDictionary<string, object>> ReadSheetByDictionary(string sheetName, out List<string> columnNames)
         {
             var rows = ReadDictionary(sheetName);
-            if (rows == null) return default;
+            if (rows == null)
+            {
+                columnNames = null;
+                return default;
+            }
 
             var firstRow = rows.FirstOrDefault();
-            var columnNames = firstRow?.Keys.ToList();
-            return (columnNames, rows);
+            columnNames = firstRow?.Keys.ToList();
+            return rows;
         }
         #endregion
 
@@ -370,7 +374,7 @@ namespace Vit.Excel
         #region #2 Enumerable
         public (List<string> columnNames, IEnumerable<object[]> rows) ReadSheetByEnumerable(string sheetName)
         {
-            (var columnNames, var rows) = ReadSheetByDictionary(sheetName);
+            var rows = ReadSheetByDictionary(sheetName, out var columnNames);
             if (columnNames == null) return default;
 
             IEnumerable<object[]> rows_ = rows.Select(row => row.Values.ToArray());
