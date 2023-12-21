@@ -9,7 +9,7 @@ namespace Vit.Db.Redis.QpsTest
     public class RedisQpsTest
     {
         long requestCount = 0;
-        public int threadCount = Vit.Core.Util.ConfigurationManager.Appsettings.json.GetByPath<int>("threadCount");
+        public int threadCount = Appsettings.json.GetByPath<int>("threadCount");
 
         public RedisQpsTest()
         {

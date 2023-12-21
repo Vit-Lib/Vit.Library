@@ -1,0 +1,33 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <pack>nuget</pack>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <Version>2.2.13-temp</Version>
+        <LangVersion>preview</LangVersion>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <Authors>Lith</Authors>
+        <Description>tool for excel</Description>
+        <PackageProjectUrl>https://github.com/serset/Vit.Library</PackageProjectUrl>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <DocumentationFile>bin\Debug\netstandard2.0\Vit.Excel.xml</DocumentationFile>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <Compile Remove="Excel_EPPlus.DataTable.cs" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Vit.Core" Version="2.1.19-preview3" />
+        <PackageReference Include="EPPlus.Core" Version="1.5.4" />
+        <PackageReference Include="MiniExcel" Version="1.31.2" />
+    </ItemGroup>
+
+</Project>

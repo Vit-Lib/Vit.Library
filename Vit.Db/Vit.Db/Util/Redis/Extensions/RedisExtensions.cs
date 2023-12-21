@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
 using Vit.Extensions.Json_Extensions;
+using Vit.Extensions.Object_Serialize_Extensions;
 
 namespace Vit.Extensions.Redis_Extensions
 {
