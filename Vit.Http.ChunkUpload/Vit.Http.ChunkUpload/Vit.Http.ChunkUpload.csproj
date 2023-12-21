@@ -21,7 +21,7 @@
 
 
 	<ItemGroup>
-		<PackageReference Include="Vit.Core" Version="2.1.19-preview3" />
+		<PackageReference Include="Vit.Core" Version="2.1.19-preview4" />
 		<PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.1.0" />
 		<PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="2.1.0" />
 	</ItemGroup>
