@@ -1,9 +1,9 @@
 set -e
 
-# cd /root/temp/svn/Publish/DevOps/github-bash;bash startup.bash;
+# cd /root/temp/svn/Publish/DevOps2/github-bash;bash startup.bash;
 
 #---------------------------------------------------------------------
-#(x.1)参数
+# args
 args_="
 
 export APPNAME=xxxxxx
@@ -19,7 +19,7 @@ export GIT_SSH_SECRET=xxxxxx
 # "
 
 #----------------------------------------------
-#(x.2)当前路径
+# cur path
 curPath=$PWD
 
 cd $curPath/../../..
@@ -31,32 +31,31 @@ cd $curPath
 
 
 #---------------------------------------------- 
-echo '(x.4)build'
-cd $basePath/Publish/DevOps/build-bash; bash startup.bash;
-
+echo '#1 build'
+cd $basePath/Publish/DevOps2/build-bash; bash startup.bash;
+cd $basePath/Publish/DevOps2/build-bash; bash 40.Station-publish-multiple.bash;
 
 
 #---------------------------------------------- 
-echo '(x.5)release-bash'
-cd $basePath/Publish/DevOps/release-bash; bash startup.bash;
+echo '#2 release-bash'
+cd $basePath/Publish/DevOps2/release-bash; bash startup.bash;
  
 
 
 #----------------------------------------------
-echo "(x.3)get version" 
-export version=`grep '<Version>' $(grep '<pack>\|<publish>' ${basePath} -r --include *.csproj -l | head -n 1) | grep -oP '>(.*)<' | tr -d '<>'`
-echo $version
+echo "#3 get appVersion" 
+cd $basePath/Publish/DevOps2/build-bash; source 19.get-app-version.bash;
 
 
 
 #----------------------------------------------
-#(x.4)bash
+echo "#4 bash"
 cd $curPath
 for file in *.sh
 do
-    echo %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    echo "[$(date "+%H:%M:%S")]" bash $file
-    bash $file
+    echo "-----------------------------------------------------------------"
+    echo "[$(date "+%H:%M:%S")]" sh $file
+    sh $file
 done
 
 
