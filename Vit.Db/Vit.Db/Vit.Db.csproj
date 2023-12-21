@@ -12,7 +12,7 @@
 
     <PropertyGroup>
         <Authors>Lith</Authors>
-        <Description>数据库工具库，提供csv、excel、内存缓存、Redis、Sqlite、Mysql、SqlServer 等相关工具</Description>
+        <Description>Database tools, tools for memory cache/Redis/Sqlite/Mysql/SqlServer</Description>
         <PackageProjectUrl>https://github.com/serset/Vit.Library</PackageProjectUrl>
     </PropertyGroup>
 
@@ -35,7 +35,7 @@
         <PackageReference Include="Microsoft.Data.Sqlite" Version="5.0.5" />
         <!--<PackageReference Include="System.Data.SQLite" Version="1.0.113.7" />-->
 
-        <PackageReference Include="Vit.Core" Version="2.1.19-preview3" />
+        <PackageReference Include="Vit.Core" Version="2.1.19-preview4" />
         <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="2.1.0" />
         <PackageReference Include="EPPlus.Core" Version="1.5.4" />
         <PackageReference Include="StackExchange.Redis" Version="2.2.88" />

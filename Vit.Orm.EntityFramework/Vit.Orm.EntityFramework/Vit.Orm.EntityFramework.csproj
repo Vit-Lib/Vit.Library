@@ -23,7 +23,7 @@
 
 
     <ItemGroup>
-        <PackageReference Include="Vit.Core" Version="2.1.19-preview3" />
+        <PackageReference Include="Vit.Core" Version="2.1.19-preview4" />
     </ItemGroup>
 
     <ItemGroup>
