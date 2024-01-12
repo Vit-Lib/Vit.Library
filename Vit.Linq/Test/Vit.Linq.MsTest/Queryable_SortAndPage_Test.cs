@@ -10,13 +10,13 @@ namespace Vit.Linq.MsTest
     public class Queryable_SortAndPage_Test
     {
 
-        #region (x.3)TestSortAndPage        
+        #region TestSortAndPage
         [TestMethod]
         public void TestSortAndPage()
         {
             var query = DataSource.GetQueryable();
 
-            #region (x.1)
+            #region #1
             {
                 var result = query
                     .Sort(new[] {
@@ -31,11 +31,11 @@ namespace Vit.Linq.MsTest
             #endregion
 
 
-            #region (x.2)
-            {         
+            #region #2
+            {
                 var result = query
-                    .Sort("id",false)
-                    .Page(2,10)
+                    .Sort("id", false)
+                    .Page(2, 10)
                     .ToList();
                 Assert.AreEqual(result.Count, 10);
                 Assert.AreEqual(result[0].id, 989);
@@ -43,7 +43,7 @@ namespace Vit.Linq.MsTest
             #endregion
 
 
-            #region (x.3)
+            #region #3
             {
                 var result = query
                     .Sort(new[] {

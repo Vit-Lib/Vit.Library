@@ -1,26 +1,30 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-	<PropertyGroup>
-		<pack>nuget</pack>
-	</PropertyGroup>
+    <PropertyGroup>
+        <pack>nuget</pack>
+    </PropertyGroup>
 
-	<PropertyGroup>
-		<TargetFramework>netstandard2.0</TargetFramework>
-		<Version>2.2.13</Version>
-	</PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <Version>2.2.14</Version>
+    </PropertyGroup>
 
-	<PropertyGroup>
-		<Authors>Lith</Authors>
-		<Description>对Linq的扩展</Description>
-		<PackageProjectUrl>https://github.com/serset/Vit.Library</PackageProjectUrl>
-	</PropertyGroup>
+    <PropertyGroup>
+        <Authors>Lith</Authors>
+        <Description>Linq extensions</Description>
+        <PackageProjectUrl>https://github.com/serset/Vit.Library</PackageProjectUrl>
+    </PropertyGroup>
 
-	<PropertyGroup>
-		<DocumentationFile>bin\Debug\netstandard2.0\Vit.Linq.xml</DocumentationFile>
-	</PropertyGroup>
+    <PropertyGroup>
+        <DocumentationFile>bin\Debug\netstandard2.0\Vit.Linq.xml</DocumentationFile>
+    </PropertyGroup>
 
-	<ItemGroup>
-		<PackageReference Include="Vit.Core" Version="2.1.19" />
-	</ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Vit.Core" Version="2.1.19" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Vit.Linq.QueryBuilder\Vit.Linq.QueryBuilder.csproj" />
+    </ItemGroup>
 
 </Project>
