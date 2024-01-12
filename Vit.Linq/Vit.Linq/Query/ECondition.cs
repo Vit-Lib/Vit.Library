@@ -2,7 +2,7 @@
 {
     public enum ECondition
     {
-        OrElse = 1,
-        AndAlso = 2
+        or = 1,
+        and = 2
     }
 }
