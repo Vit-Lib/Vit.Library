@@ -7,27 +7,34 @@ using System.Linq.Expressions;
 
 namespace Vit.Linq.QueryBuilder
 {
-    public static class QueryBuilder
+    public class QueryBuilderService
     {
-        public static Func<T, bool> ToPredicate<T>(IFilterRule rule)
+        public static QueryBuilderService Instance = new QueryBuilderService();
+
+
+        public Dictionary<string, string> operatorMap = new Dictionary<string, string>();
+        public bool operatorIsIgnoreCase = true;
+        public bool ignoreError = false;
+
+        public Func<T, bool> ToPredicate<T>(IFilterRule rule)
         {
             return ToExpression<T>(rule)?.Compile();
         }
 
-        public static string ToExpressionString<T>(IFilterRule rule)
+        public string ToExpressionString<T>(IFilterRule rule)
         {
             return ToExpression<T>(rule)?.ToString();
         }
 
 
-        public static Expression<Func<T, bool>> ToExpression<T>(IFilterRule rule)
+        public Expression<Func<T, bool>> ToExpression<T>(IFilterRule rule)
         {
             var exp = ToLambdaExpression(rule, typeof(T));
             return (Expression<Func<T, bool>>)exp;
         }
 
 
-        public static LambdaExpression ToLambdaExpression(IFilterRule rule, Type targetType)
+        public LambdaExpression ToLambdaExpression(IFilterRule rule, Type targetType)
         {
             ParameterExpression parameter = Expression.Parameter(targetType);
             var expression = ConvertToExpression(rule, parameter);
@@ -42,12 +49,20 @@ namespace Vit.Linq.QueryBuilder
        
 
 
-        public static ECondition GetCondition(IFilterRule filter)
+        public ECondition GetCondition(IFilterRule filter)
         {
             return filter.condition?.ToLower() == "or" ? ECondition.or : ECondition.and;
         }
 
-        static Expression ConvertToExpression(IFilterRule rule, ParameterExpression parameter)
+        public string GetOperator(IFilterRule filter)
+        {
+            var operate = filter.@operator ?? "";
+            if (operatorIsIgnoreCase) operate = operate.ToLower();
+            if (operatorMap.TryGetValue(operate, out var op2)) return operatorIsIgnoreCase ? op2?.ToLower() : op2;
+            return operate;
+        }
+
+        Expression ConvertToExpression(IFilterRule rule, ParameterExpression parameter)
         {
             if (rule == null) return null;
 
@@ -56,8 +71,6 @@ namespace Vit.Linq.QueryBuilder
             {
                 return ConvertToExpression(rule.rules, parameter, GetCondition(rule));
             }
-
-
 
             // #2 simple rule
             if (string.IsNullOrWhiteSpace(rule.field))
@@ -71,7 +84,7 @@ namespace Vit.Linq.QueryBuilder
 
             Type fieldType = memberExp.Type;
 
-            switch (rule.@operator)
+            switch (GetOperator(rule))
             {
                 #region ##1  null
                 case "is null":
@@ -171,7 +184,7 @@ namespace Vit.Linq.QueryBuilder
             }
             #endregion
 
-
+            if (!ignoreError) throw new Exception("unrecognized operator : " + rule.@operator);
             return null;
 
 
@@ -228,7 +241,7 @@ namespace Vit.Linq.QueryBuilder
         }
 
 
-        static Expression ConvertToExpression(IEnumerable<IFilterRule> rules, ParameterExpression parameter, ECondition condition = ECondition.and)
+        Expression ConvertToExpression(IEnumerable<IFilterRule> rules, ParameterExpression parameter, ECondition condition = ECondition.and)
         {
             if (rules?.Any() != true)
             {
@@ -266,12 +279,12 @@ namespace Vit.Linq.QueryBuilder
         }
 
         #region ConvertToList
-        internal static object ConvertToList(IEnumerable values, Type fieldType)
+        internal object ConvertToList(IEnumerable values, Type fieldType)
         {
-            var methodInfo = typeof(QueryBuilder).GetMethod("ConvertToListByType", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic).MakeGenericMethod(fieldType);
-            return methodInfo.Invoke(null, new object[] { values });
+            var methodInfo = typeof(QueryBuilderService).GetMethod("ConvertToListByType", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic).MakeGenericMethod(fieldType);
+            return methodInfo.Invoke(this, new object[] { values });
         }
-        internal static List<T> ConvertToListByType<T>(IEnumerable values)
+        internal List<T> ConvertToListByType<T>(IEnumerable values)
         {
             Type valueType = typeof(T);
             var list = new List<T>();

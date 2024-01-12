@@ -15,7 +15,7 @@ namespace Vit.Extensions.Linq_Extensions
         {
             if (query == null || rule == null) return query;
 
-            var predicate = QueryBuilder.ToExpression<T>(rule);
+            var predicate = QueryBuilderService.Instance.ToExpression<T>(rule);
             if (predicate == null)
             {
                 return query;

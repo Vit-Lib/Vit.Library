@@ -14,7 +14,7 @@ namespace Vit.Extensions.Linq_Extensions
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static IQueryable IQueryable_Where(this IQueryable query, IFilterRule rule)
         {
-            LambdaExpression lambda = QueryBuilder.ToLambdaExpression(rule, query.ElementType);
+            LambdaExpression lambda = QueryBuilderService.Instance.ToLambdaExpression(rule, query.ElementType);
             if (lambda == null) return query;
             return query.Provider.CreateQuery(
                 Expression.Call(
