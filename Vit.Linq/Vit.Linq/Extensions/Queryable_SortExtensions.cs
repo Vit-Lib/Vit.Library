@@ -10,7 +10,7 @@ using Vit.Linq.QueryBuilder;
 namespace Vit.Extensions.Linq_Extensions
 {
     /// <summary>
-    /// 参考 https://www.cnblogs.com/Extnet/p/9848272.html
+    /// ref https://www.cnblogs.com/Extnet/p/9848272.html
     /// </summary>
     public static partial class Queryable_SortExtensions
     {

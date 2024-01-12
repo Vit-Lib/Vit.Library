@@ -11,10 +11,28 @@ namespace Vit.Linq.QueryBuilder
     {
         public static QueryBuilderService Instance = new QueryBuilderService();
 
-
+        /// <summary>
+        /// operatorName -> operatorType(in class FilterRuleOperator)
+        /// </summary>
         public Dictionary<string, string> operatorMap = new Dictionary<string, string>();
         public bool operatorIsIgnoreCase = true;
         public bool ignoreError = false;
+
+        public QueryBuilderService AddOperatorMap(string operatorName, string operatorType)
+        {
+            if (operatorIsIgnoreCase) operatorName = operatorName?.ToLower();
+            operatorMap[operatorName] = operatorType;
+            return this;
+        }
+
+        public QueryBuilderService AddOperatorMap(IEnumerable<(string operatorName, string operatorType)> maps)
+        {
+            foreach (var map in maps)
+                AddOperatorMap(map.operatorName, map.operatorType);
+            return this;
+        }
+
+
 
         public Func<T, bool> ToPredicate<T>(IFilterRule rule)
         {
@@ -46,7 +64,7 @@ namespace Vit.Linq.QueryBuilder
         }
 
 
-       
+
 
 
         public ECondition GetCondition(IFilterRule filter)
@@ -80,106 +98,108 @@ namespace Vit.Linq.QueryBuilder
 
             MemberExpression memberExp = LinqHelp.GetFieldMemberExpression(parameter, rule.field);
 
-            #region get Expression
+            #region Get Expression
 
             Type fieldType = memberExp.Type;
 
-            switch (GetOperator(rule))
+            var Operator = GetOperator(rule);
+            var cmpType = operatorIsIgnoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
+
+
             {
                 #region ##1  null
-                case "is null":
-                    {
-                        return IsNull();
-                    }
-                case "is not null":
-                    {
-                        return Expression.Not(IsNull());
-                    }
+                if (FilterRuleOperator.IsNull.Equals(Operator, cmpType))
+                {
+                    return IsNull();
+                }
+                if (FilterRuleOperator.IsNotNull.Equals(Operator, cmpType))
+                {
+                    return Expression.Not(IsNull());
+                }
                 #endregion
 
 
                 #region ##2 number
-                case "=":
-                    {
-                        return Expression.Equal(memberExp, ConvertValueExp());
-                    }
-                case "!=":
-                    {
-                        return Expression.NotEqual(memberExp, ConvertValueExp());
-                    }
+                if (FilterRuleOperator.Equal.Equals(Operator, cmpType))
+                {
+                    return Expression.Equal(memberExp, ConvertValueExp());
+                }
+                if (FilterRuleOperator.NotEqual.Equals(Operator, cmpType))
+                {
+                    return Expression.NotEqual(memberExp, ConvertValueExp());
+                }
 
-                case ">":
-                    {
-                        return Expression.GreaterThan(memberExp, ConvertValueExp());
-                    }
-                case ">=":
-                    {
-                        return Expression.GreaterThanOrEqual(memberExp, ConvertValueExp());
-                    }
-                case "<":
-                    {
-                        return Expression.LessThan(memberExp, ConvertValueExp());
+                if (FilterRuleOperator.GreaterThan.Equals(Operator, cmpType))
+                {
+                    return Expression.GreaterThan(memberExp, ConvertValueExp());
+                }
+                if (FilterRuleOperator.GreaterThanOrEqual.Equals(Operator, cmpType))
+                {
+                    return Expression.GreaterThanOrEqual(memberExp, ConvertValueExp());
+                }
+                if (FilterRuleOperator.LessThan.Equals(Operator, cmpType))
+                {
+                    return Expression.LessThan(memberExp, ConvertValueExp());
 
-                    }
-                case "<=":
-                    {
-                        return Expression.LessThanOrEqual(memberExp, ConvertValueExp());
-                    }
+                }
+                if (FilterRuleOperator.LessThanOrEqual.Equals(Operator, cmpType))
+                {
+                    return Expression.LessThanOrEqual(memberExp, ConvertValueExp());
+                }
                 #endregion
 
 
                 #region ##3 array
-                case "in":
-                    {
-                        return In();
-                    }
-                case "not in":
-                    {
-                        return Expression.Not(In());
-                    }
+                if (FilterRuleOperator.In.Equals(Operator, cmpType))
+                {
+                    return In();
+                }
+                if (FilterRuleOperator.NotIn.Equals(Operator, cmpType))
+                {
+                    return Expression.Not(In());
+                }
                 #endregion
 
 
                 #region ##4 string
-                case "contains":
-                    {
-                        var nullCheck = Expression.Call(typeof(string), "IsNullOrEmpty", null, memberExp);
-                        var contains = Expression.Call(memberExp, "Contains", null, ConvertValueExp());
+                if (FilterRuleOperator.Contains.Equals(Operator, cmpType))
+                {
+                    var nullCheck = Expression.Call(typeof(string), "IsNullOrEmpty", null, memberExp);
+                    var contains = Expression.Call(memberExp, "Contains", null, ConvertValueExp());
 
-                        return Expression.AndAlso(Expression.Not(nullCheck), contains);
+                    return Expression.AndAlso(Expression.Not(nullCheck), contains);
 
-                    }
-                case "not contains":
-                    {
-                        var nullCheck = Expression.Call(typeof(string), "IsNullOrEmpty", null, memberExp);
-                        var contains = Expression.Call(memberExp, "Contains", null, ConvertValueExp());
+                }
+                if (FilterRuleOperator.NotContains.Equals(Operator, cmpType))
+                {
+                    var nullCheck = Expression.Call(typeof(string), "IsNullOrEmpty", null, memberExp);
+                    var contains = Expression.Call(memberExp, "Contains", null, ConvertValueExp());
 
-                        return Expression.OrElse(nullCheck, Expression.Not(contains));
-                    }
-                case "starts with":
-                    {
-                        var nullCheck = Expression.Not(Expression.Call(typeof(string), "IsNullOrEmpty", null, memberExp));
-                        var startsWith = Expression.Call(memberExp, "StartsWith", null, ConvertValueExp());
+                    return Expression.OrElse(nullCheck, Expression.Not(contains));
+                }
+                if (FilterRuleOperator.StartsWith.Equals(Operator, cmpType))
+                {
+                    var nullCheck = Expression.Not(Expression.Call(typeof(string), "IsNullOrEmpty", null, memberExp));
+                    var startsWith = Expression.Call(memberExp, "StartsWith", null, ConvertValueExp());
 
-                        return Expression.AndAlso(nullCheck, startsWith);
-                    }
+                    return Expression.AndAlso(nullCheck, startsWith);
+                }
 
-                case "ends with":
-                    {
-                        var nullCheck = Expression.Not(Expression.Call(typeof(string), "IsNullOrEmpty", null, memberExp));
-                        var endsWith = Expression.Call(memberExp, "EndsWith", null, ConvertValueExp());
-                        return Expression.AndAlso(nullCheck, endsWith);
-                    }
-                case "is null or empty":
-                    {
-                        return Expression.Call(typeof(string), "IsNullOrEmpty", null, memberExp);
-                    }
-                case "is not null or empty":
-                    {
-                        return Expression.Not(Expression.Call(typeof(string), "IsNullOrEmpty", null, memberExp));
-                    }
-                    #endregion
-
+                if (FilterRuleOperator.EndsWith.Equals(Operator, cmpType))
+                {
+                    var nullCheck = Expression.Not(Expression.Call(typeof(string), "IsNullOrEmpty", null, memberExp));
+                    var endsWith = Expression.Call(memberExp, "EndsWith", null, ConvertValueExp());
+                    return Expression.AndAlso(nullCheck, endsWith);
+                }
+                if (FilterRuleOperator.IsNullOrEmpty.Equals(Operator, cmpType))
+                {
+                    return Expression.Call(typeof(string), "IsNullOrEmpty", null, memberExp);
+                }
+                if (FilterRuleOperator.IsNotNullOrEmpty.Equals(Operator, cmpType))
+                {
+                    return Expression.Not(Expression.Call(typeof(string), "IsNullOrEmpty", null, memberExp));
+                }
+                #endregion
 
             }
             #endregion

@@ -9,7 +9,7 @@ namespace Vit.Extensions.Linq_Extensions
 
 
     /// <summary>
-    /// 参考 DynamicQueryable
+    /// ref DynamicQueryable
     /// </summary>
     public static partial class IQueryable_Extensions
     {
