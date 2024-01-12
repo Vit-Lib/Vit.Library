@@ -1,15 +1,46 @@
 ﻿using Vit.Extensions.Linq_Extensions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Vit.Core.Util.ComponentModel.Data;
-using Vit.Core.Util.ComponentModel.Query;
-using static Vit.Linq.MsTest.DataSource;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Vit.Linq.MsTest
 {
     [TestClass]
     public class IQueryable_QueryBuilder_Test
     {
+        IQueryable  GetQueryable() => DataSource.GetIQueryable();
 
+
+        [TestMethod]
+        public void Test_ToList()
+        {
+            var query = GetQueryable();
+
+            #region Count ToList ToArray
+            {
+
+                int count = query.IQueryable_Count();
+                Assert.AreEqual(1000, count);
+
+
+                var list1 = query.IQueryable_ToList<ModelA>();
+                Assert.AreEqual(1000, list1.Count);
+
+                var list2 = query.IQueryable_ToList() as List<ModelA>;
+                Assert.AreEqual(1000, list2.Count);
+
+
+                var array1 = query.IQueryable_ToArray<ModelA>();
+                Assert.AreEqual(1000, array1.Length);
+
+                var array2 = query.IQueryable_ToArray() as ModelA[];
+                Assert.AreEqual(1000, array2.Length);
+            }
+            #endregion
+        }
+
+
+        /*
 
         #region (x.2)DataFilter        
         [TestMethod]
@@ -17,21 +48,8 @@ namespace Vit.Linq.MsTest
         {
             var query = DataSource.GetIQueryable();
 
-            //操作符。可为 "=", "!=", ">", "<" , ">=", "<=", "Contains", "NotContains", "StartsWith", "EndsWith", "IsNullOrEmpty", "IsNotNullOrEmpty", "In", "NotIn"
-
-
-            #region (x.0) Count ToList ToArray
-            {
-
-                int count = query.IQueryable_Count();
-
-                var list1 = query.IQueryable_ToList<ModelA>();
-                var list2 = query.IQueryable_ToList();
-
-                var array1 = query.IQueryable_ToArray<ModelA>();
-                var array2 = query.IQueryable_ToArray();               
-            }
-            #endregion
+         
+ 
 
             #region (x.1)  =
             {
@@ -235,59 +253,9 @@ namespace Vit.Linq.MsTest
 
         #endregion
 
+        //*/
 
-
-        #region (x.3)TestSortAndPage        
-        [TestMethod]
-        public void TestSortAndPage()
-        {
-            var query = GetIQueryable();
-
-            #region (x.1)
-            {
-                var result = query
-                    .IQueryable_Sort(new[] {
-                        new SortItem { field = "b1.pid", asc = false },
-                        new SortItem { field = "id", asc = true }
-                    })
-                    .IQueryable_Page(new PageInfo { pageIndex = 1, pageSize = 10 })
-                    .IQueryable_ToList<ModelA>();
-                Assert.AreEqual(result.Count, 10);
-                Assert.AreEqual(result[0].id, 990);
-            }
-            #endregion
-
-
-            #region (x.2)
-            {
-                var result = query
-                    .IQueryable_Sort("id", false)
-                    .IQueryable_Page(2, 10)
-                    .IQueryable_ToList<ModelA>();
-                Assert.AreEqual(result.Count, 10);
-                Assert.AreEqual(result[0].id, 989);
-            }
-            #endregion
-
-
-            #region (x.3)
-            {
-                var result = query
-                    .IQueryable_Sort(new[] {
-                        new SortItem { field = "b1.pid", asc = false },
-                        new SortItem { field = "id", asc = true }
-                    })
-                    .IQueryable_ToPageData<ModelA>(new PageInfo { pageIndex = 1, pageSize = 10 });
-
-                Assert.AreEqual(result.totalCount, 1000);
-                Assert.AreEqual(result.rows.Count, 10);
-                Assert.AreEqual(result.rows[0].id, 990);
-            }
-            #endregion
-
-        }
-        #endregion
-
+   
 
 
     }

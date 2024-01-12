@@ -1,11 +1,9 @@
 ﻿using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using static Vit.Linq.MsTest.DataSource;
+
 using Vit.Core.Module.Serialization;
 using Vit.Linq.QueryBuilder;
 using Vit.Extensions.Linq_Extensions;
-using System.Collections.Generic;
-using System.Data;
 
 namespace Vit.Linq.MsTest.QueryBuilder
 {
@@ -13,262 +11,448 @@ namespace Vit.Linq.MsTest.QueryBuilder
     public class Queryable_QueryBuilder_Test
     {
 
-        List<ModelA> ToList(IQueryable<ModelA> query, FilterRule rule) 
+        IQueryable<ModelA> GetQueryable() => DataSource.GetQueryable();
+
+
+        [TestMethod]
+        public void Test_ToList()
         {
-            return query.Where(rule).ToList();
+            var query = GetQueryable();
+
+            #region Count ToList ToArray
+            {
+
+                int count = query.Count();
+                Assert.AreEqual(1000, count);
+
+
+                var list1 = query.ToList<ModelA>();
+                Assert.AreEqual(1000, list1.Count);
+
+                var list2 = query.ToList();
+                Assert.AreEqual(1000, list2.Count);
+
+
+                var array1 = query.ToArray<ModelA>();
+                Assert.AreEqual(1000, array1.Length);
+
+                var array2 = query.ToArray();
+                Assert.AreEqual(1000, array2.Length);
+            }
+            #endregion
         }
-        ModelA FirstOrDefault(IQueryable<ModelA> query, FilterRule rule)
-        {
-            return query.Where(rule).FirstOrDefault();
-        }
+
+
+
+
 
 
         #region QueryBuilder
         [TestMethod]
         public void Test_QueryBuilder()
         {
-            var query = DataSource.GetQueryable();
 
-            #region (x.0) Count ToList ToArray
+            #region #1 [object] is null | is not null
+
+            #region ##1 is null
             {
+                var query = GetQueryable();
 
-                int count = query.Count();
+                var item = query.Skip(10).FirstOrDefault();
+                item.name = null;
 
-                var list1 = query.ToList<ModelA>();
-                var list2 = query.ToList();
-
-                var array1 = query.ToArray<ModelA>();
-                var array2 = query.ToArray();
+                var strRule = "{'field':'name',  'operator': 'is null'  }".Replace("'", "\"");
+                var rule = Json.Deserialize<FilterRule>(strRule);
+                var result = query.Where(rule).ToList();
+                Assert.AreEqual(1, result.Count);
+                Assert.AreEqual(10, result[0].id);
             }
             #endregion
 
-
-            #region #1  =
+            #region ##2 is not null
             {
-                // ##1
+                var query = GetQueryable();
+
+                var item = query.Skip(10).FirstOrDefault();
+                item.name = null;
+
+                var strRule = "{'field':'name',  'operator': 'is not null'  }".Replace("'", "\"");
+                var rule = Json.Deserialize<FilterRule>(strRule);
+                var result = query.Where(rule).ToList();
+                Assert.AreEqual(999, result.Count);
+            }
+            #endregion
+
+            #endregion
+
+
+            #region #2 [number | string | bool] compare
+
+            #region ##1.1 [number] =
+            {
+                // ###1
                 {
-                    var strRule = "{'field':'id',  'operator': '=',  'value':10 }".Replace("'","\"");
+                    var query = GetQueryable();
+
+                    var strRule = "{'field':'id',  'operator': '=',  'value':10 }".Replace("'", "\"");
                     var rule = Json.Deserialize<FilterRule>(strRule);
-                    var result = ToList(query, rule);
-                    Assert.AreEqual(result.Count, 1);
-                    Assert.AreEqual(result[0].id, 10);
+                    var result = query.Where(rule).ToList();
+                    Assert.AreEqual(1, result.Count);
+                    Assert.AreEqual(10, result[0].id);
                 }
 
-                // ##2
+                // ###2
                 {
+                    var query = GetQueryable();
+
                     var strRule = "{'field':'id',  'operator': '=',  'value': '10' }".Replace("'", "\"");
                     var rule = Json.Deserialize<FilterRule>(strRule);
-                    var result = ToList(query, rule);
-                    Assert.AreEqual(result.Count, 1);
-                    Assert.AreEqual(result[0].id, 10);
+                    var result = query.Where(rule).ToList();
+                    Assert.AreEqual(1, result.Count);
+                    Assert.AreEqual(10, result[0].id);
                 }
 
 
-                // ##3 == null
+                // ###3  = null
                 {
+                    var query = GetQueryable();
+
                     var item = query.Skip(10).FirstOrDefault();
-                    var pid = item.pid;
                     item.pid = null;
 
                     var strRule = "{'field':'pid',  'operator': '=',  'value': null }".Replace("'", "\"");
-                    var filterRule = Json.Deserialize<FilterRule>(strRule);
-                    var result = FirstOrDefault(query,filterRule);
-                    Assert.AreEqual(result?.id, 10);
-                    item.pid = pid;
+                    var rule = Json.Deserialize<FilterRule>(strRule);
+                    var result = query.Where(rule).FirstOrDefault();
+                    Assert.AreEqual(10, result.id);
                 }
 
 
             }
             #endregion
 
-            #region (x.2)  !=
+            #region ##1.2 [bool] =
             {
-                //(x.x.1)
+                // ###1
                 {
-                    var result = query.Where(new[] { new DataFilter { field = "id", opt = "!=", value = 10 } }).ToList();
-                    Assert.AreEqual(result.Count, 999);
+                    var query = GetQueryable();
+
+                    var strRule = "{'field':'isEven',  'operator': '=',  'value':true }".Replace("'", "\"");
+                    var rule = Json.Deserialize<FilterRule>(strRule);
+                    var result = query.Where(rule).ToList();
+                    Assert.AreEqual(result.Count, 500);
+                    Assert.AreEqual(0, result[0].id);
                 }
 
-                //(x.x.2) != null
+                // ###2
                 {
+                    var query = GetQueryable();
+
+                    var strRule = "{'field':'isEven',  'operator': '=',  'value': 'false' }".Replace("'", "\"");
+                    var rule = Json.Deserialize<FilterRule>(strRule);
+                    var result = query.Where(rule).ToList();
+                    Assert.AreEqual(result.Count, 500);
+                    Assert.AreEqual(1, result[0].id);
+                }
+            }
+            #endregion
+
+            #region ##2.1 [number] !=
+            {
+                // ###1
+                {
+                    var query = GetQueryable();
+
+                    var strRule = "{'field':'id',  'operator': '!=',  'value':10 }".Replace("'", "\"");
+                    var rule = Json.Deserialize<FilterRule>(strRule);
+                    var result = query.Where(rule).ToList();
+                    Assert.AreEqual(999, result.Count);
+                }
+
+                // ###2 != null
+                {
+                    var query = GetQueryable();
+
                     var item = query.Skip(10).FirstOrDefault();
-                    var pid = item.pid;
                     item.pid = null;
 
-                    var result = query.Where(new[] { new DataFilter { field = "pid", opt = "!=", value = null } }).ToList();
-                    Assert.AreEqual(result.Count, 999);
-                    item.pid = pid;
+                    var strRule = "{'field':'pid',  'operator': '!=',  'value': null }".Replace("'", "\"");
+                    var rule = Json.Deserialize<FilterRule>(strRule);
+                    var result = query.Where(rule).ToList();
+                    Assert.AreEqual(999, result.Count);
                 }
             }
             #endregion
 
-            #region (x.3)  > <
+            #region ##2.2 [bool] !=
             {
-                var result = query.Where(new[] { new DataFilter { field = "id", opt = ">", value = 10 }, new DataFilter { field = "id", opt = "<", value = 20 } }).ToList();
-                Assert.AreEqual(result.Count, 9);
-            }
-            #endregion
-
-            #region (x.4)  >= <=
-            {
-                var result = query.Where(new[] { new DataFilter { field = "id", opt = ">=", value = 10 }, new DataFilter { field = "id", opt = "<=", value = 20 } }).ToList();
-                Assert.AreEqual(result.Count, 11);
-            }
-            #endregion
-
-
-            #region (x.5)  Contains
-            {
-                var result = query.Where(new[] { new DataFilter { field = "name", opt = "Contains", value = "987" } }).ToList();
-                Assert.AreEqual(result.Count, 1);
-                Assert.AreEqual(result[0].id, 987);
-            }
-            #endregion
-
-            #region (x.x)  NotContains
-            {              
-
-                //(x.x.1)
+                // ###1
                 {
-                    var result = query.Where(new[] { new DataFilter { field = "name", opt = "NotContains", value = "987" } }).ToList();
-                    Assert.AreEqual(result.Count, 999);                  
+                    var query = GetQueryable();
+
+                    var strRule = "{'field':'isEven',  'operator': '!=',  'value':true }".Replace("'", "\"");
+                    var rule = Json.Deserialize<FilterRule>(strRule);
+                    var result = query.Where(rule).ToList();
+                    Assert.AreEqual(result.Count, 500);
+                    Assert.AreEqual(1, result[0].id);
                 }
 
-
-                //(x.x.2)
+                // ###2
                 {
-                    var item = query.Where(m => m.name.Contains("987")).FirstOrDefault();
-                    var oriName = item.name;
+                    var query = GetQueryable();
 
-                    item.name = null;
-                    var result = query.Where(new[] { new DataFilter { field = "name", opt = "NotContains", value = "987" } }).ToList();
-                    Assert.AreEqual(result.Count, 1000);
-                    item.name = oriName;
-                }
-
-                //(x.x.3)
-                {
-                    var item = query.Where(m=>m.name.Contains("987")).FirstOrDefault();
-                    var oriName = item.name;
-
-                    item.name = "";
-                    var result = query.Where(new[] { new DataFilter { field = "name", opt = "NotContains", value = "987" } }).ToList();
-                    Assert.AreEqual(result.Count, 1000);
-                    item.name = oriName;
+                    var strRule = "{'field':'isEven',  'operator': '!=',  'value': 'false' }".Replace("'", "\"");
+                    var rule = Json.Deserialize<FilterRule>(strRule);
+                    var result = query.Where(rule).ToList();
+                    Assert.AreEqual(result.Count, 500);
+                    Assert.AreEqual(0, result[0].id);
                 }
             }
             #endregion
 
 
-            #region (x.6)  StartsWith
+            #region ##3 [number] > <
             {
-                var result = query.Where(new[] { new DataFilter { field = "name", opt = "StartsWith", value = "name98" } }).ToList();
-                Assert.AreEqual(result.Count, 11);
-            }
-            #endregion
-
-            #region (x.7)  EndsWith
-            {
-                var result = query.Where(new[] { new DataFilter { field = "name", opt = "EndsWith", value = "987" } }).ToList();
-                Assert.AreEqual(result.Count, 1);
-            }
-            #endregion
-
-            #region (x.x)  IsNullOrEmpty
-            {
-                var item = query.Skip(10).FirstOrDefault();
-                var oriName = item.name;
-
-                //(x.x.1)
                 {
-                    item.name = null;
-                    var result = query.Where(new[] { new DataFilter { field = "name", opt = "IsNullOrEmpty" } }).ToList();
-                    Assert.AreEqual(result.Count, 1);
-                    item.name = oriName;
-                }
-                //(x.x.2)
-                {
-                    item.name = "";
-                    var result = query.Where(new[] { new DataFilter { field = "name", opt = "IsNullOrEmpty" } }).ToList();
-                    Assert.AreEqual(result.Count, 1);
-                    item.name = oriName;
-                }
-            }
-            #endregion
+                    var query = GetQueryable();
 
-            #region (x.x)  IsNotNullOrEmpty
-            {
-                var item = query.Skip(10).FirstOrDefault();
-                var oriName = item.name;
-
-                //(x.x.1)
-                {
-                    item.name = null;
-                    var result = query.Where(new[] { new DataFilter { field = "name", opt = "IsNotNullOrEmpty" } }).ToList();
-                    Assert.AreEqual(result.Count, 999);
-                    item.name = oriName;
-                }
-                //(x.x.2)
-                {
-                    item.name = "";
-                    var result = query.Where(new[] { new DataFilter { field = "name", opt = "IsNotNullOrEmpty" } }).ToList();
-                    Assert.AreEqual(result.Count, 999);
-                    item.name = oriName;
+                    var strRule = @"{'condition':'and', 'rules':[   
+                                        {'field':'id',  'operator': '>',  'value':10  },
+                                        {'field':'id',  'operator': '<',  'value': '20' } 
+                                    ]}".Replace("'", "\"");
+                    var rule = Json.Deserialize<FilterRule>(strRule);
+                    var result = query.Where(rule).ToList();
+                    Assert.AreEqual(9, result.Count);
+                    Assert.AreEqual(11, result[0].id);
                 }
             }
             #endregion
 
 
-
-            #region #8  in
+            #region ##4 [number] >= <=
             {
                 {
+                    var query = GetQueryable();
+
+                    var strRule = @"{'condition':'and', 'rules':[   
+                                        {'field':'id',  'operator': '>=',  'value':10  },
+                                        {'field':'id',  'operator': '<=',  'value': '20' } 
+                                    ]}".Replace("'", "\"");
+                    var rule = Json.Deserialize<FilterRule>(strRule);
+                    var result = query.Where(rule).ToList();
+                    Assert.AreEqual(11, result.Count);
+                    Assert.AreEqual(10, result[0].id);
+                }
+            }
+            #endregion
+
+            #endregion
+
+
+            #region #3  in | not in
+
+            #region ##1 in
+            {
+                {
+                    var query = GetQueryable();
+
                     var strRule = "{'field':'id',  'operator': 'in',  'value': [3,4,5] }".Replace("'", "\"");
                     var rule = Json.Deserialize<FilterRule>(strRule);
-                    var result = ToList(query, rule);
-                    Assert.AreEqual(result.Count, 3);
+                    var result = query.Where(rule).ToList();
+                    Assert.AreEqual(3, result.Count);
+                    Assert.AreEqual(5, result[2].id);
                 }
 
-                query.FirstOrDefault().name = null;
                 {
+                    var query = GetQueryable();
+
                     var strRule = "{'field':'name',  'operator': 'in',  'value': [ 'name3', 'name4'] }".Replace("'", "\"");
                     var rule = Json.Deserialize<FilterRule>(strRule);
-                    var result = ToList(query, rule);
-                    Assert.AreEqual(result.Count, 2);
+                    var result = query.Where(rule).ToList();
+                    Assert.AreEqual(2, result.Count);
+                    Assert.AreEqual("name3", result[0].name);
                 }
+
                 {
-                    var strRule = @"{'condition':'or', 'rules':[   
+                    var query = GetQueryable();
+                    query.FirstOrDefault().name = null;
+
+                    var strRule = @"{'condition':'or', 'rules':[
                                         {'field':'name',  'operator': 'is null' },
                                         {'field':'name',  'operator': 'in',  'value': [ 'name3', 'name4'] } 
                                     ]}".Replace("'", "\"");
                     var rule = Json.Deserialize<FilterRule>(strRule);
-                    var result = ToList(query, rule);
-                    Assert.AreEqual(result.Count, 3);
+                    var result = query.Where(rule).ToList();
+                    Assert.AreEqual(3, result.Count);
+                    Assert.AreEqual(null, result[0].name);
+                    Assert.AreEqual("name4", result[2].name);
                 }
             }
             #endregion
 
-            #region # 9  not in 
+            #region ##2  not in 
             {
+                var query = GetQueryable();
+                query.FirstOrDefault().name = null;
+
                 var strRule = @"{'condition':'and', 'rules':[   
                                         {'field':'name',  'operator': 'is not null' },
                                         {'field':'name',  'operator': 'not in',  'value': [ 'name3', 'name4'] } 
                                     ]}".Replace("'", "\"");
                 var rule = Json.Deserialize<FilterRule>(strRule);
-                var result = ToList(query, rule);
-                Assert.AreEqual(result.Count, 997);
+                var result = query.Where(rule).ToList();
+                Assert.AreEqual(997, result.Count);
+            }
+            #endregion
+
+            #endregion
+
+
+            #region #4 [string] operate
+
+            #region ##1  contains
+            {
+                var query = GetQueryable();
+
+                var strRule = "{'field':'name',  'operator': 'contains',  'value': '987' }".Replace("'", "\"");
+                var rule = Json.Deserialize<FilterRule>(strRule);
+                var result = query.Where(rule).ToList();
+
+                Assert.AreEqual(1, result.Count);
+                Assert.AreEqual(987, result.First().id);
+            }
+            #endregion
+
+            #region ##2  not contains
+            {
+                //###1
+                {
+                    var query = GetQueryable();
+
+                    var strRule = "{'field':'name',  'operator': 'not contains',  'value': '987' }".Replace("'", "\"");
+                    var rule = Json.Deserialize<FilterRule>(strRule);
+                    var result = query.Where(rule).ToList();
+                    Assert.AreEqual(999, result.Count);
+                }
+
+
+                //###2
+                {
+                    var query = GetQueryable();
+                    query.Where(m => m.name.Contains("987")).FirstOrDefault().name = null;
+
+                    var strRule = "{'field':'name',  'operator': 'not contains',  'value': '987' }".Replace("'", "\"");
+                    var rule = Json.Deserialize<FilterRule>(strRule);
+                    var result = query.Where(rule).ToList();
+                    Assert.AreEqual(1000, result.Count);
+                }
+
+                //###3
+                {
+                    var query = GetQueryable();
+                    query.Where(m => m.name.Contains("987")).FirstOrDefault().name = "";
+
+                    var strRule = "{'field':'name',  'operator': 'not contains',  'value': '987' }".Replace("'", "\"");
+                    var rule = Json.Deserialize<FilterRule>(strRule);
+                    var result = query.Where(rule).ToList();
+                    Assert.AreEqual(1000, result.Count);
+                }
+            }
+            #endregion
+
+            #region ##3  starts with
+            {
+                var query = GetQueryable();
+
+                var strRule = "{'field':'name',  'operator': 'starts with',  'value': 'name98' }".Replace("'", "\"");
+                var rule = Json.Deserialize<FilterRule>(strRule);
+                var result = query.Where(rule).ToList();
+
+                Assert.AreEqual(11, result.Count);
+            }
+            #endregion
+
+            #region ##4  ends with
+            {
+                var query = GetQueryable();
+
+                var strRule = "{'field':'name',  'operator': 'ends with',  'value': '987' }".Replace("'", "\"");
+                var rule = Json.Deserialize<FilterRule>(strRule);
+                var result = query.Where(rule).ToList();
+
+                Assert.AreEqual(1, result.Count);
+            }
+            #endregion
+
+            #region ##5 is null or empty
+            {
+                //###1
+                {
+                    var query = GetQueryable();
+                    query.Skip(10).First().name = null;
+
+                    var strRule = "{'field':'name',  'operator': 'is null or empty' }".Replace("'", "\"");
+                    var rule = Json.Deserialize<FilterRule>(strRule);
+                    var result = query.Where(rule).ToList();
+
+                    Assert.AreEqual(1, result.Count);
+
+                }
+
+                //###2
+                {
+                    var query = GetQueryable();
+                    query.Skip(10).First().name = "";
+
+                    var strRule = "{'field':'name',  'operator': 'is null or empty' }".Replace("'", "\"");
+                    var rule = Json.Deserialize<FilterRule>(strRule);
+                    var result = query.Where(rule).ToList();
+
+                    Assert.AreEqual(1, result.Count);
+                }
+            }
+            #endregion
+
+            #region ##6  is not null or empty
+            {
+                //###1
+                {
+                    var query = GetQueryable();
+                    query.Skip(10).First().name = null;
+
+                    var strRule = "{'field':'name',  'operator': 'is not null or empty' }".Replace("'", "\"");
+                    var rule = Json.Deserialize<FilterRule>(strRule);
+                    var result = query.Where(rule).ToList();
+
+                    Assert.AreEqual(999, result.Count);
+                }
+                //###2
+                {
+                    var query = GetQueryable();
+                    query.Skip(10).First().name = "";
+
+                    var strRule = "{'field':'name',  'operator': 'is not null or empty' }".Replace("'", "\"");
+                    var rule = Json.Deserialize<FilterRule>(strRule);
+                    var result = query.Where(rule).ToList();
+
+                    Assert.AreEqual(999, result.Count);
+                }
             }
             #endregion
 
 
-            #region #11  nested field
+            #endregion
+
+
+            #region #5  nested field
             {
+                var query = GetQueryable();
                 var strRule = "{'field':'b1.name',  'operator': '=',  'value': 'name987_b1' }".Replace("'", "\"");
                 var rule = Json.Deserialize<FilterRule>(strRule);
 
-                var result = ToList(query, rule);
-                Assert.AreEqual(result.Count, 1);
-                Assert.AreEqual(result[0].id, 987);
+                var result = query.Where(rule).ToList();
+
+                Assert.AreEqual(1, result.Count);
+                Assert.AreEqual(987, result[0].id);
             }
             #endregion
 
@@ -277,7 +461,7 @@ namespace Vit.Linq.MsTest.QueryBuilder
         #endregion
 
 
-     
+
 
     }
 }

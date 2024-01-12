@@ -16,7 +16,7 @@ namespace Vit.Linq.MsTest
         {
             var query = DataSource.GetQueryable();
 
-            #region (x.1)
+            #region #1
             {
                 var result = query
                     .Sort_ByReflection(new[] {
@@ -31,11 +31,11 @@ namespace Vit.Linq.MsTest
             #endregion
 
 
-            #region (x.2)
-            {         
+            #region #2
+            {
                 var result = query
-                    .Sort_ByReflection("id",false)
-                    .Page(2,10)
+                    .Sort_ByReflection("id", false)
+                    .Page(2, 10)
                     .ToList();
                 Assert.AreEqual(result.Count, 10);
                 Assert.AreEqual(result[0].id, 989);
@@ -43,7 +43,7 @@ namespace Vit.Linq.MsTest
             #endregion
 
 
-            #region (x.3)
+            #region #3
             {
                 var result = query
                     .Sort_ByReflection(new[] {

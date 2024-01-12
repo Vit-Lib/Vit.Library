@@ -52,7 +52,7 @@ namespace Vit.Extensions.Linq_Extensions
 
 
 
-        #region ToList       
+        #region ToList
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static List<T> IQueryable_ToList<T>(this IQueryable source)
         {
@@ -73,7 +73,7 @@ namespace Vit.Extensions.Linq_Extensions
         #endregion
 
 
-        #region ToArray       
+        #region ToArray
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static T[] IQueryable_ToArray<T>(this IQueryable source)
         {
