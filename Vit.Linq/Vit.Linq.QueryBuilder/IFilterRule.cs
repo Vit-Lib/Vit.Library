@@ -20,10 +20,10 @@ namespace Vit.Linq.QueryBuilder
         /// <summary>
         ///  Supported value : 
         ///  
-        ///     "is null", "is not null" ,
+        ///     "IsNull", "IsNotNull" ,
         ///     "=", "!=", "&gt;", "&lt;" , "&gt;=", "&lt;=", 
-        ///     "in" , "not in" ,
-        ///     "contains", "not contains", "starts with", "ends with" , "is null or empty", "is not null or empty"
+        ///     "In" , "NotIn" ,
+        ///     "Contains", "NotContains", "StartsWith", "EndsWith" , "IsNullOrEmpty", "IsNotNullOrEmpty"
         ///     
         ///    //TODO [array]   "is empty", "is not empty"
         /// </summary>
