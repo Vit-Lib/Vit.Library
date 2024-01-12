@@ -11,10 +11,28 @@ namespace Vit.Linq.QueryBuilder
     {
         public static QueryBuilderService Instance = new QueryBuilderService();
 
-
+        /// <summary>
+        /// operatorName -> operatorType(in class FilterRuleOperator)
+        /// </summary>
         public Dictionary<string, string> operatorMap = new Dictionary<string, string>();
         public bool operatorIsIgnoreCase = true;
         public bool ignoreError = false;
+
+        public QueryBuilderService AddOperatorMap(string operatorName, string operatorType)
+        {
+            if (operatorIsIgnoreCase) operatorName = operatorName?.ToLower();
+            operatorMap[operatorName] = operatorType;
+            return this;
+        }
+
+        public QueryBuilderService AddOperatorMap(IEnumerable<(string operatorName, string operatorType)> maps)
+        {
+            foreach (var map in maps)
+                AddOperatorMap(map.operatorName, map.operatorType);
+            return this;
+        }
+
+
 
         public Func<T, bool> ToPredicate<T>(IFilterRule rule)
         {
