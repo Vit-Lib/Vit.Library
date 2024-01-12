@@ -12,7 +12,7 @@ namespace Vit.Linq.QueryBuilder
         /// </summary>
         string condition { get; }
         /// <summary>
-        /// 
+        /// could be nested, example: b1.name
         /// </summary>
         string field { get; }
 

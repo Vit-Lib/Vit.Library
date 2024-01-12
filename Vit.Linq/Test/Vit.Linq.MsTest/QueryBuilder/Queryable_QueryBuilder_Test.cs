@@ -211,24 +211,42 @@ namespace Vit.Linq.MsTest.QueryBuilder
 
 
 
-            #region (x.8)  In 1
+            #region #8  in
             {
-                var result = query.Where(new[] { new DataFilter { field = "id", opt = "In", value = new int[] { 3, 4, 5 } } }).ToList();
-                Assert.AreEqual(result.Count, 3);
-            }
-            #endregion
+                {
+                    var strRule = "{'field':'id',  'operator': 'in',  'value': [3,4,5] }".Replace("'", "\"");
+                    var filterRule = Json.Deserialize<FilterRule>(strRule);
+                    var result = query.Where(filterRule).ToList();
+                    Assert.AreEqual(result.Count, 3);
+                }
 
-            #region (x.9)  In 2
-            {
                 query.FirstOrDefault().name = null;
-                var result = query.Where(new[] { new DataFilter { field = "name", opt = "In", value = new[] { "name3", "name4", null } } }).ToList();
-                Assert.AreEqual(result.Count, 3);
+                {
+                    var strRule = "{'field':'name',  'operator': 'in',  'value': [ 'name3', 'name4'] }".Replace("'", "\"");
+                    var filterRule = Json.Deserialize<FilterRule>(strRule);
+                    var result = query.Where(filterRule).ToList();
+                    Assert.AreEqual(result.Count, 2);
+                }
+                {
+                    var strRule = @"{'condition':'or', 'rules':[   
+                                        {'field':'name',  'operator': 'is null' },
+                                        {'field':'name',  'operator': 'in',  'value': [ 'name3', 'name4'] } 
+                                    ]}".Replace("'", "\"");
+                    var filterRule = Json.Deserialize<FilterRule>(strRule);
+                    var result = query.Where(filterRule).ToList();
+                    Assert.AreEqual(result.Count, 3);
+                }
             }
             #endregion
 
-            #region (x.10)  NotIn 
+            #region # 9  not in 
             {
-                var result = query.Where(new[] { new DataFilter { field = "name", opt = "NotIn", value = new[] { "name3", "name4", null } } }).ToList();
+                var strRule = @"{'condition':'and', 'rules':[   
+                                        {'field':'name',  'operator': 'is not null' },
+                                        {'field':'name',  'operator': 'not in',  'value': [ 'name3', 'name4'] } 
+                                    ]}".Replace("'", "\"");
+                var filterRule = Json.Deserialize<FilterRule>(strRule);
+                var result = query.Where(filterRule).ToList();
                 Assert.AreEqual(result.Count, 997);
             }
             #endregion

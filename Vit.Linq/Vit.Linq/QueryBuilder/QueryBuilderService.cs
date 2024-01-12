@@ -1,9 +1,9 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 
-using Vit.Extensions.Json_Extensions;
 using Vit.Linq.Query;
 
 namespace Vit.Linq.QueryBuilder
@@ -38,11 +38,16 @@ namespace Vit.Linq.QueryBuilder
         public LambdaExpression ToLambdaExpression(IEnumerable<IFilterRule> rules, Type targetType, ECondition condition = ECondition.and)
         {
             ParameterExpression parameter = Expression.Parameter(targetType);
-            return ToLambdaExpression(rules, parameter, condition);
+            var expression = ConvertToExpression(rules, parameter, condition);
+            if (expression == null)
+            {
+                return null;
+            }
+            return Expression.Lambda(expression, parameter);
         }
 
 
-        protected LambdaExpression ToLambdaExpression(IEnumerable<IFilterRule> rules, ParameterExpression parameter, ECondition condition = ECondition.and)
+        protected Expression ConvertToExpression(IEnumerable<IFilterRule> rules, ParameterExpression parameter, ECondition condition = ECondition.and)
         {
             if (rules?.Any() != true)
             {
@@ -53,16 +58,12 @@ namespace Vit.Linq.QueryBuilder
 
             foreach (var rule in rules)
             {
-                var curExp = ToExpression(rule, parameter);
+                var curExp = ConvertToExpression(rule, parameter);
                 if (curExp != null)
                     expression = Append(expression, curExp);
             }
 
-            if (expression == null)
-            {
-                return null;
-            }
-            return Expression.Lambda(expression, parameter);
+            return expression;
 
 
             #region Method Append
@@ -92,14 +93,14 @@ namespace Vit.Linq.QueryBuilder
             return filter.condition?.ToLower() == "or" ? ECondition.or : ECondition.and;
         }
 
-        Expression ToExpression(IFilterRule rule, ParameterExpression parameter)
+        Expression ConvertToExpression(IFilterRule rule, ParameterExpression parameter)
         {
             if (rule == null) return null;
 
             // #1 nested filter rules
             if (rule.rules?.Any() == true)
             {
-                return ToLambdaExpression(rule.rules, parameter, GetCondition(rule));
+                return ConvertToExpression(rule.rules, parameter, GetCondition(rule));
             }
 
 
@@ -253,10 +254,14 @@ namespace Vit.Linq.QueryBuilder
                 #region build arrayExp
                 {
                     Type valueType = typeof(IEnumerable<>).MakeGenericType(fieldType);
-                    object value = rule.value;
-                    if (value != null)
+                    object value = null;
+                    if (rule.value != null)
                     {
-                        value = value.ConvertBySerialize(valueType);
+                        //value = Vit.Core.Module.Serialization.Json.Deserialize(Vit.Core.Module.Serialization.Json.Serialize(rule.value), valueType);
+                        if (rule.value is IEnumerable arr)
+                        {
+                            value = ConvertToList(arr, fieldType);
+                        }
                     }
                     Expression<Func<object>> valueLamba = () => value;
                     arrayExp = Expression.Convert(valueLamba.Body, valueType);
@@ -266,10 +271,25 @@ namespace Vit.Linq.QueryBuilder
                 return inCheck;
             }
             #endregion
-
-
         }
 
-
+        #region ConvertToList
+        internal object ConvertToList(IEnumerable values, Type fieldType)
+        {
+            var methodInfo = GetType().GetMethod("ConvertToListByType", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic).MakeGenericMethod(fieldType);
+            return methodInfo.Invoke(this, new object[] { values });
+        }
+        internal List<T> ConvertToListByType<T>(IEnumerable values)
+        {
+            Type valueType = typeof(T);
+            var list = new List<T>();
+            foreach (var item in values)
+            {
+                var value = (T)Convert.ChangeType(item, valueType);
+                list.Add(value);
+            }
+            return list;
+        }
+        #endregion
     }
 }
