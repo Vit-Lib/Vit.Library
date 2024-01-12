@@ -89,6 +89,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{9EEADA2C-0
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vit.Excel.MsTest", "Vit.Excel\Test\Vit.Excel.MsTest\Vit.Excel.MsTest.csproj", "{4C5571B1-C941-4B0C-9471-11AAE4EA588D}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vit.Linq.QueryBuilder", "Vit.Linq\Vit.Linq.QueryBuilder\Vit.Linq.QueryBuilder.csproj", "{D59485C1-FF4E-44CA-96B4-ED41E2C65C1D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -195,6 +197,10 @@ Global
 		{4C5571B1-C941-4B0C-9471-11AAE4EA588D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4C5571B1-C941-4B0C-9471-11AAE4EA588D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4C5571B1-C941-4B0C-9471-11AAE4EA588D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D59485C1-FF4E-44CA-96B4-ED41E2C65C1D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D59485C1-FF4E-44CA-96B4-ED41E2C65C1D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D59485C1-FF4E-44CA-96B4-ED41E2C65C1D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D59485C1-FF4E-44CA-96B4-ED41E2C65C1D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -234,6 +240,7 @@ Global
 		{D644CC21-5D6E-4A00-ABE3-D6136CF86845} = {EF05F7CE-6EBC-423B-8E10-186E7505404A}
 		{9EEADA2C-0FAA-47AB-8BC2-A80FBC82D0F1} = {EF05F7CE-6EBC-423B-8E10-186E7505404A}
 		{4C5571B1-C941-4B0C-9471-11AAE4EA588D} = {9EEADA2C-0FAA-47AB-8BC2-A80FBC82D0F1}
+		{D59485C1-FF4E-44CA-96B4-ED41E2C65C1D} = {7A540BFB-C4EC-4884-A72B-19BD08E53B4D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C7DA16E3-9949-49FA-B0B4-F830636DE60F}
