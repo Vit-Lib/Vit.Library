@@ -1,0 +1,4 @@
+﻿参考 https://www.cnblogs.com/seriawei/p/entity-framework-dynamic-search.html 
+
+
+参考 DynamicQueryable

@@ -23,4 +23,8 @@
 		<PackageReference Include="Vit.Core" Version="2.1.19" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <ProjectReference Include="..\Vit.Linq.QueryBuilder\Vit.Linq.QueryBuilder.csproj" />
+	</ItemGroup>
+
 </Project>

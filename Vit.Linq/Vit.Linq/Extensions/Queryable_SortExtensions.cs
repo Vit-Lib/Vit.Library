@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+
 using Vit.Core.Util.ComponentModel.Query;
-using Vit.Linq.Query;
+using Vit.Linq.QueryBuilder;
 
 namespace Vit.Extensions.Linq_Extensions
 {
@@ -23,10 +23,7 @@ namespace Vit.Extensions.Linq_Extensions
 
             var sortCount = sort.Count();
             if (sortCount == 0) return query;
-            if (sortCount > LinqHelp.MaxSortCount)
-            {
-                throw new Exception("排序条件个数过多");
-            }
+
 
             var paramExp = Expression.Parameter(typeof(T));
             IOrderedQueryable<T> orderedQuery = null;
@@ -108,7 +105,7 @@ namespace Vit.Extensions.Linq_Extensions
         static readonly MethodInfo MethodInfo_OrderByDescending = typeof(Queryable).GetMethods().FirstOrDefault(m => m.Name == "OrderByDescending" && m.GetParameters().Length == 2);
         static readonly MethodInfo MethodInfo_ThenBy = typeof(Queryable).GetMethods().FirstOrDefault(m => m.Name == "ThenBy" && m.GetParameters().Length == 2);
         static readonly MethodInfo MethodInfo_ThenByDescending = typeof(Queryable).GetMethods().FirstOrDefault(m => m.Name == "ThenByDescending" && m.GetParameters().Length == 2);
- 
+
         #endregion
 
     }

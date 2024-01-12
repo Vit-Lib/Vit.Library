@@ -4,7 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 using Vit.Core.Util.ComponentModel.Query;
-using Vit.Linq.Query;
+using Vit.Linq.QueryBuilder;
 
 namespace Vit.Extensions.Linq_Extensions
 {

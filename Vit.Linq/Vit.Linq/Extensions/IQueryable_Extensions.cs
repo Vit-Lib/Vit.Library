@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
-using Vit.Linq.Query;
 
 namespace Vit.Extensions.Linq_Extensions
 {
@@ -12,29 +11,8 @@ namespace Vit.Extensions.Linq_Extensions
     /// <summary>
     /// 参考 DynamicQueryable
     /// </summary>
-    public static partial class IQueryable_Extensions   {
-
-
-        #region Where
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static IQueryable IQueryable_Where(this IQueryable source, IEnumerable<DataFilter> filters, ECondition condition = ECondition.and)
-        {  
-            LambdaExpression lambda = filters.ToLambdaExpression(source.ElementType, condition);
-            if (lambda == null) return source;
-            return source.Provider.CreateQuery(
-                Expression.Call(
-                    typeof(Queryable), "Where",
-                    new Type[] { source.ElementType },
-                    source.Expression, Expression.Quote(lambda)));
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static IQueryable IQueryable_Where(this IQueryable source, DataFilter filter)
-        {
-            return IQueryable_Where(source,new[]{ filter });
-        }
-        #endregion
+    public static partial class IQueryable_Extensions
+    {
 
 
         #region Count
@@ -51,7 +29,7 @@ namespace Vit.Extensions.Linq_Extensions
         #region Skip
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static IQueryable IQueryable_Skip(this IQueryable source, int count)
-        {    
+        {
             return source.Provider.CreateQuery(
                 Expression.Call(
                     typeof(Queryable), "Skip",
@@ -63,7 +41,7 @@ namespace Vit.Extensions.Linq_Extensions
         #region Take
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static IQueryable IQueryable_Take(this IQueryable source, int count)
-        {        
+        {
             return source.Provider.CreateQuery(
                 Expression.Call(
                     typeof(Queryable), "Take",
@@ -86,7 +64,7 @@ namespace Vit.Extensions.Linq_Extensions
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static object IQueryable_ToList(this IQueryable source)
-        { 
+        {
             return source.Provider.Execute(
                 Expression.Call(
                     typeof(Enumerable), "ToList",
@@ -98,7 +76,7 @@ namespace Vit.Extensions.Linq_Extensions
         #region ToArray       
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static T[] IQueryable_ToArray<T>(this IQueryable source)
-        {  
+        {
             return source.Provider.Execute<T[]>(
                 Expression.Call(
                     typeof(Enumerable), "ToArray",
@@ -121,15 +99,15 @@ namespace Vit.Extensions.Linq_Extensions
         public static object IQueryable_FirstOrDefault(this IQueryable source)
         {
             return source.Provider.Execute<object>(
-                Expression.Call(typeof(Queryable), "FirstOrDefault", 
-                new Type[] { source.ElementType }, 
+                Expression.Call(typeof(Queryable), "FirstOrDefault",
+                new Type[] { source.ElementType },
                 source.Expression)
                 );
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static T IQueryable_FirstOrDefault<T>(this IQueryable source)
-        { 
+        {
             return source.Provider.Execute<T>(
                 Expression.Call(typeof(Queryable), "FirstOrDefault", new Type[] { source.ElementType }, source.Expression)
                 );

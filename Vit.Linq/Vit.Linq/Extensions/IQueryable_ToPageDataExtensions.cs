@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
+
 using Vit.Core.Util.ComponentModel.Data;
 using Vit.Core.Util.ComponentModel.Query;
-using Vit.Linq.Query;
 
 namespace Vit.Extensions.Linq_Extensions
 {
@@ -13,9 +13,9 @@ namespace Vit.Extensions.Linq_Extensions
     {
         #region IQueryable_ToPageData       
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static PageData<T> IQueryable_ToPageData<T>(this IQueryable query, PageInfo page)             
+        public static PageData<T> IQueryable_ToPageData<T>(this IQueryable query, PageInfo page)
         {
-            if (query == null ) return null;
+            if (query == null) return null;
 
             var queryPaged = query;
             if (page != null)
@@ -25,11 +25,9 @@ namespace Vit.Extensions.Linq_Extensions
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static PageData<T> IQueryable_ToPageData<T>(this IQueryable query,
-            IEnumerable<DataFilter> filter, IEnumerable<SortItem> sort, PageInfo page
-        )
+        public static PageData<T> IQueryable_ToPageData<T>(this IQueryable query, IEnumerable<SortItem> sort, PageInfo page)
         {
-            return query?.IQueryable_Where(filter).IQueryable_Sort(sort).IQueryable_ToPageData<T>(page);
+            return query?.IQueryable_Sort(sort).IQueryable_ToPageData<T>(page);
         }
         #endregion
 
@@ -45,7 +43,7 @@ namespace Vit.Extensions.Linq_Extensions
         /// <param name="selector"></param>
         /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static PageData<TResult> IQueryable_ToPageData<T, TResult>(this IQueryable query, PageInfo page, Func<T, TResult> selector)        
+        public static PageData<TResult> IQueryable_ToPageData<T, TResult>(this IQueryable query, PageInfo page, Func<T, TResult> selector)
         {
             if (query == null) return null;
 
@@ -62,17 +60,15 @@ namespace Vit.Extensions.Linq_Extensions
         /// <typeparam name="T"></typeparam>
         /// <typeparam name="TResult"></typeparam>
         /// <param name="query"></param>
-        /// <param name="filter"></param>
         /// <param name="sort"></param>
         /// <param name="page"></param>
         /// <param name="selector"></param>
         /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static PageData<TResult> IQueryable_ToPageData<T, TResult>(this IQueryable query,
-            IEnumerable<DataFilter> filter, IEnumerable<SortItem> sort, PageInfo page, Func<T, TResult> selector
-        ) where T : class
+        public static PageData<TResult> IQueryable_ToPageData<T, TResult>(this IQueryable query, IEnumerable<SortItem> sort, PageInfo page, Func<T, TResult> selector)
+            where T : class
         {
-            return query?.IQueryable_Where(filter).IQueryable_Sort(sort).IQueryable_ToPageData(page, selector);
+            return query?.IQueryable_Sort(sort).IQueryable_ToPageData(page, selector);
         }
         #endregion
 

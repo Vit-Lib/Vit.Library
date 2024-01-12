@@ -5,7 +5,7 @@ using Vit.Linq.QueryBuilder;
 
 namespace Vit.Extensions.Linq_Extensions
 {
-    public  static partial class Queryable_Where_Extensions
+    public static partial class Queryable_Where_Extensions
     {
         #region Where
 
@@ -15,7 +15,7 @@ namespace Vit.Extensions.Linq_Extensions
         {
             if (query == null || rule == null) return query;
 
-            var predicate =new QueryBuilderService().ToExpression<T>(rule);
+            var predicate = QueryBuilder.ToExpression<T>(rule);
             if (predicate == null)
             {
                 return query;

@@ -4,41 +4,33 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 
-using Vit.Linq.Query;
 
 namespace Vit.Linq.QueryBuilder
 {
-    public class QueryBuilderService
+    public static class QueryBuilder
     {
-
-        public Func<T, bool> ToPredicate<T>(IFilterRule rule)
+        public static Func<T, bool> ToPredicate<T>(IFilterRule rule)
         {
             return ToExpression<T>(rule)?.Compile();
         }
 
-        public string ToExpressionString<T>(IFilterRule rule)
+        public static string ToExpressionString<T>(IFilterRule rule)
         {
             return ToExpression<T>(rule)?.ToString();
         }
 
 
-        public Expression<Func<T, bool>> ToExpression<T>(IFilterRule rule)
+        public static Expression<Func<T, bool>> ToExpression<T>(IFilterRule rule)
         {
-            return ToExpression<T>(new[] { rule });
-        }
-
-
-        public Expression<Func<T, bool>> ToExpression<T>(IEnumerable<IFilterRule> rules, ECondition condition = ECondition.and)
-        {
-            var exp = ToLambdaExpression(rules, typeof(T), condition);
+            var exp = ToLambdaExpression(rule, typeof(T));
             return (Expression<Func<T, bool>>)exp;
         }
 
 
-        public LambdaExpression ToLambdaExpression(IEnumerable<IFilterRule> rules, Type targetType, ECondition condition = ECondition.and)
+        public static LambdaExpression ToLambdaExpression(IFilterRule rule, Type targetType)
         {
             ParameterExpression parameter = Expression.Parameter(targetType);
-            var expression = ConvertToExpression(rules, parameter, condition);
+            var expression = ConvertToExpression(rule, parameter);
             if (expression == null)
             {
                 return null;
@@ -47,53 +39,15 @@ namespace Vit.Linq.QueryBuilder
         }
 
 
-        protected Expression ConvertToExpression(IEnumerable<IFilterRule> rules, ParameterExpression parameter, ECondition condition = ECondition.and)
-        {
-            if (rules?.Any() != true)
-            {
-                return null;
-            }
-
-            Expression expression = null;
-
-            foreach (var rule in rules)
-            {
-                var curExp = ConvertToExpression(rule, parameter);
-                if (curExp != null)
-                    expression = Append(expression, curExp);
-            }
-
-            return expression;
+       
 
 
-            #region Method Append
-            Expression Append(Expression exp1, Expression exp2)
-            {
-                if (exp1 == null)
-                {
-                    return exp2;
-                }
-
-                if (exp2 == null)
-                {
-                    return exp1;
-                }
-                return condition == ECondition.or ? Expression.OrElse(exp1, exp2) : Expression.AndAlso(exp1, exp2);
-            }
-            #endregion
-
-        }
-
-
-
-
-
-        ECondition GetCondition(IFilterRule filter)
+        public static ECondition GetCondition(IFilterRule filter)
         {
             return filter.condition?.ToLower() == "or" ? ECondition.or : ECondition.and;
         }
 
-        Expression ConvertToExpression(IFilterRule rule, ParameterExpression parameter)
+        static Expression ConvertToExpression(IFilterRule rule, ParameterExpression parameter)
         {
             if (rule == null) return null;
 
@@ -273,13 +227,51 @@ namespace Vit.Linq.QueryBuilder
             #endregion
         }
 
-        #region ConvertToList
-        internal object ConvertToList(IEnumerable values, Type fieldType)
+
+        static Expression ConvertToExpression(IEnumerable<IFilterRule> rules, ParameterExpression parameter, ECondition condition = ECondition.and)
         {
-            var methodInfo = GetType().GetMethod("ConvertToListByType", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic).MakeGenericMethod(fieldType);
-            return methodInfo.Invoke(this, new object[] { values });
+            if (rules?.Any() != true)
+            {
+                return null;
+            }
+
+            Expression expression = null;
+
+            foreach (var rule in rules)
+            {
+                var curExp = ConvertToExpression(rule, parameter);
+                if (curExp != null)
+                    expression = Append(expression, curExp);
+            }
+
+            return expression;
+
+
+            #region Method Append
+            Expression Append(Expression exp1, Expression exp2)
+            {
+                if (exp1 == null)
+                {
+                    return exp2;
+                }
+
+                if (exp2 == null)
+                {
+                    return exp1;
+                }
+                return condition == ECondition.or ? Expression.OrElse(exp1, exp2) : Expression.AndAlso(exp1, exp2);
+            }
+            #endregion
+
         }
-        internal List<T> ConvertToListByType<T>(IEnumerable values)
+
+        #region ConvertToList
+        internal static object ConvertToList(IEnumerable values, Type fieldType)
+        {
+            var methodInfo = typeof(QueryBuilder).GetMethod("ConvertToListByType", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic).MakeGenericMethod(fieldType);
+            return methodInfo.Invoke(null, new object[] { values });
+        }
+        internal static List<T> ConvertToListByType<T>(IEnumerable values)
         {
             Type valueType = typeof(T);
             var list = new List<T>();

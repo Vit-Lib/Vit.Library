@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
+
 using Vit.Core.Util.ComponentModel.Query;
-using Vit.Linq.Query;
+using Vit.Linq.QueryBuilder;
 
 namespace Vit.Extensions.Linq_Extensions
 {
@@ -19,10 +20,6 @@ namespace Vit.Extensions.Linq_Extensions
 
             var sortCount = sort.Count();
             if (sortCount == 0) return query;
-            if (sortCount > LinqHelp.MaxSortCount)
-            {
-                throw new Exception("排序条件个数过多");
-            }
 
             IOrderedQueryable<T> orderedQuery = null;
             foreach (var item in sort)

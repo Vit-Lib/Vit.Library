@@ -1,10 +1,11 @@
-﻿using Vit.Extensions.Linq_Extensions;
-using System.Linq;
+﻿using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Vit.Linq.Query;
 using static Vit.Linq.MsTest.DataSource;
 using Vit.Core.Module.Serialization;
 using Vit.Linq.QueryBuilder;
+using Vit.Extensions.Linq_Extensions;
+using System.Collections.Generic;
+using System.Data;
 
 namespace Vit.Linq.MsTest.QueryBuilder
 {
@@ -12,13 +13,21 @@ namespace Vit.Linq.MsTest.QueryBuilder
     public class Queryable_QueryBuilder_Test
     {
 
+        List<ModelA> ToList(IQueryable<ModelA> query, FilterRule rule) 
+        {
+            return query.Where(rule).ToList();
+        }
+        ModelA FirstOrDefault(IQueryable<ModelA> query, FilterRule rule)
+        {
+            return query.Where(rule).FirstOrDefault();
+        }
+
+
         #region QueryBuilder
         [TestMethod]
         public void Test_QueryBuilder()
         {
             var query = DataSource.GetQueryable();
-
-            //操作符。可为 "=", "!=", ">", "<" , ">=", "<=", "Contains", "NotContains", "StartsWith", "EndsWith", "IsNullOrEmpty", "IsNotNullOrEmpty", "In", "NotIn"
 
             #region (x.0) Count ToList ToArray
             {
@@ -39,8 +48,8 @@ namespace Vit.Linq.MsTest.QueryBuilder
                 // ##1
                 {
                     var strRule = "{'field':'id',  'operator': '=',  'value':10 }".Replace("'","\"");
-                    var filterRule = Json.Deserialize<FilterRule>(strRule);
-                    var result = query.Where(filterRule).ToList();
+                    var rule = Json.Deserialize<FilterRule>(strRule);
+                    var result = ToList(query, rule);
                     Assert.AreEqual(result.Count, 1);
                     Assert.AreEqual(result[0].id, 10);
                 }
@@ -48,8 +57,8 @@ namespace Vit.Linq.MsTest.QueryBuilder
                 // ##2
                 {
                     var strRule = "{'field':'id',  'operator': '=',  'value': '10' }".Replace("'", "\"");
-                    var filterRule = Json.Deserialize<FilterRule>(strRule);
-                    var result = query.Where(filterRule).ToList();
+                    var rule = Json.Deserialize<FilterRule>(strRule);
+                    var result = ToList(query, rule);
                     Assert.AreEqual(result.Count, 1);
                     Assert.AreEqual(result[0].id, 10);
                 }
@@ -63,7 +72,7 @@ namespace Vit.Linq.MsTest.QueryBuilder
 
                     var strRule = "{'field':'pid',  'operator': '=',  'value': null }".Replace("'", "\"");
                     var filterRule = Json.Deserialize<FilterRule>(strRule);
-                    var result = query.Where(filterRule).FirstOrDefault();
+                    var result = FirstOrDefault(query,filterRule);
                     Assert.AreEqual(result?.id, 10);
                     item.pid = pid;
                 }
@@ -215,16 +224,16 @@ namespace Vit.Linq.MsTest.QueryBuilder
             {
                 {
                     var strRule = "{'field':'id',  'operator': 'in',  'value': [3,4,5] }".Replace("'", "\"");
-                    var filterRule = Json.Deserialize<FilterRule>(strRule);
-                    var result = query.Where(filterRule).ToList();
+                    var rule = Json.Deserialize<FilterRule>(strRule);
+                    var result = ToList(query, rule);
                     Assert.AreEqual(result.Count, 3);
                 }
 
                 query.FirstOrDefault().name = null;
                 {
                     var strRule = "{'field':'name',  'operator': 'in',  'value': [ 'name3', 'name4'] }".Replace("'", "\"");
-                    var filterRule = Json.Deserialize<FilterRule>(strRule);
-                    var result = query.Where(filterRule).ToList();
+                    var rule = Json.Deserialize<FilterRule>(strRule);
+                    var result = ToList(query, rule);
                     Assert.AreEqual(result.Count, 2);
                 }
                 {
@@ -232,8 +241,8 @@ namespace Vit.Linq.MsTest.QueryBuilder
                                         {'field':'name',  'operator': 'is null' },
                                         {'field':'name',  'operator': 'in',  'value': [ 'name3', 'name4'] } 
                                     ]}".Replace("'", "\"");
-                    var filterRule = Json.Deserialize<FilterRule>(strRule);
-                    var result = query.Where(filterRule).ToList();
+                    var rule = Json.Deserialize<FilterRule>(strRule);
+                    var result = ToList(query, rule);
                     Assert.AreEqual(result.Count, 3);
                 }
             }
@@ -245,8 +254,8 @@ namespace Vit.Linq.MsTest.QueryBuilder
                                         {'field':'name',  'operator': 'is not null' },
                                         {'field':'name',  'operator': 'not in',  'value': [ 'name3', 'name4'] } 
                                     ]}".Replace("'", "\"");
-                var filterRule = Json.Deserialize<FilterRule>(strRule);
-                var result = query.Where(filterRule).ToList();
+                var rule = Json.Deserialize<FilterRule>(strRule);
+                var result = ToList(query, rule);
                 Assert.AreEqual(result.Count, 997);
             }
             #endregion
@@ -255,9 +264,9 @@ namespace Vit.Linq.MsTest.QueryBuilder
             #region #11  nested field
             {
                 var strRule = "{'field':'b1.name',  'operator': '=',  'value': 'name987_b1' }".Replace("'", "\"");
-                var filterRule = Json.Deserialize<FilterRule>(strRule);
+                var rule = Json.Deserialize<FilterRule>(strRule);
 
-                var result = query.Where(filterRule).ToList();
+                var result = ToList(query, rule);
                 Assert.AreEqual(result.Count, 1);
                 Assert.AreEqual(result[0].id, 987);
             }
