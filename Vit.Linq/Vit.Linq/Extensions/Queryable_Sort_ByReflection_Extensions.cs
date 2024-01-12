@@ -24,7 +24,7 @@ namespace Vit.Extensions.Linq_Extensions
             IOrderedQueryable<T> orderedQuery = null;
             foreach (var item in sort)
             {
-                var keySelector = LinqHelp.BuildField_LambdaExpression_ByReflection<T>(item.field);
+                var keySelector = LinqHelp.GetFieldExpression_ByReflection<T>(item.field);
 
                 if (keySelector == null)
                 {
@@ -71,7 +71,7 @@ namespace Vit.Extensions.Linq_Extensions
         {
             if (query == null) return query;
 
-            var keySelector = LinqHelp.BuildField_LambdaExpression_ByReflection<T>(field);
+            var keySelector = LinqHelp.GetFieldExpression_ByReflection<T>(field);
 
             if (keySelector == null)
             {

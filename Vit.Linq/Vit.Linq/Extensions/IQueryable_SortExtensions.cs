@@ -41,7 +41,7 @@ namespace Vit.Extensions.Linq_Extensions
             foreach (var item in sort)
             {
                 //(x.1)get memberExp     
-                MemberExpression memberExp = LinqHelp.BuildField_MemberExpression(parameter, item.field);
+                MemberExpression memberExp = LinqHelp.GetFieldMemberExpression(parameter, item.field);
 
 
                 #region (x.2)Call

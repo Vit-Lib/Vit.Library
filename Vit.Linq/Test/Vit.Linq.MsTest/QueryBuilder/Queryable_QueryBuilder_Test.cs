@@ -47,9 +47,9 @@ namespace Vit.Linq.MsTest.QueryBuilder
 
 
 
-        #region QueryBuilder
+        #region Test_FilterRule
         [TestMethod]
-        public void Test_QueryBuilder()
+        public void Test_FilterRule()
         {
 
             #region #1 [object] is null | is not null
@@ -338,7 +338,7 @@ namespace Vit.Linq.MsTest.QueryBuilder
                 //###2
                 {
                     var query = GetQueryable();
-                    query.Where(m => m.name.Contains("987")).FirstOrDefault().name = null;
+                    query.Skip(987).FirstOrDefault().name = null;
 
                     var strRule = "{'field':'name',  'operator': 'not contains',  'value': '987' }".Replace("'", "\"");
                     var rule = Json.Deserialize<FilterRule>(strRule);
@@ -349,7 +349,7 @@ namespace Vit.Linq.MsTest.QueryBuilder
                 //###3
                 {
                     var query = GetQueryable();
-                    query.Where(m => m.name.Contains("987")).FirstOrDefault().name = "";
+                    query.Skip(987).FirstOrDefault().name = "";
 
                     var strRule = "{'field':'name',  'operator': 'not contains',  'value': '987' }".Replace("'", "\"");
                     var rule = Json.Deserialize<FilterRule>(strRule);
@@ -388,7 +388,7 @@ namespace Vit.Linq.MsTest.QueryBuilder
                 //###1
                 {
                     var query = GetQueryable();
-                    query.Skip(10).First().name = null;
+                    query.Skip(10).FirstOrDefault().name = null;
 
                     var strRule = "{'field':'name',  'operator': 'is null or empty' }".Replace("'", "\"");
                     var rule = Json.Deserialize<FilterRule>(strRule);
@@ -401,7 +401,7 @@ namespace Vit.Linq.MsTest.QueryBuilder
                 //###2
                 {
                     var query = GetQueryable();
-                    query.Skip(10).First().name = "";
+                    query.Skip(10).FirstOrDefault().name = "";
 
                     var strRule = "{'field':'name',  'operator': 'is null or empty' }".Replace("'", "\"");
                     var rule = Json.Deserialize<FilterRule>(strRule);
@@ -417,7 +417,7 @@ namespace Vit.Linq.MsTest.QueryBuilder
                 //###1
                 {
                     var query = GetQueryable();
-                    query.Skip(10).First().name = null;
+                    query.Skip(10).FirstOrDefault().name = null;
 
                     var strRule = "{'field':'name',  'operator': 'is not null or empty' }".Replace("'", "\"");
                     var rule = Json.Deserialize<FilterRule>(strRule);
@@ -428,7 +428,7 @@ namespace Vit.Linq.MsTest.QueryBuilder
                 //###2
                 {
                     var query = GetQueryable();
-                    query.Skip(10).First().name = "";
+                    query.Skip(10).FirstOrDefault().name = "";
 
                     var strRule = "{'field':'name',  'operator': 'is not null or empty' }".Replace("'", "\"");
                     var rule = Json.Deserialize<FilterRule>(strRule);

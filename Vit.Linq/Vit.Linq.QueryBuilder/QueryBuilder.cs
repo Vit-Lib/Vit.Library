@@ -65,7 +65,7 @@ namespace Vit.Linq.QueryBuilder
                 return null;
             }
 
-            MemberExpression memberExp = LinqHelp.BuildField_MemberExpression(parameter, rule.field);
+            MemberExpression memberExp = LinqHelp.GetFieldMemberExpression(parameter, rule.field);
 
             #region get Expression
 

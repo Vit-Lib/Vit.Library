@@ -31,7 +31,7 @@ namespace Vit.Extensions.Linq_Extensions
             foreach (var item in sort)
             {
 
-                MemberExpression memberExp = LinqHelp.BuildField_MemberExpression(paramExp, item.field);
+                MemberExpression memberExp = LinqHelp.GetFieldMemberExpression(paramExp, item.field);
                 LambdaExpression exp = Expression.Lambda(memberExp, paramExp);
 
                 if (orderedQuery == null)
@@ -62,7 +62,7 @@ namespace Vit.Extensions.Linq_Extensions
             if (string.IsNullOrEmpty(field)) return query;
 
             var paramExp = Expression.Parameter(typeof(T));
-            MemberExpression memberExp = LinqHelp.BuildField_MemberExpression(paramExp, field);
+            MemberExpression memberExp = LinqHelp.GetFieldMemberExpression(paramExp, field);
             LambdaExpression expr = Expression.Lambda(memberExp, paramExp);
 
             return OrderBy(query, expr, asc);
