@@ -10,12 +10,13 @@ export basePath=/root/temp/svn
 export APPNAME=Vit.Library
 export appVersion=2.2.14
 
-export WebDav_BaseUrl="https://nextcloud.xxx.com/remote.php/dav/files/release/releaseFile/ki_jenkins"
+export WebDav_BaseUrl="https://nextcloud.xxx.com/remote.php/dav/files/release/releaseFiles/ki_jenkins"
 export WebDav_User="username:pwd"
 
 # "
 
 
+# will not throw errors if WebDav service is not available
 
 
 #---------------------------------------------------------------------
@@ -40,7 +41,7 @@ do
     echo push file: \$fileName
     curl -X PUT -u \"$WebDav_User\" -T "/releaseFiles/\$fileName" \"$WebDav_BaseUrl/$APPNAME/$appVersion/\$fileName\"
 done
-"
+" || true
 
 #---------------------------------------------------------------------
 echo "78.push-releaseFiles-to-webdav.bash -> #3 success"

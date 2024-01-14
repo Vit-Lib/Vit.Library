@@ -32,7 +32,7 @@ pipeline {
         DOCKER_PASSWORD = " "
 
         // set to "  "  if want to skip save releaseFiles to WebDav
-        WebDav_BaseUrl = "https://pan.lith.cloud:4/remote.php/dav/files/release/releaseFile/ki_jenkins"
+        WebDav_BaseUrl = "https://pan.lith.cloud:4/remote.php/dav/files/release/releaseFiles/ki_jenkins"
         // "username:pwd"
         WebDav_User = credentials("WebDav_User")
 

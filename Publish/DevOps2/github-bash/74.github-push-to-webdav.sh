@@ -10,7 +10,7 @@ export basePath=/root/temp/svn
 export APPNAME=Vit.Library
 export appVersion=2.2.14
 
-export WebDav_BaseUrl="https://nextcloud.xxx.com/remote.php/dav/files/release/releaseFile/ki_jenkins"
+export WebDav_BaseUrl="https://nextcloud.xxx.com/remote.php/dav/files/release/releaseFiles/ki_jenkins"
 export WebDav_User="username:pwd"
 
 # "
@@ -20,8 +20,11 @@ export WebDav_User="username:pwd"
 
 
 #----------------------------------------------
-echo "github-push release file to WebDav"
-bash $basePath/Publish/DevOps2/release-bash/78.push-releaseFiles-to-webdav.bash;
+if [ -z "$WebDav_BaseUrl" ]; then
+	echo "github push release file to WebDav"
+	bash $basePath/Publish/DevOps2/release-bash/78.push-releaseFiles-to-webdav.bash;
+else
+	echo "github skip pushing release file to WebDav because invalid WebDav endpoint"
+fi
 
- 
  

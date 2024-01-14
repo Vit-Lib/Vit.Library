@@ -14,7 +14,7 @@ export DOCKER_PASSWORD=xxxxxx
 export NUGET_SERVER=https://api.nuget.org/v3/index.json
 export NUGET_KEY=xxxxxx
 
-export WebDav_BaseUrl="https://nextcloud.xxx.com/remote.php/dav/files/release/releaseFile/ki_jenkins"
+export WebDav_BaseUrl="https://nextcloud.xxx.com/remote.php/dav/files/release/releaseFiles/ki_jenkins"
 export WebDav_User="username:pwd"
 
 # "
