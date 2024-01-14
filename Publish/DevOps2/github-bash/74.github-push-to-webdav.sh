@@ -27,4 +27,4 @@ else
 	bash $basePath/Publish/DevOps2/release-bash/78.push-releaseFiles-to-webdav.bash;
 fi
 
- 
+
