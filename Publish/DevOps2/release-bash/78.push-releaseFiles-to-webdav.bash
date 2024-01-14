@@ -38,7 +38,7 @@ do
     echo '----------------------------'
     fileName=\"\${file##*/}\"
     echo push file: \$fileName
-    curl -X PUT -u \"$WebDav_User\" \"$WebDav_BaseUrl/$APPNAME/$appVersion/\$fileName\" --data-binary "/releaseFiles/\$fileName"
+    curl -X PUT -u \"$WebDav_User\" -T "/releaseFiles/\$fileName" \"$WebDav_BaseUrl/$APPNAME/$appVersion/\$fileName\"
 done
 "
 
