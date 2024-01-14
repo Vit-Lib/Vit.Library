@@ -28,7 +28,9 @@ bash -c "
 set -e
 
 if grep '<publish>' -r --include *.csproj /root/code; then
-	echo "#40.Station-publish.sh -> skip for no project needs to be built"
+	echo '#40.Station-publish.sh -> got projects need to be built'
+else
+	echo '#40.Station-publish.sh -> skip for no project needs to be built'
 	exit 0
 fi
 
