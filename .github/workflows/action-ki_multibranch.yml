@@ -39,7 +39,8 @@ jobs:
            export APPNAME="Vit.Library"
            export NUGET_SERVER="${{ secrets.NUGET_SERVER  }}"
            export NUGET_KEY="${{ secrets.NUGET_KEY }}"
-           export GIT_SSH_SECRET="${{ secrets.GIT_SSH_SECRET }}"
+           export WebDav_BaseUrl="${{ secrets.WebDav_BaseUrl }}"
+           export WebDav_User="${{ secrets.WebDav_User }}"
            cd ./Publish/DevOps2/github-bash
            bash startup.bash
            echo build succeed!

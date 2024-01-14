@@ -8,9 +8,9 @@ args_="
 export basePath=/root/temp/svn
 
 export APPNAME=Vit.Library
-export appVersion=2.2.14-ki7
+export appVersion=2.2.14
 
-export WebDav_BaseUrl="https://pan.lith.cloud:4/remote.php/dav/files/release/releaseFile/ki_jenkins"
+export WebDav_BaseUrl="https://nextcloud.xxx.com/remote.php/dav/files/release/releaseFile/ki_jenkins"
 export WebDav_User="username:pwd"
 
 # "
