@@ -13,4 +13,6 @@ export NUGET_PATH=$basePath/Publish/release/.nuget
 
 
 #---------------------------------------------------------------------
-echo '#52.docker-extra-copy.sh -> nothing to do'
+echo '#build-bash__52.docker-extra-copy.sh'
+
+echo '  -> nothing to do'

@@ -14,7 +14,8 @@ if [ ! $NUGET_PATH ]; then NUGET_PATH=$basePath/Publish/release/.nuget; fi
 
 
 #---------------------------------------------------------------------
-echo '#41.StressTest-publish.sh  -> #1 nothing to do'
+echo '#build-bash__41.extra-publish.sh'
+echo '  -> nothing to do'
  
 
 
