@@ -14,7 +14,7 @@ if [ ! $NUGET_PATH ]; then NUGET_PATH=$basePath/Publish/release/.nuget; fi
 
 
 #----------------------------------------------
-echo "40.Station-publish.sh find projects and build"
+echo "#40.Station-publish.sh -> find projects and build"
 
 
 
@@ -28,7 +28,7 @@ bash -c "
 set -e
 
 if grep '<publish>' -r --include *.csproj /root/code; then
-	echo "40.Station-publish.sh find projects and build -> #skip for no project needs to be built"
+	echo "#40.Station-publish.sh -> skip for no project needs to be built"
 	exit 0
 fi
 
@@ -83,7 +83,7 @@ fi
 
 
 
-echo 'publish succeed!'
+echo '#40.Station-publish.sh -> success!'
 
 
 
