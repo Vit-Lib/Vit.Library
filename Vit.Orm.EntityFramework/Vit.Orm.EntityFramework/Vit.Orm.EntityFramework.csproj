@@ -13,7 +13,7 @@
 
     <PropertyGroup>
         <Authors>Lith</Authors>
-        <Description>EntityFramework的扩展</Description>
+        <Description>entensions for EntityFramework</Description>
         <PackageProjectUrl>https://github.com/serset/Vit.Library</PackageProjectUrl>
     </PropertyGroup>
 
@@ -24,10 +24,7 @@
 
     <ItemGroup>
         <PackageReference Include="Vit.Core" Version="2.1.19" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <ProjectReference Include="..\..\Vit.Linq\Vit.Linq\Vit.Linq.csproj" />
+        <PackageReference Include="Vit.Linq" Version="2.2.14" />
     </ItemGroup>
 
     <ItemGroup>

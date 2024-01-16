@@ -1,8 +1,8 @@
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Vit.Linq.Query;
 using Vit.Extensions.Object_Extensions;
 using Vit.Extensions.Linq_Extensions;
+using Vit.Linq.QueryBuilder;
 
 namespace Vit.Orm.EntityFramework.Dynamic.MsTest
 {
@@ -42,7 +42,7 @@ namespace Vit.Orm.EntityFramework.Dynamic.MsTest
 
 
                 //(x.x.2)FirstOrDefault
-                var query = queryable.IQueryable_Where(new DataFilter { field = "id", opt = "=", value = 2 });
+                var query = queryable.IQueryable_Where(new FilterRule { field = "id", @operator = "=", value = 2 });
                 var m = query.Ef_FirstOrDefault();
                 var id =  m.GetProperty<long>("id");
                 Assert.AreEqual(id, 2);

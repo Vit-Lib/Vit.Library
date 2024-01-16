@@ -1,9 +1,9 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+
 using Vit.Core.Util.ComponentModel.Data;
 using Vit.Core.Util.ComponentModel.Query;
 using Vit.Extensions.Linq_Extensions;
-using Vit.Extensions.Linq_Extensions;
-using Vit.Linq.Query;
+using Vit.Linq.QueryBuilder;
 using Vit.Orm.EntityFramework.MsTest.Model;
 
 namespace Vit.Orm.EntityFramework.MsTest
@@ -16,7 +16,7 @@ namespace Vit.Orm.EntityFramework.MsTest
     {
 
         #region (x.1)IQueryable 查询测试
-       
+
         [TestMethod]
         public void IQueryable_TestMethod()
         {
@@ -33,7 +33,7 @@ namespace Vit.Orm.EntityFramework.MsTest
 
             #region (x.3)查询
             {
-                var query = queryable.IQueryable_Where(new DataFilter { field = "id", opt = "=", value = 2 });
+                var query = queryable.IQueryable_Where(new FilterRule { field = "id", @operator = "=", value = 2 });
 
                 Assert.AreEqual(query.Ef_Count(), 1);
 
@@ -50,13 +50,13 @@ namespace Vit.Orm.EntityFramework.MsTest
 
             #region (x.4)异步查询
             {
-                var query = queryable.IQueryable_Where(new DataFilter { field = "id", opt = "=", value = 2 });
+                var query = queryable.IQueryable_Where(new FilterRule { field = "id", @operator = "=", value = 2 });
 
                 Assert.AreEqual(query.Ef_CountAsync().Result, 1);
                 Assert.AreEqual(query.Ef_ToListAsync().Result.Count, 1);
                 Assert.AreEqual(query.Ef_ToListAsync<tb_account>().Result.Count, 1);
 
-                Assert.AreEqual((query.Ef_FirstOrDefaultAsync().Result as tb_account).id, 2);             
+                Assert.AreEqual((query.Ef_FirstOrDefaultAsync().Result as tb_account).id, 2);
             }
             #endregion
 
@@ -64,7 +64,7 @@ namespace Vit.Orm.EntityFramework.MsTest
             #region (x.5)SortAndPage
             {
                 var result = queryable
-                     .IQueryable_Sort(new[] {                 
+                     .IQueryable_Sort(new[] {
                         new SortItem { field = "id", asc = false }
                     })
                     .IQueryable_Page(new PageInfo { pageIndex = 2, pageSize = 2 })
@@ -97,11 +97,11 @@ namespace Vit.Orm.EntityFramework.MsTest
 
             #region (x.3)查询
             {
-                var query = queryable.IQueryable_Where(new DataFilter { field = "id", opt = "=", value = 2 });  
+                var query = queryable.IQueryable_Where(new FilterRule { field = "id", @operator = "=", value = 2 });
                 Assert.AreEqual(query.Ef_FirstOrDefault<tb_account>().id, 2);
             }
             #endregion
-                  
+
 
         }
 
