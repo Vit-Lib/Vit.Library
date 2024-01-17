@@ -4,6 +4,6 @@ VsTool.exe delete --path "..\..\.." --file "*.suo|*.user" --directory "obj|bin|.
 rd /s/q ..\..\release
 
 
-echo %~n0.bat Ö´ÐÐ³É¹¦£¡
+echo %~n0.bat success
 
 pause

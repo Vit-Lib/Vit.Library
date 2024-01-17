@@ -16,6 +16,6 @@ call "51.docker-deploy-copy.bat"
 echo %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    
 
 
-echo %~n0.bat Ö´ÐÐ³É¹¦£¡
+echo %~n0.bat success
 
 pause
