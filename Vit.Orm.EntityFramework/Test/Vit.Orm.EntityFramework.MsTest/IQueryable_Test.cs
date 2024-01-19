@@ -3,7 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Vit.Core.Util.ComponentModel.Data;
 using Vit.Core.Util.ComponentModel.Query;
 using Vit.Extensions.Linq_Extensions;
-using Vit.Linq.QueryBuilder;
+using Vit.Linq.Filter;
 using Vit.Orm.EntityFramework.MsTest.Model;
 
 namespace Vit.Orm.EntityFramework.MsTest
