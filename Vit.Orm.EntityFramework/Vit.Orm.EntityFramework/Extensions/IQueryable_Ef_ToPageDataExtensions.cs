@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 using Vit.Core.Util.ComponentModel.Data;
 using Vit.Core.Util.ComponentModel.Query;
 using Vit.Extensions.Linq_Extensions;
-using Vit.Linq.QueryBuilder;
+using Vit.Linq;
+using Vit.Linq.Filter;
 
 namespace Vit.Extensions.Linq_Extensions
 {

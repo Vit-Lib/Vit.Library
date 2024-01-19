@@ -24,7 +24,7 @@
 
     <ItemGroup>
         <PackageReference Include="Vit.Core" Version="2.1.19" />
-        <PackageReference Include="Vit.Linq" Version="2.2.14" />
+        <PackageReference Include="Vit.Linq.Extensions" Version="2.2.17" />
     </ItemGroup>
 
     <ItemGroup>
