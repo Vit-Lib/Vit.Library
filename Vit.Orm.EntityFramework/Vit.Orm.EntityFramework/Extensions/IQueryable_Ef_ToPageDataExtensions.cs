@@ -3,11 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-using Vit.Core.Util.ComponentModel.Data;
-using Vit.Core.Util.ComponentModel.Query;
 using Vit.Extensions.Linq_Extensions;
-using Vit.Linq;
-using Vit.Linq.Filter;
+using Vit.Linq.ComponentModel;
 
 namespace Vit.Extensions.Linq_Extensions
 {
