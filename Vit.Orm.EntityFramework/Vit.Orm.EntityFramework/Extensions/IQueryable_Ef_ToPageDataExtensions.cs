@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Vit.Core.Util.ComponentModel.Data;
-using Vit.Core.Util.ComponentModel.Query;
-using Vit.Linq.Query;
+
 using Vit.Extensions.Linq_Extensions;
+using Vit.Linq.ComponentModel;
 
 namespace Vit.Extensions.Linq_Extensions
 {
@@ -33,7 +32,7 @@ namespace Vit.Extensions.Linq_Extensions
 
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
         public static async Task<PageData<T>> Ef_ToPageDataAsync<T>(this IQueryable query,
-            IEnumerable<DataFilter> filter, IEnumerable<SortItem> sort, PageInfo page
+            IFilterRule filter, IEnumerable<SortItem> sort, PageInfo page
         )
         {
             return await query?.IQueryable_Where(filter).IQueryable_Sort(sort).Ef_ToPageDataAsync<T>(page);
@@ -80,7 +79,7 @@ namespace Vit.Extensions.Linq_Extensions
         /// <returns></returns>
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
         public static async Task<PageData<TResult>> Ef_ToPageDataAsync<T, TResult>(this IQueryable query,
-            IEnumerable<DataFilter> filter, IEnumerable<SortItem> sort, PageInfo page, Func<T, TResult> selector
+            IFilterRule filter, IEnumerable<SortItem> sort, PageInfo page, Func<T, TResult> selector
         ) where T : class
         {
             return await query?.IQueryable_Where(filter).IQueryable_Sort(sort).Ef_ToPageDataAsync(page, selector);

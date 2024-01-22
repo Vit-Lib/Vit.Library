@@ -8,12 +8,12 @@
         <!--<TargetFramework>netstandard2.0</TargetFramework>-->
         <!--<TargetFramework>netstandard2.1</TargetFramework>-->
         <TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
-        <Version>2.2.14</Version>
+        <Version>2.2.15</Version>
     </PropertyGroup>
 
     <PropertyGroup>
         <Authors>Lith</Authors>
-        <Description>EntityFramework的扩展</Description>
+        <Description>entensions for EntityFramework</Description>
         <PackageProjectUrl>https://github.com/serset/Vit.Library</PackageProjectUrl>
     </PropertyGroup>
 
@@ -23,11 +23,8 @@
 
 
     <ItemGroup>
-        <PackageReference Include="Vit.Core" Version="2.1.19" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <ProjectReference Include="..\..\Vit.Linq\Vit.Linq\Vit.Linq.csproj" />
+        <PackageReference Include="Vit.Core" Version="2.1.20" />
+        <PackageReference Include="Vit.Linq" Version="2.2.18" />
     </ItemGroup>
 
     <ItemGroup>

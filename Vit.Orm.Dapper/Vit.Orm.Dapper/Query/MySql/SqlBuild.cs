@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using Vit.Core.Util.ComponentModel.Data;
-using Vit.Core.Util.ComponentModel.Query;
+
 using Vit.Core.Util.ConfigurationManager;
+using Vit.Linq.ComponentModel;
 
 namespace Vit.Orm.Dapper.Query.MySql
 {
@@ -29,7 +29,7 @@ namespace Vit.Orm.Dapper.Query.MySql
         /// <summary>
         /// filter最大个数，超过这个个数则抛异常
         /// </summary>
-        public static int MaxFilterCount =  Appsettings.json.GetByPath<int?>("Vit.Dapper.MaxFilterCount") ?? 50;
+        public static int MaxFilterCount = Appsettings.json.GetByPath<int?>("Vit.Dapper.MaxFilterCount") ?? 50;
 
         /// <summary>
         /// sort最大个数，超过这个个数则抛异常
@@ -37,7 +37,7 @@ namespace Vit.Orm.Dapper.Query.MySql
         public static int MaxSortCount = Appsettings.json.GetByPath<int?>("Vit.Dapper.MaxSortCount") ?? 50;
 
         public PageInfo page;
-        public IEnumerable<DataFilter>  filter;
+        public IEnumerable<DataFilter> filter;
         public IEnumerable<SortItem> sort;
         public Action<string, object> addSqlParam;
 
@@ -56,7 +56,7 @@ namespace Vit.Orm.Dapper.Query.MySql
         /// </summary>
         public string sqlLimit;
 
-       
+
 
 
         #region Build
@@ -74,7 +74,7 @@ namespace Vit.Orm.Dapper.Query.MySql
              */
             string sql;
 
-            #region (x.2)filter    
+            #region (x.2)filter
             sql = "";
             if (null != filter)
             {
@@ -141,7 +141,7 @@ namespace Vit.Orm.Dapper.Query.MySql
 
                 if (string.IsNullOrEmpty(sqlOrderBy))
                 {
-                    sqlOrderBy= null;
+                    sqlOrderBy = null;
                 }
                 else
                 {
@@ -160,15 +160,15 @@ namespace Vit.Orm.Dapper.Query.MySql
         //判断输入的字符串是否只包含 数字、大小写字母、下划线 和 .
         static readonly Regex regex = new Regex(@"^[A-Za-z0-9\\_\\.]+$");
         static bool ValidFieldName(string input)
-        {            
+        {
             return regex.IsMatch(input);
         }
 
 
         //判断比较操作符是否合法
-        static readonly string[] opts = new[] { "=", "!=", "like", ">", "<" , "<=", ">=", "in", "not in"};
+        static readonly string[] opts = new[] { "=", "!=", "like", ">", "<", "<=", ">=", "in", "not in" };
         static bool ValidOpt(string input)
-        {            
+        {
             return opts.Contains(input);
         }
         #endregion
