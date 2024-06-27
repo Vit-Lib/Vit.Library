@@ -20,8 +20,8 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="MailKit" Version="3.1.1" />
-		<PackageReference Include="Vit.Core" Version="2.1.20" />
+		<PackageReference Include="MailKit" Version="4.6.0" />
+		<PackageReference Include="Vit.Core" Version="2.1.21" />
 	</ItemGroup>
 
 </Project>

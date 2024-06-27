@@ -25,9 +25,9 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Vit.Core" Version="2.1.20" />
+        <PackageReference Include="Vit.Core" Version="2.1.21" />
         <PackageReference Include="EPPlus.Core" Version="1.5.4" />
-        <PackageReference Include="MiniExcel" Version="1.31.2" />
+        <PackageReference Include="MiniExcel" Version="1.32.1" />
     </ItemGroup>
 
 </Project>

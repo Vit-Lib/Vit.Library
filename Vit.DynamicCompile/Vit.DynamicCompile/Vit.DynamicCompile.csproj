@@ -13,7 +13,7 @@
     <PropertyGroup>
         <Authors>Lith</Authors>
         <Description>
-            c#动态编译工具。
+            dynamic compile tool.
             add below config to csproj:
             <PropertyGroup>
                 <PreserveCompilationContext>true</PreserveCompilationContext>
