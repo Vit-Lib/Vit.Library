@@ -8,4 +8,5 @@
         <ProjectReference Include="..\..\Vit.OnlineUpgrade.Netcore\Vit.OnlineUpgrade.Netcore.csproj" />
     </ItemGroup>
 
+
 </Project>
