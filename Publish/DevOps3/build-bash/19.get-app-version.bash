@@ -1,7 +1,7 @@
 set -e
 
 # export versionSuffix='.1234.preview'
-# bash 22.add-suffix-to-app-version.bash
+# bash 19.get-app-version.bash
 
 
 #---------------------------------------------------------------------
@@ -29,13 +29,13 @@ if [ ! -f "$csprojPath" ]; then csprojPath=$(find ${basePath} -name *.csproj -ex
 if [ -f "$csprojPath" ]; then export appVersion=`grep '<Version>' "$csprojPath" | grep -oE '\>(.*)\<' | tr -d '<>/'`;  fi
 echo "appVersion from csproj: $appVersion"
 
+# get v1 v2 v3
+v1=$(echo $appVersion | tr '.' '\n' | sed -n 1p)
+v2=$(echo $appVersion | tr '.' '\n' | sed -n 2p)
+v3=$(echo $appVersion | tr '.-' '\n' | sed -n 3p)
 
 
-export nextAppVersion="${appVersion}${versionSuffix}"
+#export nextAppVersion="${appVersion%%-*}$versionSuffix"
+export nextAppVersion="$v1.$v2.$v3$versionSuffix"
 echo "nextAppVersion: $nextAppVersion"
-
-
-#----------------------------------------------
-echo "#2 change app version from [$appVersion] to [$nextAppVersion]" 
-sed -i 's/'"$appVersion"'/'"$nextAppVersion"'/g'  `find ${basePath} -name *.csproj -exec grep '<pack>\|<publish>' -l {} \;`
 

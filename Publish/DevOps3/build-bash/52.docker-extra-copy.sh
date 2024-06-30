@@ -10,13 +10,14 @@ export NUGET_PATH=$basePath/Publish/release/.nuget
 
 # "
 
-if [ ! $NUGET_PATH ]; then NUGET_PATH=$basePath/Publish/release/.nuget; fi
-
 
 #---------------------------------------------------------------------
-echo '#build-bash__41.extra-publish.sh'
-echo '  -> nothing to do'
- 
+#52.docker-extra-copy.sh
+bashFile="$PWD/../environment/build-bash__52.docker-extra-copy.sh"
+if [ -f "$bashFile" ]; then
+	echo '#52.docker-extra-copy.sh'
+	sh "$bashFile"
+fi
 
 
 

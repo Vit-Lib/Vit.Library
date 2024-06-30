@@ -1,7 +1,7 @@
 set -e
 
 # export versionSuffix='.1234.preview'
-# bash 21.change-to-next-version.bash
+# bash 20.change-app-version.bash
 
 
 #---------------------------------------------------------------------
@@ -33,15 +33,14 @@ echo "appVersion from csproj: $appVersion"
 v1=$(echo $appVersion | tr '.' '\n' | sed -n 1p)
 v2=$(echo $appVersion | tr '.' '\n' | sed -n 2p)
 v3=$(echo $appVersion | tr '.-' '\n' | sed -n 3p)
-((v3++));
 
 
 #export nextAppVersion="${appVersion%%-*}$versionSuffix"
 export nextAppVersion="$v1.$v2.$v3$versionSuffix"
 echo "nextAppVersion: $nextAppVersion"
 
+
 #----------------------------------------------
 echo "#2 change app version from [$appVersion] to [$nextAppVersion]" 
-sed -i 's/'"$appVersion"'/'"$nextAppVersion"'/g'  `find ${basePath} -name *.csproj -exec grep '<pack>\|<publish>' -l {} \;`
-
+sed -i 's/'"<Version>$appVersion<\/Version>"'/'"<Version>$nextAppVersion<\/Version>"'/g'  `find ${basePath} -name *.csproj -exec grep '<pack>\|<publish>' -l {} \;`
 
