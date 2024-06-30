@@ -64,7 +64,7 @@ namespace Vit.Excel.MsTest
                 List<UserInfo> userList_fromFile;
                 {
                     using var excel = GetExcel(filePath) as Excel_MiniExcel;
-                    var sheet = excel.Read<UserInfo>(sheetName);
+                    var sheet = excel.ReadModel<UserInfo>(sheetName);
                     userList_fromFile = sheet.ToList();
                 }
                 for (var i = 0; i < userList.Count; i++)
@@ -119,7 +119,7 @@ namespace Vit.Excel.MsTest
                     {
                         File.Delete(filePath);
                         using var excel = GetExcel(filePath);
-                        excel.AddSheetByEnumerable("userList", GetStream_Enumerable(), columnNames);
+                        excel.AddSheetByArray("userList", GetStream_Enumerable(), columnNames);
                         excel.Save();
                     }
 
@@ -147,7 +147,7 @@ namespace Vit.Excel.MsTest
                     {
                         File.Delete(filePath);
                         using var excel = GetExcel(filePath) as Excel_MiniExcel;
-                        excel.AddSheetByEnumerable("userList", GetStream_Array(), columnNames);
+                        excel.AddSheetByArray("userList", GetStream_Array(), columnNames);
                         excel.Save();
                     }
 

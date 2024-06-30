@@ -28,7 +28,7 @@ namespace Vit.Excel.MsTest
                 // read
                 List<IDictionary<string, object>> userList_fromFile;
                 {
-                    var rows = ExcelHelp.ReadSheetByDictionary(filePath, sheetName);
+                    var rows = ExcelHelp.ReadDictionary(filePath, sheetName);
                     userList_fromFile = rows;
                 }
 
@@ -53,7 +53,7 @@ namespace Vit.Excel.MsTest
                 // read
                 List<UserInfo> userList_fromFile;
                 {
-                    var sheet = ExcelHelp.ReadSheetByModel<UserInfo>(filePath, sheetName);
+                    var sheet = ExcelHelp.ReadAsModel<UserInfo>(filePath, sheetName);
                     userList_fromFile = sheet;
                 }
                 for (var i = 0; i < userList.Count; i++)
@@ -149,7 +149,7 @@ namespace Vit.Excel.MsTest
                         var userList = modelList;
 
                         File.Delete(filePath);
-                        ExcelHelp.SaveSheet(filePath, new[] {
+                        ExcelHelp.SaveSheets(filePath, new[] {
                             SheetData.Model("userList", userList),
                             SheetData.Model("userList2", userList)
                         });
@@ -158,8 +158,8 @@ namespace Vit.Excel.MsTest
                     // read and assert
                     {
 
-                        var sheet1 = ExcelHelp.ReadSheetByModel<UserInfo>(filePath, "userList");
-                        var sheet2 = ExcelHelp.ReadSheetByModel<UserInfo>(filePath, "userList2");
+                        var sheet1 = ExcelHelp.ReadAsModel<UserInfo>(filePath, "userList");
+                        var sheet2 = ExcelHelp.ReadAsModel<UserInfo>(filePath, "userList2");
                     }
 
                     DataFromExcelAreSame(modelList, filePath, "userList");

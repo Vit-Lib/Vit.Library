@@ -29,7 +29,7 @@ namespace Vit.Excel.MsTest
                 List<IDictionary<string, object>> userList_fromFile;
                 {
                     using var excel = GetExcel(filePath);
-                    var rows = excel.ReadSheetByDictionary(sheetName);
+                    var rows = excel.ReadDictionary(sheetName);
                     userList_fromFile = rows.ToList();
                 }
 
@@ -51,7 +51,7 @@ namespace Vit.Excel.MsTest
                 List<Object[]> userList_fromFile;
                 {
                     using var excel = GetExcel(filePath);
-                    var sheet = excel.ReadSheetByEnumerable(sheetName).rows;
+                    var sheet = excel.ReadArray(sheetName).rows;
                     userList_fromFile = sheet.ToList();
                 }
                 for (var i = 0; i < userList.Count; i++)
@@ -71,7 +71,7 @@ namespace Vit.Excel.MsTest
                 List<UserInfo> userList_fromFile;
                 {
                     using var excel = GetExcel(filePath);
-                    var sheet = excel.ReadSheetByModel<UserInfo>(sheetName);
+                    var sheet = excel.ReadModel<UserInfo>(sheetName);
                     userList_fromFile = sheet.ToList();
                 }
                 for (var i = 0; i < userList.Count; i++)
@@ -181,8 +181,8 @@ namespace Vit.Excel.MsTest
                         using var excel = GetExcel(filePath);
                         var sheetNames = excel.GetSheetNames();
 
-                        var sheet1 = excel.ReadSheetByModel<UserInfo>("userList").ToList();
-                        var sheet2 = excel.ReadSheetByModel<UserInfo>("userList2").ToList();
+                        var sheet1 = excel.ReadModel<UserInfo>("userList").ToList();
+                        var sheet2 = excel.ReadModel<UserInfo>("userList2").ToList();
                     }
 
                     DataFromExcelAreSame(modelList, filePath, "userList");

@@ -1,4 +1,16 @@
-﻿using System;
+﻿#region << Version-v2 >>
+/*
+ * ========================================================================
+ * Version： v2
+ * Time   ： 2024-06-29
+ * Author ： lith
+ * Email  ： serset@yeah.net
+ * Remarks： 
+ * ========================================================================
+*/
+#endregion
+
+using System;
 using System.Collections.Generic;
 using System.Reflection.Emit;
 using System.Reflection;

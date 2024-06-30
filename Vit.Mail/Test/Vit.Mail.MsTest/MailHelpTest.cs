@@ -1,5 +1,5 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
+
 using Vit.Core.Util.ConfigurationManager;
 
 namespace Vit.Mail.MsTest
@@ -14,7 +14,7 @@ namespace Vit.Mail.MsTest
             try
             {
                 if (null == Appsettings.json.GetStringByPath("MailAccount.password")) return;
-                MailHelp.Send("serset@yeah.net", "Vit.Mail测试", "Vit.Mail测试,<p>html测试</p>" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), true);
+                MailHelp.Send("5678@outlook.com", "Vit.Mail Test", "Vit.Mail test,<p>html test</p>" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), true);
             }
             catch (Exception ex)
             {

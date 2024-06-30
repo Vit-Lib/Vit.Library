@@ -19,14 +19,10 @@
     <PropertyGroup>
         <DocumentationFile>bin\Debug\netstandard2.0\Vit.Excel.xml</DocumentationFile>
     </PropertyGroup>
-
-    <ItemGroup>
-      <Compile Remove="Excel_EPPlus.DataTable.cs" />
-    </ItemGroup>
+ 
 
     <ItemGroup>
         <PackageReference Include="Vit.Core" Version="2.1.21" />
-        <PackageReference Include="EPPlus.Core" Version="1.5.4" />
         <PackageReference Include="MiniExcel" Version="1.32.1" />
     </ItemGroup>
 
