@@ -20,7 +20,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="MailKit" Version="4.6.0" />
+        <PackageReference Include="MailKit" Version="4.7.0" />
         <PackageReference Include="Vit.Core" Version="2.1.21" />
     </ItemGroup>
 

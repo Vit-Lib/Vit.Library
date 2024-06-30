@@ -23,7 +23,7 @@
     <ItemGroup>
         <PackageReference Include="Vit.Core" Version="2.1.21" />
         <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.1.0" />
-        <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="2.1.0" />
+        <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="8.0.0" />
     </ItemGroup>
 
 </Project>
