@@ -46,7 +46,7 @@ namespace Vit.Excel
 
         #region Read
 
-   
+
 
         #region ReadModel
         public static List<Model> ReadModel<Model>(Stream stream, string sheetName) where Model : class, new()

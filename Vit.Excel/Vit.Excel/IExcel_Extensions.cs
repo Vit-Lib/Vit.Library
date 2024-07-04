@@ -31,7 +31,7 @@ namespace Vit.Excel
 
         #region Save single sheet
 
-        public static void SaveSheetByEnumerable(this IExcel excel,string sheetName, IEnumerable<IEnumerable<object>> sheet, string[] columnNames)
+        public static void SaveSheetByEnumerable(this IExcel excel, string sheetName, IEnumerable<IEnumerable<object>> sheet, string[] columnNames)
         {
             excel.AddSheetByArray(sheetName, sheet, columnNames);
             excel.Save();
@@ -47,7 +47,7 @@ namespace Vit.Excel
             excel.AddSheetByModel(sheetName, sheet, columnNames);
             excel.Save();
         }
-        public static void SaveSheetByDataTable(this IExcel excel, string sheetName ,DataTable table)
+        public static void SaveSheetByDataTable(this IExcel excel, string sheetName, DataTable table)
         {
             excel.AddSheetByDataTable(sheetName, table);
             excel.Save();
@@ -102,7 +102,7 @@ namespace Vit.Excel
             excel.AddSheets(sheets);
             excel.Save();
         }
-       
+
         #endregion
     }
 }

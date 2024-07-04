@@ -5,7 +5,7 @@ using System.Data;
 
 namespace Vit.Excel
 {
-    public interface IExcel:IDisposable
+    public interface IExcel : IDisposable
     {
         void Save();
         void AddSheetByArray(string sheetName, IEnumerable<IEnumerable<object>> sheet, string[] columnNames);

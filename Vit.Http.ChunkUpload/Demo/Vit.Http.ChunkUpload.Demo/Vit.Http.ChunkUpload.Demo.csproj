@@ -15,7 +15,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Vit.WebHost" Version="2.1.21" />
+        <PackageReference Include="Vit.WebHost" Version="6.1.0" />
     </ItemGroup>
 
     <ItemGroup>

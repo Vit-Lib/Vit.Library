@@ -22,7 +22,7 @@
  
 
     <ItemGroup>
-        <PackageReference Include="Vit.Core" Version="2.1.21" />
+        <PackageReference Include="Vit.Core" Version="2.2.0" />
         <PackageReference Include="MiniExcel" Version="1.32.1" />
     </ItemGroup>
 

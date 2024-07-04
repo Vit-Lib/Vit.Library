@@ -19,7 +19,7 @@ namespace Vit.Excel
 
 
         Stream stream = null;
-        bool streamNeedDispose = false;
+        readonly bool streamNeedDispose = false;
 
 
         public Excel_MiniExcel(Stream stream, bool needDisposeStream = false)
@@ -43,7 +43,7 @@ namespace Vit.Excel
         }
 
         #region SaveSheet
-        new Dictionary<string, object> sheets = new Dictionary<string, object>();
+        readonly Dictionary<string, object> sheets = new();
 
         public void Save()
         {
@@ -70,12 +70,12 @@ namespace Vit.Excel
         }
         public void AddSheetByDictionary(string sheetName, IEnumerable<IDictionary> sheet, string[] columnNames = null)
         {
-            if (columnNames == null) columnNames = sheet.FirstOrDefault()?.Keys.Cast<string>().ToArray() ?? new string[] { };
+            columnNames ??= sheet.FirstOrDefault()?.Keys.Cast<string>().ToArray() ?? [];
             sheets[sheetName] = new DataReader_IDictionary(sheet, columnNames);
         }
         public void AddSheetByDictionary(string sheetName, IEnumerable<IDictionary<string, object>> sheet, string[] columnNames = null)
         {
-            if (columnNames == null) columnNames = sheet.FirstOrDefault()?.Keys.Cast<string>().ToArray() ?? new string[] { };
+            columnNames ??= sheet.FirstOrDefault()?.Keys.Cast<string>().ToArray() ?? [];
             sheets[sheetName] = new DataReader_Dictionary(sheet, columnNames);
         }
         public void AddSheetByModel<Model>(string sheetName, IEnumerable<Model> sheet, string[] columnNames = null) where Model : class
@@ -180,7 +180,7 @@ namespace Vit.Excel
                 var valueGetterList =
                     fields.Select(m => (m.Name, (Func<object, object>)(row => m.GetValue(row))))
                     .Union(properties.Select(m => (m.Name, (Func<object, object>)(row => m.GetValue(row)))));
-                if (this.columnNames == null) this.columnNames = valueGetterList.Select(m => m.Name).Distinct().ToArray();
+                this.columnNames ??= valueGetterList.Select(m => m.Name).Distinct().ToArray();
 
                 FuncList_GetCellValue = this.columnNames.Select(name => valueGetterList.FirstOrDefault(getter => getter.Name == name).Item2).ToArray();
             }
@@ -370,9 +370,9 @@ namespace Vit.Excel
         public (List<string> columnNames, IEnumerable<object[]> rows) ReadArray(string sheetName)
         {
             var rows = ReadDictionary(sheetName);
-            if (rows?.Any()!=true) return default;
+            if (rows?.Any() != true) return default;
 
-            var columnNames= rows.First().Keys.ToList();
+            var columnNames = rows.First().Keys.ToList();
             IEnumerable<object[]> rows_ = rows.Select(row => row.Values.ToArray());
             return (columnNames, rows_);
         }
@@ -429,7 +429,7 @@ namespace Vit.Excel
 
             Action<object, object> Model_BuildSetter(Action<object, object> SetValue, Type FieldType)
             {
-                Action<object, object> Setter = (row, cellValue) =>
+                void Setter(object row, object cellValue)
                 {
                     try
                     {
@@ -440,8 +440,8 @@ namespace Vit.Excel
                         }
                         SetValue(row, cellValue);
                     }
-                    catch (Exception ex) { }
-                };
+                    catch { }
+                }
                 return Setter;
             }
             #endregion
