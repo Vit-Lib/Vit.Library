@@ -1,12 +1,14 @@
-﻿using Microsoft.AspNetCore.Http;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+
+using Microsoft.AspNetCore.Http;
+
 using Vit.Core.Util.ComponentModel.Data;
 
 namespace Vit.Http.ChunkUpload
 {
-    public class UploadChunk_MsCache: UploadChunk
+    public class UploadChunk_MsCache : UploadChunk
     {
         public class UploadedFile
         {
@@ -24,7 +26,7 @@ namespace Vit.Http.ChunkUpload
 
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
         public override async Task<object> OnUploadChunkAsync(HttpContext httpContext, ChunkData chunkData)
-        {           
+        {
 
             #region (x.1)get file cache in server
 

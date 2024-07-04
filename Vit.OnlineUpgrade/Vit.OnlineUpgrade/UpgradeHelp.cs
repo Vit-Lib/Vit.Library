@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.IO;
 using System.Text;
+
 using Vit.Core.Module.Log;
 using Vit.Core.Util.Common;
 
@@ -26,7 +27,7 @@ namespace Vit.OnlineUpgrade
             // /Logs/UpgradeFile/upgrade(20191203 162635 xxxxxxx).zip
 
             #region (x.1) make sure directory exist            
-            var directoryPath = Path.Combine(AppContext.BaseDirectory,"Logs");
+            var directoryPath = Path.Combine(AppContext.BaseDirectory, "Logs");
             if (!Directory.Exists(directoryPath))
             {
                 Directory.CreateDirectory(directoryPath);
@@ -40,7 +41,7 @@ namespace Vit.OnlineUpgrade
 
 
             #region (x.2)build file name
-            var fileName = "upgrade("+DateTime.Now.ToString("yyyyMMdd HHmmss")+" " + CommonHelp.Random(10000, 19999)+ ").zip";
+            var fileName = "upgrade(" + DateTime.Now.ToString("yyyyMMdd HHmmss") + " " + CommonHelp.Random(10000, 19999) + ").zip";
             #endregion
 
             string filePath = Path.Combine(directoryPath, fileName);
@@ -55,7 +56,7 @@ namespace Vit.OnlineUpgrade
         #region Upgrade
 
 
-        public static void Upgrade(string zipPath,Action actionToStop,string cmdAfterUpgrade=null)
+        public static void Upgrade(string zipPath, Action actionToStop, string cmdAfterUpgrade = null)
         {
 
             #region (x.1)启动后台升级程序
@@ -79,7 +80,7 @@ namespace Vit.OnlineUpgrade
             }
 
 
-            ShellBehind("dotnet", "Vit.OnlineUpgrade.dll \""+ zipPath + "\" \"" + cmdAfterUpgrade + "\"");
+            ShellBehind("dotnet", "Vit.OnlineUpgrade.dll \"" + zipPath + "\" \"" + cmdAfterUpgrade + "\"");
             #endregion
 
 
@@ -91,7 +92,7 @@ namespace Vit.OnlineUpgrade
             catch (Exception ex)
             {
                 Logger.Error(ex);
-            }             
+            }
             #endregion
 
         }

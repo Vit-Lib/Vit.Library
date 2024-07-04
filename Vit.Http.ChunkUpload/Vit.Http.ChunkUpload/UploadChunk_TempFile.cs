@@ -1,13 +1,15 @@
-﻿using Microsoft.AspNetCore.Http;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+
+using Microsoft.AspNetCore.Http;
+
 using Vit.Core.Util.ComponentModel.Data;
 
 namespace Vit.Http.ChunkUpload
 {
-    public class UploadChunk_TempFile: UploadChunk
+    public class UploadChunk_TempFile : UploadChunk
     {
 
         public Func<string, ChunkData, string> BuildTempFilePath = (string tempDirPath, ChunkData chunkData) => Path.Combine(tempDirPath, chunkData.fileGuid + ".tmp");
@@ -32,18 +34,18 @@ namespace Vit.Http.ChunkUpload
 
 
 
-        void Destroy(ChunkData chunkData) 
+        void Destroy(ChunkData chunkData)
         {
             var tempFile = Path.Combine(tempDirPath, chunkData.fileGuid + ".tmp");
             var file = new FileInfo(tempFile);
-            if (file.Exists) 
+            if (file.Exists)
             {
                 file.Delete();
             }
         }
 
 
-     
+
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
         public override async Task<object> OnUploadChunkAsync(HttpContext httpContext, ChunkData chunkData)
         {
@@ -56,13 +58,13 @@ namespace Vit.Http.ChunkUpload
             {
                 Destroy(chunkData);
                 return (ApiReturn)false;
-            }   
+            }
 
             using (var stream = file.OpenWrite())
-            { 
+            {
                 stream.Seek(0, SeekOrigin.End);
                 //await stream.WriteAsync(chunkData.data, 0, chunkData.data.Length);
-                stream.Write(chunkData.data,0, chunkData.data.Length);
+                stream.Write(chunkData.data, 0, chunkData.data.Length);
             }
 
             #region (x.3) 文件上传完成           

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Threading;
+
 using Vit.Core.Module.Log;
 
 namespace Vit.OnlineUpgrade
@@ -11,7 +12,7 @@ namespace Vit.OnlineUpgrade
         {
             try
             {
-                    
+
                 //(x.1)
                 Logger.Info("  OnlineUpgrade  -Vit.AspNetCore.OnlineUpgrade start");
                 string zipPath = args[0];
@@ -35,9 +36,9 @@ namespace Vit.OnlineUpgrade
                             Logger.Error("  OnlineUpgrade  ExtractZipFile(" + tryCount + ") error", ex);
                             if (tryCount >= 10)
                             {
-                                Logger.Error("  OnlineUpgrade  failed！！！ ExtractZipFile faile,tried "+ tryCount + " times");
+                                Logger.Error("  OnlineUpgrade  failed！！！ ExtractZipFile faile,tried " + tryCount + " times");
                                 return;
-                            }                          
+                            }
                         }
                     }
                 }
@@ -50,7 +51,7 @@ namespace Vit.OnlineUpgrade
 
                 #region (x.4)执行脚本（若存在）
                 for (int i = 1; i < args.Length; i++)
-                { 
+                {
                     var cmd = args[i];
                     if (string.IsNullOrWhiteSpace(cmd)) continue;
 
@@ -60,8 +61,8 @@ namespace Vit.OnlineUpgrade
                         Logger.Info("  OnlineUpgrade  - shell :" + cmd);
                         string fileName;
                         string arguments;
-                        
-                        var argIndex= cmd.IndexOf(' ');
+
+                        var argIndex = cmd.IndexOf(' ');
                         if (argIndex <= 0)
                         {
                             fileName = cmd;
@@ -95,9 +96,9 @@ namespace Vit.OnlineUpgrade
             }
             catch (Exception ex)
             {
-                Logger.Error("  OnlineUpgrade  ", ex);        
+                Logger.Error("  OnlineUpgrade  ", ex);
             }
-          
+
         }
     }
 }
