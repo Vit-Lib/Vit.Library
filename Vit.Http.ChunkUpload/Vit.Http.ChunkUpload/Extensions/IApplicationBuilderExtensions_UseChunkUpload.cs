@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
-using System;
+﻿using System;
 using System.Collections.Generic;
+
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
+
 using Vit.Core.Util.ComponentModel.Data;
 using Vit.Http.ChunkUpload;
 
@@ -36,15 +38,6 @@ namespace Vit.Extensions
             return data;
         }
         #endregion
-
-
-
-
-
-
-
-
-
 
     }
 }

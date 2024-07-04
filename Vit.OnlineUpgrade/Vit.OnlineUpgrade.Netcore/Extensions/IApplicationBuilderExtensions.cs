@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using System;
+using System.Text;
+
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Text;
+
 using Vit.Core.Module.Log;
 using Vit.Core.Util.ConfigurationManager;
 using Vit.OnlineUpgrade;
@@ -24,7 +26,7 @@ namespace Vit.Extensions
         /// <param name="password">升级密码，若不指定则不进行权限校验</param>
         /// <param name="appVersion">首页显示的版本号，可不指定</param>
 
-        public static void Use_OnlineUpgrade(this IApplicationBuilder data, string apiPrefix, string password = null, string appVersion=null)
+        public static void Use_OnlineUpgrade(this IApplicationBuilder data, string apiPrefix, string password = null, string appVersion = null)
         {
             if (data == null)
             {
@@ -45,7 +47,8 @@ namespace Vit.Extensions
                 Action<IApplicationBuilder> HandleMap = (app) =>
                 {
 
-                    Action StopApp = () => {
+                    Action StopApp = () =>
+                    {
                         IApplicationLifetime lifetime = app.ApplicationServices.GetRequiredService<IApplicationLifetime>();
                         lifetime?.StopApplication();
                     };
@@ -62,7 +65,7 @@ namespace Vit.Extensions
                 #endregion
 
                 data.Map(apiPrefix + "/upgrade", HandleMap);
-                 
+
             }
             #endregion
 

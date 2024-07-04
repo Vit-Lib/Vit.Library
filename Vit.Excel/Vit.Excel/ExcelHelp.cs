@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using System.Linq;
 
@@ -27,47 +28,95 @@ namespace Vit.Excel
         #endregion
 
 
-
-        #region ReadSheet
-
-
-        public static List<Model> ReadSheetByModel<Model>(Stream stream, string sheetName) where Model : class, new()
+        #region GetColumns
+        public static List<string> GetColumns(Stream stream, string sheetName = null)
         {
             using var excel = GetExcel(stream);
-            return excel.ReadSheetByModel<Model>(sheetName).ToList();
+            return excel.GetColumns(sheetName);
         }
-        public static List<Model> ReadSheetByModel<Model>(string filePath, string sheetName) where Model : class, new()
+        public static List<string> GetColumns(string filePath, string sheetName = null)
         {
             using var stream = new FileStream(filePath, FileMode.OpenOrCreate);
-            return ReadSheetByModel<Model>(stream, sheetName);
+            return GetColumns(stream, sheetName);
         }
+        #endregion
 
 
 
 
-        public static List<IDictionary<string, object>> ReadSheetByDictionary(Stream stream, string sheetName)
+        #region Read
+
+
+
+        #region ReadModel
+        public static List<Model> ReadModel<Model>(Stream stream, string sheetName) where Model : class, new()
         {
             using var excel = GetExcel(stream);
-            return excel.ReadSheetByDictionary(sheetName).ToList();
+            return excel.ReadModel<Model>(sheetName).ToList();
         }
-        public static List<IDictionary<string, object>> ReadSheetByDictionary(string filePath, string sheetName)
+        public static List<Model> ReadAsModel<Model>(string filePath, string sheetName) where Model : class, new()
         {
             using var stream = new FileStream(filePath, FileMode.OpenOrCreate);
-            return ReadSheetByDictionary(stream, sheetName);
+            return ReadModel<Model>(stream, sheetName);
         }
+        #endregion
+
+
+        #region ReadDictionary
+        public static List<IDictionary<string, object>> ReadDictionary(Stream stream, string sheetName)
+        {
+            using var excel = GetExcel(stream);
+            return excel.ReadDictionary(sheetName).ToList();
+        }
+        public static List<IDictionary<string, object>> ReadDictionary(string filePath, string sheetName)
+        {
+            using var stream = new FileStream(filePath, FileMode.OpenOrCreate);
+            return ReadDictionary(stream, sheetName);
+        }
+        #endregion
+
+        #region ReadArray
+        public static (List<string> columnNames, IEnumerable<object[]> rows) ReadArray(Stream stream, string sheetName)
+        {
+            using var excel = GetExcel(stream);
+            return excel.ReadArray(sheetName);
+        }
+        public static (List<string> columnNames, IEnumerable<object[]> rows) ReadArray(string filePath, string sheetName)
+        {
+            using var stream = new FileStream(filePath, FileMode.OpenOrCreate);
+            return ReadArray(stream, sheetName);
+        }
+        #endregion
+
+        #region ReadDataTable
+        public static DataTable ReadDataTable(Stream stream, string sheetName)
+        {
+            using var excel = GetExcel(stream);
+            return excel.ReadDataTable(sheetName);
+        }
+        public static DataTable ReadDataTable(string filePath, string sheetName)
+        {
+            using var stream = new FileStream(filePath, FileMode.OpenOrCreate);
+            return ReadDataTable(stream, sheetName);
+        }
+        #endregion
 
         #endregion
 
+
+
+
+
         #region SaveSheet
-        public static void SaveSheet(Stream stream, IEnumerable<SheetData> sheets)
+        public static void SaveSheets(Stream stream, IEnumerable<SheetData> sheets)
         {
             using var excel = GetExcel(stream);
-            excel.SaveSheet(sheets);
+            excel.SaveSheets(sheets);
         }
-        public static void SaveSheet(string filePath, IEnumerable<SheetData> sheets)
+        public static void SaveSheets(string filePath, IEnumerable<SheetData> sheets)
         {
             using var stream = new FileStream(filePath, FileMode.OpenOrCreate);
-            SaveSheet(stream, sheets);
+            SaveSheets(stream, sheets);
         }
 
 
@@ -80,6 +129,14 @@ namespace Vit.Excel
         {
             using var stream = new FileStream(filePath, FileMode.OpenOrCreate);
             SaveSheet(stream, sheet);
+        }
+        #endregion
+
+
+        #region DataReader
+        public static void SaveSheet(string filePath, string sheetName, IDataReader reader)
+        {
+            SaveSheet(filePath, SheetData.DataReader(sheetName, reader));
         }
         #endregion
 

@@ -1,12 +1,14 @@
 ﻿using System;
 using System.IO;
-using Vit.Net.Http.FormFile;
-using Vit.Extensions;
+
 using Vit.Core.Module.Log;
+using Vit.Core.Module.Serialization;
 using Vit.Core.Util.ComponentModel.Data;
 using Vit.Core.Util.ComponentModel.SsError;
-using Vit.Extensions.Json_Extensions;
-using Vit.Extensions.Object_Serialize_Extensions;
+using Vit.Extensions;
+using Vit.Extensions.Serialize_Extensions;
+using Vit.WebHost.Http.FormFile;
+
 
 namespace Vit.OnlineUpgrade
 {
@@ -31,7 +33,7 @@ namespace Vit.OnlineUpgrade
     <title>upgrade</title>
 </head>
 <body>  
-    <p>在线升级</p>   <br/>    
+    <p>在线升级</p>   <br/>
     appVersion: {appVersion}
     <form method='post' enctype='multipart/form-data' action='{apiPrefix}/upgrade' target='_blank'>
         <div>          
@@ -58,19 +60,19 @@ namespace Vit.OnlineUpgrade
 
         #region Upgrate
 
-        public static string Upgrate(Stream Body, string ContentType, Action actionToStop,string apiPrefix, string password, string appVersion)
+        public static string Upgrate(Stream Body, string ContentType, Action actionToStop, string apiPrefix, string password, string appVersion)
         {
             try
             {
                 MultipartForm result = new MultipartForm(Body, ContentType);
 
-                #region (x.1)密码验证                
+                #region (x.1)密码验证
                 if (!string.IsNullOrEmpty(password))
                 {
                     if (!result.form.TryGetValue("password", out var pwd) || password != pwd)
-                    {                  
+                    {
                         ApiReturn apiRet = new SsError { errorMessage = "密码不正确。" };
-                        return apiRet.Serialize();
+                        return Json.Serialize(apiRet);
                     }
                 }
                 #endregion
@@ -80,7 +82,7 @@ namespace Vit.OnlineUpgrade
                 if (result.files.Count != 1)
                 {
                     ApiReturn apiRet = new SsError { errorMessage = "获取不到升级文件。" };
-                    return apiRet.Serialize();
+                    return Json.Serialize(apiRet);
                 }
 
                 //(x.3)
@@ -104,7 +106,7 @@ namespace Vit.OnlineUpgrade
                 ApiReturn apiRet = ex.GetBaseException();
                 return apiRet.Serialize();
             }
-          
+
 
         }
         #endregion

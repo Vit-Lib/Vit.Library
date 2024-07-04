@@ -1,11 +1,11 @@
-﻿using Microsoft.AspNetCore.Http;
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+
+using Microsoft.AspNetCore.Http;
 
 using Vit.Core.Module.Serialization;
 using Vit.Core.Util.ComponentModel.Data;
@@ -15,7 +15,7 @@ using Vit.Extensions;
 namespace Vit.Http.ChunkUpload
 {
     public abstract class UploadChunk
-    {  
+    {
 
 
         /// <summary>
@@ -89,7 +89,7 @@ namespace Vit.Http.ChunkUpload
                 {
                     apiRet = await OnUploadChunkAsync(context, chunkData);
                 }
-                else 
+                else
                 {
                     apiRet = (ApiReturn)SsError.Err_InvalidParam;
                 }
@@ -109,7 +109,7 @@ namespace Vit.Http.ChunkUpload
 
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public abstract Task<object> OnUploadChunkAsync(HttpContext httpContext, ChunkData chunkData);        
+        public abstract Task<object> OnUploadChunkAsync(HttpContext httpContext, ChunkData chunkData);
 
     }
 }

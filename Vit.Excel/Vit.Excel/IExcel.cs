@@ -1,32 +1,34 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.IO;
 
 
 namespace Vit.Excel
 {
-    public interface IExcel:IDisposable
+    public interface IExcel : IDisposable
     {
         void Save();
-        void AddSheetByEnumerable(string sheetName, IEnumerable<IEnumerable<object>> sheet, string[] columnNames);
+        void AddSheetByArray(string sheetName, IEnumerable<IEnumerable<object>> sheet, string[] columnNames);
 
         void AddSheetByDictionary(string sheetName, IEnumerable<IDictionary<string, object>> sheet, string[] columnNames = null);
 
         void AddSheetByModel<Model>(string sheetName, IEnumerable<Model> sheet, string[] columnNames = null) where Model : class;
-        void AddSheetByDataTable(DataTable sheet, string sheetName = null);
+        void AddSheetByDataTable(string sheetName, DataTable sheet);
+        void AddSheetByDataReader(string sheetName, IDataReader reader);
 
 
-        (List<string> columnNames, IEnumerable<object[]> rows) ReadSheetByEnumerable(string sheetName);
-        IEnumerable<IDictionary<string, object>> ReadSheetByDictionary(string sheetName, out List<string> columnNames);
 
-        IEnumerable<Model> ReadSheetByModel<Model>(string sheetName) where Model : class, new();
+        IEnumerable<Model> ReadModel<Model>(string sheetName) where Model : class, new();
+        IEnumerable<IDictionary<string, object>> ReadDictionary(string sheetName);
+        (List<string> columnNames, IEnumerable<object[]> rows) ReadArray(string sheetName);
+
+        DataTable ReadDataTable(string sheetName);
 
 
 
 
         List<string> GetSheetNames();
-
+        List<string> GetColumns(string sheetName = null);
 
     }
 }

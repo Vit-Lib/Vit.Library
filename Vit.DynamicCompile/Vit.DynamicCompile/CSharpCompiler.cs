@@ -1,11 +1,12 @@
-﻿using Microsoft.CodeAnalysis;
-using Microsoft.Extensions.DependencyModel;
-using System;
-using System.IO;
-using System.Reflection;
-using Microsoft.CodeAnalysis.CSharp;
-using System.Linq;
+﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.Extensions.DependencyModel;
 
 namespace Vit.DynamicCompile
 {
@@ -41,7 +42,7 @@ namespace Vit.DynamicCompile
                 List<string> list;
 
                 //(x.x.1) CompileLibraries
-                var referencePaths = DependencyContext.Default.CompileLibraries.SelectMany(lib=>
+                var referencePaths = DependencyContext.Default.CompileLibraries.SelectMany(lib =>
                 {
                     try
                     {
@@ -58,7 +59,7 @@ namespace Vit.DynamicCompile
 
 
                 //(x.x.2) RuntimeLibraries
-                list =  DependencyContext.Default.RuntimeLibraries.SelectMany(lib=>
+                list = DependencyContext.Default.RuntimeLibraries.SelectMany(lib =>
                 {
                     try
                     {
@@ -82,13 +83,13 @@ namespace Vit.DynamicCompile
                     {
                     }
                     return new string[0];
-                }).Where(m=>m!=null).Distinct().ToList();
+                }).Where(m => m != null).Distinct().ToList();
 
                 referencePaths = referencePaths.Union(list);
 
 
                 //(x.3) GetEntryAssembly
-                list = Assembly.GetEntryAssembly().GetReferencedAssemblies().SelectMany(lib=>
+                list = Assembly.GetEntryAssembly().GetReferencedAssemblies().SelectMany(lib =>
                 {
                     try
                     {
@@ -120,11 +121,11 @@ namespace Vit.DynamicCompile
                 //(x.4)
                 list = (from m in referencePaths
                         where m != null && File.Exists(m)
-                         group m by Path.GetFileName(m).ToLower() into g
-                         select g.Last()).ToList();
+                        group m by Path.GetFileName(m).ToLower() into g
+                        select g.Last()).ToList();
 
                 //(x.5)
-                defaultReferences = list.Select(asm=>
+                defaultReferences = list.Select(asm =>
                 {
                     try
                     {
@@ -237,12 +238,12 @@ namespace Vit.DynamicCompile
         /// <param name="referencedAssemblies">依赖项。例如new[]{"a.dll","C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder\\microsoft.netcore.app\/2.1.0\\ref\/netcoreapp2.1\/Microsoft.CSharp.dll"}</param>
         /// <param name="sources">源代码</param>
         public static void Compile(string OutputAssemblyPath, string[] referencedAssemblies, params string[] sources)
-        {           
+        {
             using (FileStream stream = File.Open(OutputAssemblyPath, FileMode.Create))
             {
                 Compile(stream, referencedAssemblies, sources);
                 //stream.Close();//关闭流
-            }            
+            }
         }
         /// <summary>
         ///  编译代码。若编译不通过则抛异常
@@ -251,7 +252,7 @@ namespace Vit.DynamicCompile
         /// <param name="sources"></param>
         /// <returns></returns>
         public static Assembly CompileToAssembly(string[] referencedAssemblies, params string[] sources)
-        {  
+        {
             var data = Compile(referencedAssemblies, sources);
             if (null == data || data.Length == 0) return null;
             return Assembly.Load(data);

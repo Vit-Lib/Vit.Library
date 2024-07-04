@@ -19,7 +19,7 @@ namespace Vit.Excel
 
 
         Stream stream = null;
-        bool streamNeedDispose = false;
+        readonly bool streamNeedDispose = false;
 
 
         public Excel_MiniExcel(Stream stream, bool needDisposeStream = false)
@@ -43,7 +43,7 @@ namespace Vit.Excel
         }
 
         #region SaveSheet
-        new Dictionary<string, object> sheets = new Dictionary<string, object>();
+        readonly Dictionary<string, object> sheets = new();
 
         public void Save()
         {
@@ -56,7 +56,7 @@ namespace Vit.Excel
               * 1.DataTable
               * 2.IDataReader
               * 3.IEnumerable
-              *     row mustbe IDictionary/IDictionary<string,object>/DTO
+              *     row must be IDictionary/IDictionary<string,object>/DTO
               * */
         }
         //public void AddSheetByCells(string sheetName, IEnumerable<object[]> sheet, string[] columnNames)
@@ -64,29 +64,32 @@ namespace Vit.Excel
         //    sheets[sheetName] = new DataReader_Cells(sheet, columnNames);
         //}
 
-        public void AddSheetByEnumerable(string sheetName, IEnumerable<IEnumerable<object>> sheet, string[] columnNames)
+        public void AddSheetByArray(string sheetName, IEnumerable<IEnumerable<object>> sheet, string[] columnNames)
         {
             sheets[sheetName] = new DataReader_IEnumerable(sheet, columnNames);
         }
         public void AddSheetByDictionary(string sheetName, IEnumerable<IDictionary> sheet, string[] columnNames = null)
         {
-            if (columnNames == null) columnNames = sheet.FirstOrDefault()?.Keys.Cast<string>().ToArray() ?? new string[] { };
+            columnNames ??= sheet.FirstOrDefault()?.Keys.Cast<string>().ToArray() ?? [];
             sheets[sheetName] = new DataReader_IDictionary(sheet, columnNames);
         }
         public void AddSheetByDictionary(string sheetName, IEnumerable<IDictionary<string, object>> sheet, string[] columnNames = null)
         {
-            if (columnNames == null) columnNames = sheet.FirstOrDefault()?.Keys.Cast<string>().ToArray() ?? new string[] { };
+            columnNames ??= sheet.FirstOrDefault()?.Keys.Cast<string>().ToArray() ?? [];
             sheets[sheetName] = new DataReader_Dictionary(sheet, columnNames);
         }
         public void AddSheetByModel<Model>(string sheetName, IEnumerable<Model> sheet, string[] columnNames = null) where Model : class
         {
             sheets[sheetName] = new DataReader_DTO<Model>(sheet, columnNames);
         }
-        public void AddSheetByDataTable(DataTable sheet, string sheetName = null)
+        public void AddSheetByDataTable(string sheetName, DataTable sheet)
         {
-            sheets[sheetName ?? sheet.TableName] = sheet;
+            sheets[sheetName] = sheet;
         }
-
+        public void AddSheetByDataReader(string sheetName, IDataReader reader)
+        {
+            sheets[sheetName] = reader;
+        }
 
         #region Cell Array
         class DataReader_Cells : BaseDataReader<object[]>
@@ -177,7 +180,7 @@ namespace Vit.Excel
                 var valueGetterList =
                     fields.Select(m => (m.Name, (Func<object, object>)(row => m.GetValue(row))))
                     .Union(properties.Select(m => (m.Name, (Func<object, object>)(row => m.GetValue(row)))));
-                if (this.columnNames == null) this.columnNames = valueGetterList.Select(m => m.Name).Distinct().ToArray();
+                this.columnNames ??= valueGetterList.Select(m => m.Name).Distinct().ToArray();
 
                 FuncList_GetCellValue = this.columnNames.Select(name => valueGetterList.FirstOrDefault(getter => getter.Name == name).Item2).ToArray();
             }
@@ -354,37 +357,41 @@ namespace Vit.Excel
 
         #region Read
 
-        #region #1 Dictionary
-        public IEnumerable<IDictionary<string, object>> ReadSheetByDictionary(string sheetName, out List<string> columnNames)
+        #region #1 ReadDictionary
+        public IEnumerable<IDictionary<string, object>> ReadDictionary(string sheetName)
         {
-            var rows = ReadDictionary(sheetName);
-            if (rows == null)
-            {
-                columnNames = null;
-                return default;
-            }
-
-            var firstRow = rows.FirstOrDefault();
-            columnNames = firstRow?.Keys.ToList();
-            return rows;
+            IEnumerable<dynamic> rows = MiniExcel.Query(stream, sheetName: sheetName, useHeaderRow: useHeaderRow);
+            return rows.Cast<IDictionary<string, object>>();
         }
         #endregion
 
 
-        #region #2 Enumerable
-        public (List<string> columnNames, IEnumerable<object[]> rows) ReadSheetByEnumerable(string sheetName)
+        #region #2 ReadArray
+        public (List<string> columnNames, IEnumerable<object[]> rows) ReadArray(string sheetName)
         {
-            var rows = ReadSheetByDictionary(sheetName, out var columnNames);
-            if (columnNames == null) return default;
+            var rows = ReadDictionary(sheetName);
+            if (rows?.Any() != true) return default;
 
+            var columnNames = rows.First().Keys.ToList();
             IEnumerable<object[]> rows_ = rows.Select(row => row.Values.ToArray());
             return (columnNames, rows_);
         }
         #endregion
 
 
-        #region #3 Model
-        public IEnumerable<Model> ReadSheetByModel<Model>(string sheetName)
+        #region #3 ReadModel
+        ///<summary>
+        ///native read by Model, not recommand
+        /// </summary>
+        /// <typeparam name="Model"></typeparam>
+        /// <param name="sheetName"></param>
+        /// <returns></returns>
+        public IEnumerable<Model> ReadModel<Model>(string sheetName) where Model : class, new()
+        {
+            return MiniExcel.Query<Model>(stream, sheetName: sheetName);
+        }
+
+        private IEnumerable<Model> ReadModel_<Model>(string sheetName)
             where Model : class, new()
         {
             var rows = ReadDictionary(sheetName);
@@ -408,7 +415,7 @@ namespace Vit.Excel
             IEnumerable<Model> rows_ = rows.Select(CellToModel);
             return rows_;
 
-            #region Method CellToModel
+            #region Method 
             Model CellToModel(IDictionary<string, object> row)
             {
                 var model = new Model();
@@ -419,74 +426,56 @@ namespace Vit.Excel
                 }
                 return model;
             }
+
+            Action<object, object> Model_BuildSetter(Action<object, object> SetValue, Type FieldType)
+            {
+                void Setter(object row, object cellValue)
+                {
+                    try
+                    {
+                        if (cellValue == null) return;
+                        if (cellValue.GetType() != FieldType)
+                        {
+                            cellValue = Json.Deserialize(Json.Serialize(cellValue), FieldType);
+                        }
+                        SetValue(row, cellValue);
+                    }
+                    catch { }
+                }
+                return Setter;
+            }
             #endregion
         }
 
-        internal static Action<object, object> Model_BuildSetter(Action<object, object> SetValue, Type FieldType)
-        {
-            Action<object, object> Setter = (row, cellValue) =>
-            {
-                try
-                {
-                    if (cellValue == null) return;
-                    if (cellValue.GetType() != FieldType)
-                    {
-                        cellValue = Json.Deserialize(Json.Serialize(cellValue), FieldType);
-                    }
-                    SetValue(row, cellValue);
-                }
-                catch (Exception ex) { }
-            };
-            return Setter;
-        }
-
 
         #endregion
 
 
-        #endregion
-
-
-
-
-        #region Native Read
-        ///<summary>
-        ///native read by Model, not recommand
-        /// </summary>
-        /// <typeparam name="Model"></typeparam>
-        /// <param name="sheetName"></param>
-        /// <returns></returns>
-        public IEnumerable<Model> Read<Model>(string sheetName)
-                   where Model : class, new()
-        {
-            return MiniExcel.Query<Model>(stream, sheetName: sheetName);
-        }
-        public IEnumerable<dynamic> Read(string sheetName)
-        {
-            return MiniExcel.Query(stream, sheetName: sheetName, useHeaderRow: useHeaderRow);
-        }
-
-        public IEnumerable<IDictionary<string, object>> ReadDictionary(string sheetName)
-        {
-            return Read(sheetName).Cast<IDictionary<string, object>>();
-        }
-        public DataTable ReadAsDataTable(string sheetName)
+        #region #4 ReadDataTable
+        public DataTable ReadDataTable(string sheetName)
         {
             return MiniExcel.QueryAsDataTable(stream, sheetName: sheetName, useHeaderRow: useHeaderRow);
         }
         #endregion
 
 
+        #endregion
 
-        #region Read SheetInfo
+
+
+
+
+
+        #region GetSheetNames GetColumns
 
         public List<string> GetSheetNames()
         {
             return MiniExcel.GetSheetNames(stream);
         }
-        public ICollection<string> GetColumns(string sheetName = null)
+
+        public List<string> GetColumns(string sheetName = null)
         {
-            return MiniExcel.GetColumns(stream, useHeaderRow: useHeaderRow, sheetName: sheetName);
+            return MiniExcel.GetColumns(stream, useHeaderRow: useHeaderRow, sheetName: sheetName).ToList();
         }
         #endregion
 

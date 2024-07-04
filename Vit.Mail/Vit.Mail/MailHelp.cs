@@ -11,7 +11,9 @@
 #endregion
 
 using MailKit.Security;
+
 using MimeKit;
+
 using Vit.Core.Util.ConfigurationManager;
 
 namespace Vit.Mail
@@ -78,7 +80,7 @@ namespace Vit.Mail
 
 
                 //client.Connect(account.host);
-                client.Connect(account.host, 465, SecureSocketOptions.Auto);         
+                client.Connect(account.host, 465, SecureSocketOptions.Auto);
 
                 // Note: since we don't have an OAuth2 token, disable
                 // the XOAUTH2 authentication mechanism.

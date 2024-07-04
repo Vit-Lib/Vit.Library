@@ -1,8 +1,8 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Reflection;
 
 using Vit.Extensions;
 
@@ -16,28 +16,24 @@ namespace Vit.Excel
         }
 
 
-        public static IEnumerable<IDictionary<string, object>> ReadSheetByDictionary(this IExcel excel, string sheetName)
+        public static void AddSheetByModel(this IExcel excel, string sheetName, IEnumerable sheet, string[] columnNames = null)
         {
-            return excel.ReadSheetByDictionary(sheetName, out _);
+            var modelType = sheet.GetType().GetGenericArguments()[0];
+            var method = new Action<IExcel, string, IEnumerable<object>, string[]>(AddSheetByModel).Method.GetGenericMethodDefinition().MakeGenericMethod(modelType);
+            method.Invoke(null, [excel, sheetName, sheet, columnNames]);
         }
-
-        public static void AddSheetByModelEnumerable(this IExcel excel, string sheetName, IEnumerable sheet, string[] columnNames = null)
+        static void AddSheetByModel<Model>(IExcel excel, string sheetName, IEnumerable<Model> sheet, string[] columnNames = null) where Model : class
         {
-            if (sheet.GetType().IsGenericType)
-            {
-                var type = sheet.GetType().GetGenericArguments()[0];
-                var method = excel.GetType().GetMethod("AddSheetByModel").MakeGenericMethod(type);
-                method.Invoke(excel, new object[] { sheetName, sheet, columnNames });
-            }
+            excel.AddSheetByModel<Model>(sheetName, sheet, columnNames);
         }
 
 
 
         #region Save single sheet
 
-        public static void SaveSheetByEnumerable(this IExcel excel,string sheetName, IEnumerable<IEnumerable<object>> sheet, string[] columnNames)
+        public static void SaveSheetByEnumerable(this IExcel excel, string sheetName, IEnumerable<IEnumerable<object>> sheet, string[] columnNames)
         {
-            excel.AddSheetByEnumerable(sheetName, sheet, columnNames);
+            excel.AddSheetByArray(sheetName, sheet, columnNames);
             excel.Save();
         }
 
@@ -51,49 +47,62 @@ namespace Vit.Excel
             excel.AddSheetByModel(sheetName, sheet, columnNames);
             excel.Save();
         }
-        public static void SaveSheetByDataTable(this IExcel excel, DataTable sheet, string sheetName = null)
+        public static void SaveSheetByDataTable(this IExcel excel, string sheetName, DataTable table)
         {
-            excel.AddSheetByDataTable(sheet, sheetName);
+            excel.AddSheetByDataTable(sheetName, table);
+            excel.Save();
+        }
+        public static void SaveSheetByDataReader(this IExcel excel, string sheetName, IDataReader reader)
+        {
+            excel.AddSheetByDataReader(sheetName, reader);
             excel.Save();
         }
         #endregion
 
 
 
-        #region Save SheetData
+        #region AddSheet AddSheets SaveSheet SaveSheets
         public static void AddSheet(this IExcel excel, SheetData sheet)
         {
             switch (sheet.sheet)
             {
                 case null: return;
+                case DataTable table:
+                    excel.AddSheetByDataTable(sheet.sheetName, table);
+                    return;
+                case IDataReader reader:
+                    excel.AddSheetByDataReader(sheet.sheetName, reader);
+                    return;
                 case IEnumerable<IDictionary<string, object>> rows:
                     excel.AddSheetByDictionary(sheet.sheetName, rows, sheet.columnNames);
                     return;
                 case IEnumerable<IEnumerable<object>> rows:
-                    excel.AddSheetByEnumerable(sheet.sheetName, rows, sheet.columnNames);
+                    excel.AddSheetByArray(sheet.sheetName, rows, sheet.columnNames);
                     return;
                 case IEnumerable rows:
-                    excel.AddSheetByModelEnumerable(sheet.sheetName, rows, sheet.columnNames);
+                    excel.AddSheetByModel(sheet.sheetName, rows, sheet.columnNames);
                     return;
             }
         }
-        public static void AddSheet(this IExcel excel, IEnumerable<SheetData> sheets)
+        public static void AddSheets(this IExcel excel, IEnumerable<SheetData> sheets)
         {
             sheets?.IEnumerable_ForEach(excel.AddSheet);
         }
 
-        public static void SaveSheet(this IExcel excel, IEnumerable<SheetData> sheets)
-        {
-            if (sheets?.Any() != true) return;
 
-            excel.AddSheet(sheets);
-            excel.Save();
-        }
         public static void SaveSheet(this IExcel excel, SheetData sheet)
         {
             excel.AddSheet(sheet);
             excel.Save();
         }
+        public static void SaveSheets(this IExcel excel, IEnumerable<SheetData> sheets)
+        {
+            if (sheets?.Any() != true) return;
+
+            excel.AddSheets(sheets);
+            excel.Save();
+        }
+
         #endregion
     }
 }

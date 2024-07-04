@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Data;
 
 namespace Vit.Excel
 {
@@ -28,6 +29,24 @@ namespace Vit.Excel
                 sheetName = sheetName,
                 sheet = sheet,
                 columnNames = columnNames
+            };
+        }
+
+        public static SheetData DataTable(string sheetName, DataTable table)
+        {
+            return new SheetData
+            {
+                sheetName = sheetName,
+                sheet = table
+            };
+        }
+
+        public static SheetData DataReader(string sheetName, IDataReader reader)
+        {
+            return new SheetData
+            {
+                sheetName = sheetName,
+                sheet = reader
             };
         }
 
