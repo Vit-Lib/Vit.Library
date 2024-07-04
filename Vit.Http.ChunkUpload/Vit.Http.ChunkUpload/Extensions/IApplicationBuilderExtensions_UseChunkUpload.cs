@@ -39,14 +39,5 @@ namespace Vit.Extensions
         }
         #endregion
 
-
-
-
-
-
-
-
-
-
     }
 }

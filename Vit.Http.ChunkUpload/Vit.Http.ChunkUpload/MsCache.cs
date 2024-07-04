@@ -5,7 +5,7 @@ using Microsoft.Extensions.Options;
 
 namespace Vit.Http.ChunkUpload
 {
-    class MsCache : Microsoft.Extensions.Caching.Memory.MemoryCache
+    public class MsCache : Microsoft.Extensions.Caching.Memory.MemoryCache
     {
         public MsCache() : this(new MemoryCacheOptions())
         {
@@ -30,7 +30,7 @@ namespace Vit.Http.ChunkUpload
         }
 
 
-        public static readonly MsCache Instance = new MsCache();
+        public static MsCache Instance = new MsCache();
 
     }
 }
