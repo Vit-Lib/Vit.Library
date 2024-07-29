@@ -70,12 +70,12 @@ namespace Vit.Excel
         }
         public void AddSheetByDictionary(string sheetName, IEnumerable<IDictionary> sheet, string[] columnNames = null)
         {
-            columnNames ??= sheet.FirstOrDefault()?.Keys.Cast<string>().ToArray() ?? [];
+            columnNames ??= sheet.FirstOrDefault()?.Keys.Cast<string>().ToArray() ?? Array.Empty<string>();
             sheets[sheetName] = new DataReader_IDictionary(sheet, columnNames);
         }
         public void AddSheetByDictionary(string sheetName, IEnumerable<IDictionary<string, object>> sheet, string[] columnNames = null)
         {
-            columnNames ??= sheet.FirstOrDefault()?.Keys.Cast<string>().ToArray() ?? [];
+            columnNames ??= sheet.FirstOrDefault()?.Keys.Cast<string>().ToArray() ?? Array.Empty<string>();
             sheets[sheetName] = new DataReader_Dictionary(sheet, columnNames);
         }
         public void AddSheetByModel<Model>(string sheetName, IEnumerable<Model> sheet, string[] columnNames = null) where Model : class
