@@ -12,7 +12,7 @@
     <PropertyGroup>
         <Authors>Lith</Authors>
         <Description>AspNetCore chunk upload file</Description>
-        <PackageProjectUrl>https://github.com/serset/Vit.Library</PackageProjectUrl>
+        <PackageProjectUrl>https://github.com/VitLibs/Vit.Library</PackageProjectUrl>
     </PropertyGroup>
 
     <PropertyGroup>
