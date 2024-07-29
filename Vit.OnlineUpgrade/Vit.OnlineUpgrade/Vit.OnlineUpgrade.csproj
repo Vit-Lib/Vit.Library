@@ -14,7 +14,7 @@
     <PropertyGroup>
         <Authors>Lith</Authors>
         <Description>station online upgrade</Description>
-        <PackageProjectUrl>https://github.com/serset/Vit.Library</PackageProjectUrl>
+        <PackageProjectUrl>https://github.com/VitLibs/Vit.Library</PackageProjectUrl>
     </PropertyGroup>
 
     <PropertyGroup>

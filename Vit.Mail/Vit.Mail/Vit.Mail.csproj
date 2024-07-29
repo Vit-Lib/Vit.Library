@@ -12,7 +12,7 @@
     <PropertyGroup>
         <Authors>Lith</Authors>
         <Description>Email tool</Description>
-        <PackageProjectUrl>https://github.com/serset/Vit.Library</PackageProjectUrl>
+        <PackageProjectUrl>https://github.com/VitLibs/Vit.Library</PackageProjectUrl>
     </PropertyGroup>
 
     <PropertyGroup>
@@ -20,7 +20,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="MailKit" Version="4.7.0" />
+        <PackageReference Include="MailKit" Version="4.7.1.1" />
         <PackageReference Include="Vit.Core" Version="2.2.0" />
     </ItemGroup>
 
