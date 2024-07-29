@@ -20,7 +20,7 @@ namespace Vit.Excel
         {
             var modelType = sheet.GetType().GetGenericArguments()[0];
             var method = new Action<IExcel, string, IEnumerable<object>, string[]>(AddSheetByModel).Method.GetGenericMethodDefinition().MakeGenericMethod(modelType);
-            method.Invoke(null, [excel, sheetName, sheet, columnNames]);
+            method.Invoke(null, new object[] { excel, sheetName, sheet, columnNames });
         }
         static void AddSheetByModel<Model>(IExcel excel, string sheetName, IEnumerable<Model> sheet, string[] columnNames = null) where Model : class
         {
